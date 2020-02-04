@@ -1,0 +1,53 @@
+<div class="app-body">
+  <main class="main d-flex align-items-center">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-8 mx-auto">
+          <div class="card-group">
+            <div class="card p-4">
+              <div class="card-body">
+                <form [formGroup]="loginForm" (submit)="login()">
+                  <h1>Login</h1>
+                  <p class="text-muted">Sign In to your account</p>
+                  <div class="form-group mb-3">
+                    <input type="email" class="form-control" placeholder="Email" formControlName="email">
+                    <span *ngIf="loginForm.get('email').errors && (loginForm.get('email').dirty || loginForm.get('email').touched)">
+                      <span class="help-block text-red" *ngIf="loginForm.get('email').errors.required">Email is required</span>
+                      <span class="help-block text-red" *ngIf="loginForm.get('email').errors.email">Invalid Email Address</span>
+                    </span>
+                  </div>
+                  <div class="form-group mb-4">
+                    <input type="password" class="form-control" placeholder="Password" formControlName="password">
+                    <span *ngIf="loginForm.get('password').errors && (loginForm.get('password').dirty || loginForm.get('password').touched)">
+                      <span class="help-block text-red" *ngIf="loginForm.get('password').errors.required">Password is required</span>
+                      <span class="help-block text-red" *ngIf="loginForm.get('password').errors.rangeLength">Password length should be 8-12</span>
+                    </span>
+                  </div>
+                  <div class="row">
+                    <div class="col-6">
+                      <button type="submit" class="btn btn-primary px-4" [disabled]="buttonClicked || loginForm.invalid">Login</button>
+                    </div>
+                    <!-- <div class="col-6 text-right">
+                      <button type="button" class="btn btn-link px-0">Forgot password?</button>
+                    </div> -->
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="card text-white bg-primary py-5 d-md-down-none" style="width:44%">
+              <div class="card-body text-center">
+                <div>
+                  <h2>Gundruk Network</h2>
+                  <div class="login-logo">
+                    <a href=""><img src="assets/images/logo.png"></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+

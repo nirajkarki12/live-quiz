@@ -1,0 +1,47 @@
+// Here you can add other styles
+.app-header .nav-item{
+   margin-right: 15px;
+}
+
+.text-red {
+   color: #F00;
+}
+app-login{
+   display: flex;
+   flex-direction: column;
+   min-height: 100vh;
+}
+
+.list-style {
+   margin: 0;
+   padding: 0;
+   list-style-position: inside;
+}
+
+.action-icons{
+   border-radius: 5px;
+   padding: 0 8px;
+}
+.action-icons img {
+   width: 20px;
+}
+
+.btn-action {
+   text-align: right;
+}
+
+.app-header .navbar-toggler{
+   display: none;
+}
+
+.app-header .navbar-brand{
+   display: none;
+}
+
+.main .container-fluid{
+   padding: 0 10px;
+}
+
+.card{
+   margin-bottom: 0.5rem;
+}
