@@ -6,7 +6,7 @@ import { SocketsModule } from './sockets/sockets.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://' + (process.env.DB_HOST || '127.0.0.1') + ':' + (process.env.DB_PORT || '27017') + '/' + (process.env.DB || 'live_quiz')),
+    MongooseModule.forRoot('mongodb://' + (process.env.DB_HOST || '127.0.0.1') + ':' + (process.env.DB_PORT || '27017') + '/' + (process.env.DB || 'live_quiz'),{useUnifiedTopology: true}),
     AuthModule, 
     UsersModule,
     SocketsModule,

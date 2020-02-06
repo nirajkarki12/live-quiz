@@ -11,7 +11,7 @@ export class WsJwtGuard implements CanActivate {
   ) : Promise<boolean> {
       const client = context.switchToWs().getClient();
       const token = client.handshake.query.token;
-      const jwtPayload: any = <any> jwt.verify(token, `{process.env.JWT_SECRET}`);
+      const jwtPayload=jwt.decode(token);
       console.log('client', jwtPayload);
       
       if(!jwtPayload) return false;

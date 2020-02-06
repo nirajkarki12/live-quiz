@@ -1,6 +1,7 @@
 import {environment} from '../../environments/environment';
 
 export class ApiConstants {
+  
   public static API_ENDPOINT = environment.API;
   public static socketAPI = environment.socketAPI;
 

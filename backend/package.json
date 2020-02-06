@@ -26,7 +26,7 @@
     "@nestjs/mongoose": "^5.2.2",
     "@nestjs/passport": "^5.1.0",
     "@nestjs/websockets": "^5.7.4",
-    "bcrypt": "^3.0.2",
+    "bcrypt": "^3.0.7",
     "dotenv": "^8.2.0",
     "mongoose": "^5.8.11",
     "passport": "^0.4.0",

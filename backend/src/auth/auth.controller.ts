@@ -13,12 +13,12 @@ export class AuthController {
     async login(@Body() loginUserDto: LoginUserDto, @Res() res) {
         this.payload = await this.authService.validateUserByPassword(loginUserDto);
         res.status(HttpStatus.OK)
-            .set('X-Authorization', this.payload.token)
-            .send({
-            success: true,
-            statusCode: HttpStatus.OK,
+                .set('X-Authorization', this.payload.token)
+                .send({
+                success: true,
+                statusCode: HttpStatus.OK,
             });
-        // return await this.authService.validateUserByPassword(loginUserDto);
+        return await this.authService.validateUserByPassword(loginUserDto);
     }
 
     @Get('user')
