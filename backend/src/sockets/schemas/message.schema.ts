@@ -1,13 +1,22 @@
 import * as mongoose from 'mongoose';
+import { UserSchema } from 'src/users/schemas/user.schema';
 
 export const MessageSchema = new mongoose.Schema({
    message: {
       type: String,
       required: true
    },
-   user: {
-      type: mongoose.Types.ObjectId,
-      ref: 'User'
+   userName: {
+      type: String,
+      required: true
+   },
+   userImage: {
+      type: String,
+      required: true
+   },
+   isAdminUser: {
+      type: Boolean,
+      required: true
    },
    createdAt: {
       type: Date,

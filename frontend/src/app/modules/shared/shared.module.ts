@@ -14,6 +14,8 @@ const config: SocketIoConfig = { url: ApiConstants.socketAPI, options: {
     token: localStorage.getItem('X-Authorization')
   }
 }};
+// https://www.npmjs.com/package/ngx-moment
+import { MomentModule } from 'ngx-moment';
 // Pagination Component
 import {
   PaginationModule,
@@ -36,6 +38,11 @@ import { ApiConstants } from 'src/app/constants/api-constants';
     CollapseModule.forRoot(),
     CustomFormsModule,
     SocketIoModule.forRoot(config),
+    MomentModule.forRoot({
+      relativeTimeThresholdOptions: {
+        'm': 59
+      }
+    }),
   ],
   declarations: [
     NoRecordsFoundComponent,
@@ -52,6 +59,7 @@ import { ApiConstants } from 'src/app/constants/api-constants';
     RouterModule,
     NoRecordsFoundComponent,
     LoadingComponent,
+    MomentModule,
   ],
   providers: [
     DatePipe,

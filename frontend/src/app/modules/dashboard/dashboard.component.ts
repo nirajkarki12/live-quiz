@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Socket } from 'ngx-socket-io';
+import * as moment from 'moment';
 // Services
 import { ValidatorMessageService } from 'src/app/modules/shared/services/validator-message/validator-message.service';
+import { DashboardService } from './services/dashboard.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -9,20 +10,25 @@ import { ValidatorMessageService } from 'src/app/modules/shared/services/validat
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
-  messages = [];
+  messages: Array<any>;
   message = '';
   radioModel: string = 'Month';
 
   constructor(
-    private socket: Socket,
-    private toastr: ValidatorMessageService
+    private toastr: ValidatorMessageService,
+    private dashboardService: DashboardService
   ) { }
 
   ngOnInit() {
-    this.socket.connect();
-    this.socket.on('message', message => this.messages.push(message));
+    this.dashboardService.preChat().subscribe((message: any) => {
+      this.messages = message;
+    });
 
-    this.socket.on('users-changed', (data) => {
+    this.dashboardService.receiveChat().subscribe((message: any) => {
+      this.messages.push(message);
+    });
+
+    this.dashboardService.usersChanged().subscribe((data: any) => {
       if (data['event'] === 'left') {
         this.toastr.showMessage(data.text, 'error');
       } else {
@@ -36,7 +42,7 @@ export class DashboardComponent implements OnInit {
   }
 
   sendMessage() {
-    this.socket.emit('add-message', { message: this.message });
+    this.dashboardService.sendChat(this.message);
     this.message = '';
   }
 

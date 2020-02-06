@@ -30,25 +30,34 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
 
   async handleConnection(client: Socket) {
     const token = client.handshake.query.token;
-    this.user = <User> jwt.decode(token);
+    const user: User = <User> jwt.decode(token);
 
     // creating and joining users to public
     this.room = await this.socketService.findRoomByName('public');
     if(!this.room) {
       this.room = await this.socketService.createRoom('public');
     }
-    this.connectedUsers.push(this.user);
-    await this.socketService.addUsersToRoom(this.user, this.room.id);
+    this.connectedUsers.push(user);
+    await this.socketService.addUsersToRoom(user, this.room.id);
     client.join(this.room.name);
 
+    // Send last messages to the connected user
+    const messages = await this.socketService.findMessages(this.room.id, 25);
+    client.emit(this.room.name).emit('pre-messages', messages);
+
+    // Send connected Users to all on a public room
     this.server.to(this.room.name).emit('users', {'connectedUsers': this.connectedUsers, room: this.room.name});
-    client.to(this.room.name).emit('users-changed', {text: this.user.name + ' Joined a public room', event: 'joined' });
+    // Send this user connected information to others
+    client.to(this.room.name).emit('users-changed', {text: user.name + ' Joined a public room', event: 'joined' });
   }
 
   async handleDisconnect(client: Socket) {
-    let abc = await this.socketService.removeUsersFromRoom(this.user, this.room.id);
-    console.log('abc', abc);
-    const userPos = this.connectedUsers.indexOf(this.user);
+    const token = client.handshake.query.token;
+    const user: User = <User> jwt.decode(token);
+
+    await this.socketService.removeUsersFromRoom(user, this.room.id);
+
+    const userPos = this.connectedUsers.indexOf(user);
 
     if (userPos > -1) {
       this.connectedUsers = [
@@ -56,16 +65,20 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
         ...this.connectedUsers.slice(userPos + 1)
       ];
     }
+    // Send connected Users to all on a public room
     this.server.to(this.room.name).emit('users', {'connectedUsers': this.connectedUsers, room: this.room.name});
-    client.to(this.room.name).emit('users-changed', {text: this.user.name + ' left public room', event: 'left'});
+    // Send this user disconnected information to others
+    client.to(this.room.name).emit('users-changed', {text: user.name + ' left public room', event: 'left'});
   }
 
   @UseGuards(WsJwtGuard)
   @SubscribeMessage('add-message')
-  async addMessage(client: Socket, data) {
-    await this.socketService.addMessage(data.message, this.user, this.room.id); 
+  async addMessage(client: Socket, message: string) {
+    const token = client.handshake.query.token;
+    const user: User = <User> jwt.decode(token);
+    let roomMessage = await this.socketService.addMessage(message, user, this.room.id); 
 
-    this.server.to(this.room.name).emit('message', {text: data.message, from: this.user.name, isAdmin: this.user.isAdmin, created: new Date()});
+    this.server.to(this.room.name).emit('message', roomMessage);
   }
 
 }
