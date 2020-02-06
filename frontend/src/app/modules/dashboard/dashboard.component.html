@@ -50,10 +50,13 @@
                 Public Chat
               </div>
               <div class="messages">
-                <ul>
-                  <li *ngFor="let message of messages" [ngClass]="message.isAdmin ? 'replies' : 'sent'">
-                    <img src="{{ message.image || 'assets/images/logo.png' }}" alt="" />
-                    <p>{{ message.text }}</p>
+                <ul *ngIf="messages">
+                  <li *ngFor="let m of messages" [ngClass]="!m.isAdminUser ? 'replies' : 'sent'">
+                    <span class="username">{{ m.userName }}</span>
+                    <img src="{{ m.userImage || 'assets/images/logo.png' }}" alt="" />
+                    <p>{{ m.message }}</p>
+                    <br>
+                    <sub>{{ m.createdAt | amTimeAgo }}</sub>
                   </li>
                 </ul>
               </div>

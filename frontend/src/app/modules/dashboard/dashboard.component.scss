@@ -87,6 +87,10 @@ body {
  #frame .content .messages ul li:nth-last-child(1) {
    margin-bottom: 20px;
  }
+ #frame .content .messages ul li.sent {
+   float: left;
+ }
+ 
  #frame .content .messages ul li.sent img {
    margin: 6px 8px 0 0;
  }
@@ -94,18 +98,39 @@ body {
    background: #435f7a;
    color: #f5f5f5;
  }
+ #frame .content .messages ul li.replies {
+   text-align: right;
+ }
+
  #frame .content .messages ul li.replies img {
-   float: right;
    margin: 6px 0 0 8px;
+   float: right;
+ }
+ #frame .content .messages ul li.sent img{
+   margin: -2px 5px 0 0;
  }
  #frame .content .messages ul li.replies p {
    background: #f5f5f5;
-   float: right;
  }
+ #frame .content .messages ul li.sent p {
+   margin-bottom: 0;
+ }
+
+ #frame .content .messages ul li span {
+  display: block;
+  margin-bottom: 5px;
+  margin-top: 7px;
+  font-size: 0.9em;
+}
+
+#frame .content .messages ul li.replies sub {
+  font-style: italic;
+  margin-top: -5px;
+  display: block;
+}
  #frame .content .messages ul li img {
    width: 22px;
    border-radius: 50%;
-   float: left;
  }
  #frame .content .messages ul li p {
    display: inline-block;

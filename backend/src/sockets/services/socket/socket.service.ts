@@ -18,12 +18,15 @@ export class SocketService {
 
       let createdMessage = new this.messageModel({
          message: message,
-         user: user.id
+         userName: user.name,
+         userImage: user.image,
+         isAdminUser: user.isAdmin,
       });
       await createdMessage.save();
 
       room.messages.push(createdMessage);
-      return await room.save();
+      room.save();
+      return await createdMessage;
    }
 
    async addUsersToRoom(user: User, roomId: string) {
@@ -35,7 +38,6 @@ export class SocketService {
    }
 
    async removeUsersFromRoom(user: User, roomId: string) {
-      console.log('removing user', user);
       return await this.roomModel.findOneAndUpdate(roomId, {
          $pull: {
             users: {
@@ -52,6 +54,18 @@ export class SocketService {
       });
       return await createdRoom.save();
    }
+
+   async findMessages(id: string, limit: number) {
+      let room = await this.roomModel.findOne(
+         {_id: id},
+         {
+            messages: {
+               $slice: -limit
+            },
+         },
+      );
+      return room.messages;
+    }
 
    async findRoomByName(roomName: string): Model<Room> {
       return await this.roomModel.findOne({ name: roomName});
