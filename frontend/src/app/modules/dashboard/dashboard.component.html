@@ -51,7 +51,7 @@
               </div>
               <div class="messages">
                 <ul *ngIf="messages">
-                  <li *ngFor="let m of messages" [ngClass]="!m.isAdminUser ? 'replies' : 'sent'">
+                  <li *ngFor="let m of messages" [ngClass]="m.isAdminUser ? 'replies' : 'sent'">
                     <span class="username">{{ m.userName }}</span>
                     <img src="{{ m.userImage || 'assets/images/logo.png' }}" alt="" />
                     <p>{{ m.message }}</p>
