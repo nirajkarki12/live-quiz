@@ -45,7 +45,7 @@ export class AuthService {
          email: user.email,
          image: user.image,
          isAdmin: user.isAdmin,
-         user_id: user.user_id,
+         userId: user.userId,
       };
 
       return {

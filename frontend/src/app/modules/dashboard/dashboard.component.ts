@@ -12,7 +12,6 @@ export class DashboardComponent implements OnInit {
   messages = [];
   message = '';
   radioModel: string = 'Month';
-  nickname = 'Admin';
 
   constructor(
     private socket: Socket,
@@ -21,16 +20,13 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.socket.connect();
-    this.socket.emit('set-nickname', this.nickname);
-
     this.socket.on('message', message => this.messages.push(message));
 
     this.socket.on('users-changed', (data) => {
-      const user = data['user'];
       if (data['event'] === 'left') {
-        this.toastr.showMessage('User left: ' + user, 'error');
+        this.toastr.showMessage(data.text, 'error');
       } else {
-        this.toastr.showMessage('User joined: ' + user, 'success');
+        this.toastr.showMessage(data.text, 'success');
       }
     });
   }
@@ -40,7 +36,7 @@ export class DashboardComponent implements OnInit {
   }
 
   sendMessage() {
-    this.socket.emit('add-message', { text: this.message, from: this.nickname });
+    this.socket.emit('add-message', { message: this.message });
     this.message = '';
   }
 

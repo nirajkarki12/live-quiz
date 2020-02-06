@@ -4,5 +4,5 @@ export interface JwtPayload {
    email: string;
    image: string;
    isAdmin: boolean;
-   user_id: number;
+   userId: number;
 }

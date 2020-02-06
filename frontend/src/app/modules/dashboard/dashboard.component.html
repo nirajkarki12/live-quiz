@@ -51,7 +51,7 @@
               </div>
               <div class="messages">
                 <ul>
-                  <li *ngFor="let message of messages" [ngClass]="message.from === 'Admin' ? 'replies' : 'sent'">
+                  <li *ngFor="let message of messages" [ngClass]="message.isAdmin ? 'replies' : 'sent'">
                     <img src="{{ message.image || 'assets/images/logo.png' }}" alt="" />
                     <p>{{ message.text }}</p>
                   </li>

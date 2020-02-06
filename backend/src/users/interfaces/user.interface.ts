@@ -5,5 +5,5 @@ export interface User {
    image: string;
    password: string;
    isAdmin: boolean;
-   user_id: number;
+   userId: number;
 }

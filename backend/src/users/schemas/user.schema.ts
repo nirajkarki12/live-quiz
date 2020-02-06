@@ -13,16 +13,17 @@ export const UserSchema = new mongoose.Schema({
    },
    image: {
       type: String,
+      default: null,
    },
    password: {
       type: String,
-      required: true,
+      default: null,
    },
    isAdmin: {
       type: Boolean,
       default: false,
    },
-   user_id: {
+   userId: {
       type: Number,
       default: null,
    },
@@ -34,7 +35,7 @@ UserSchema.pre('save', function(next) {
    let user = this;
 
    // Make sure not to rehash the password if it is already hashed
-   if (!user.isModified('password')) return next();
+   if (!user.isModified('password') || user.password === null) return next();
 
    // Generate a salt and use it to hash the user's password
    bcrypt.genSalt(10, (err, salt) => {
