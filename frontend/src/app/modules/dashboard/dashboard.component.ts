@@ -20,7 +20,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   preMessageSubscription: Subscription;
   messageSubscription: Subscription;
-  usersSubscription: Subscription;
+  totalUsersSubscription: Subscription;
   usersChangedSubscription: Subscription;
 
   constructor(
@@ -29,16 +29,22 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.preMessageSubscription = this.dashboardService.preChat().subscribe((preMessage: any) => {
-      this.messages = preMessage;
-      this.messageSubscription = this.dashboardService.receiveChat().subscribe((message: any) => {
-        this.messages.push(message);
-      });
+    this.dashboardService.getAndSyncPreChat();
+    this.preMessageSubscription = this.dashboardService.getPreMessageRxSubject()
+      .subscribe(preMessage => {
+        this.messages = preMessage;
     });
 
-    this.usersSubscription = this.dashboardService.getTotalUsers().subscribe((total: number) => {
-      this.totalUsers = total;
+    this.dashboardService.getAndSyncTotalUsers();
+    this.totalUsersSubscription = this.dashboardService.getTotalUsersRxSubject()
+        .subscribe(total => {
+          this.totalUsers = total;
     });
+
+    this.messageSubscription = this.dashboardService.receiveChat().subscribe((message: any) => {
+      this.messages.push(message);
+    });
+
     this.usersChangedSubscription = this.dashboardService.usersChanged().subscribe((data: any) => {
       if (data['event'] === 'left') {
         this.toastr.showMessage(data.text, 'error');
@@ -62,8 +68,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.messageSubscription.unsubscribe();
     }
 
-    if (this.usersSubscription) {
-      this.usersSubscription.unsubscribe();
+    if (this.totalUsersSubscription) {
+      this.totalUsersSubscription.unsubscribe();
     }
 
     if (this.usersChangedSubscription) {

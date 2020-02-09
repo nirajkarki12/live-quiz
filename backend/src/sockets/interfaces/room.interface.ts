@@ -6,7 +6,7 @@ export interface Room extends Document {
    id: string;
    name: string;
    isPrivate: Boolean;
-   users?: User[];
+   // users?: User[];
    messages?: Message[];
    createdAt: Date;
    updatedAt: Date;

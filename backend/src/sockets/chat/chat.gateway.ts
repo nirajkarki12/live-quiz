@@ -21,7 +21,6 @@ import { UsersService } from 'src/users/services/users.service';
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
   @WebSocketServer() server;
   connectedUsers: number = 0;
-  user: User;
   room: Room;
 
   constructor(
@@ -41,8 +40,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
       if(!this.room) {
         this.room = await this.socketService.createRoom('public');
       }
+      // await this.socketService.addUsersToRoom(user, this.room.id);
       this.connectedUsers++;
-      await this.socketService.addUsersToRoom(user, this.room.id);
       client.join(this.room.name);
 
       // Send last messages to the connected user
@@ -55,7 +54,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
       client.to(this.room.name).emit('users-changed', {text: userName + ' Joined a public room', event: 'joined' });
 
     } catch (err) {
-      console.log(err);        
+      console.log(err);
     }
   }
 
@@ -64,10 +63,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
 
       const token = client.handshake.query.token;
       const user: User = <User> jwt.decode(token);
+      console.log('logged out token', token);
+      console.log('logged out user', user);
+
       const userName: string = user.name;
       if (!user) throw new WsException('Can\'t Connect to network');
 
-      await this.socketService.removeUsersFromRoom(user, this.room.id);
+      // await this.socketService.removeUsersFromRoom(user, this.room.id);
       this.connectedUsers--;
       // const userPos = this.connectedUsers.indexOf(user);
 
@@ -94,7 +96,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
     const user: User = <User> jwt.decode(token);
     let roomMessage = await this.socketService.addMessage(message, user, this.room.id); 
 
-    this.server.to(this.room.name).emit('message', roomMessage);
+    await this.server.to(this.room.name).emit('message', roomMessage);
   }
 
 }
