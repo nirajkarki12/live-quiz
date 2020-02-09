@@ -1,18 +1,21 @@
-import { Component, OnInit } from '@angular/core';
-import * as moment from 'moment';
+import { Component, AfterViewChecked, ElementRef, ViewChild, OnInit } from '@angular/core';
 // Services
 import { ValidatorMessageService } from 'src/app/modules/shared/services/validator-message/validator-message.service';
 import { DashboardService } from './services/dashboard.service';
+// Directives
+import { ScrollToBottomDirective } from '../shared/directives/scroll-to-bottom.directive';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, AfterViewChecked {
+  @ViewChild('inputBox', {static: false}) inputBox: ElementRef;
+  @ViewChild(ScrollToBottomDirective, {static: false}) scroll: ScrollToBottomDirective;
+
   messages: Array<any>;
   message = '';
-  radioModel: string = 'Month';
 
   constructor(
     private toastr: ValidatorMessageService,
@@ -37,13 +40,14 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  public random(min: number, max: number) {
-    return Math.floor(Math.random() * (max - min + 1) + min);
+  ngAfterViewChecked() {
+    this.inputBox.nativeElement.focus();
   }
 
   sendMessage() {
     this.dashboardService.sendChat(this.message);
     this.message = '';
+    this.inputBox.nativeElement.focus();
   }
 
 }

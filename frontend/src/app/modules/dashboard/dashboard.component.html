@@ -49,7 +49,7 @@
               <div class="card-header">
                 Public Chat
               </div>
-              <div class="messages">
+              <div class="messages" #scrollMe [scrollTop]="scrollMe.scrollHeight">
                 <ul *ngIf="messages">
                   <li *ngFor="let m of messages" [ngClass]="m.isAdminUser ? 'replies' : 'sent'">
                     <span class="username">{{ m.userName }}</span>
@@ -62,7 +62,7 @@
               </div>
               <div class="message-input">
                 <div class="wrap">
-                <input type="text" [(ngModel)]="message" placeholder="Write your message..." />
+                <input type="text" #inputBox [(ngModel)]="message" (keyup.enter)="sendMessage()" placeholder="Write your message..." />
                 <i class="fa fa-paperclip attachment" aria-hidden="true"></i>
                 <button class="submit" (click)="sendMessage()"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
                 </div>

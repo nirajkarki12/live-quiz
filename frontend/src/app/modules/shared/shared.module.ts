@@ -27,6 +27,7 @@ import { LoadingComponent } from './components/loading/loading.component';
 import { ValidatorMessageService } from './services/validator-message/validator-message.service';
 // API Constants
 import { ApiConstants } from 'src/app/constants/api-constants';
+import { ScrollToBottomDirective } from './directives/scroll-to-bottom.directive';
 @NgModule({
   imports: [
     CommonModule,
@@ -46,7 +47,8 @@ import { ApiConstants } from 'src/app/constants/api-constants';
   ],
   declarations: [
     NoRecordsFoundComponent,
-    LoadingComponent
+    LoadingComponent,
+    ScrollToBottomDirective
   ],
   exports: [
     CommonModule,
@@ -60,6 +62,7 @@ import { ApiConstants } from 'src/app/constants/api-constants';
     NoRecordsFoundComponent,
     LoadingComponent,
     MomentModule,
+    ScrollToBottomDirective,
   ],
   providers: [
     DatePipe,
