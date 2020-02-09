@@ -25,7 +25,7 @@ export class DashboardService {
     return this.socket.fromEvent('users-changed');
   }
 
-  getUsers() {
-    return this.socket.fromEvent('users');
+  getTotalUsers() {
+    return this.socket.fromEvent('totalUsers');
   }
 }

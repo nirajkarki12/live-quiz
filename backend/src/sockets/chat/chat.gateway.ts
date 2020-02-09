@@ -20,7 +20,7 @@ import { UsersService } from 'src/users/services/users.service';
 @WebSocketGateway()
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
   @WebSocketServer() server;
-  connectedUsers: User[] = [];
+  connectedUsers: number = 0;
   user: User;
   room: Room;
 
@@ -41,16 +41,16 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
       if(!this.room) {
         this.room = await this.socketService.createRoom('public');
       }
-      this.connectedUsers.push(user);
+      this.connectedUsers++;
       await this.socketService.addUsersToRoom(user, this.room.id);
       client.join(this.room.name);
 
       // Send last messages to the connected user
-      const messages = await this.socketService.findMessages(this.room.id, 25);
+      const messages = await this.socketService.findMessages(this.room.id, 40);
       client.emit(this.room.name).emit('pre-messages', messages);
 
       // Send connected Users to all on a public room
-      this.server.to(this.room.name).emit('users', {'connectedUsers': this.connectedUsers, room: this.room.name});
+      this.server.to(this.room.name).emit('totalUsers', this.connectedUsers);
       // Send this user connected information to others
       client.to(this.room.name).emit('users-changed', {text: userName + ' Joined a public room', event: 'joined' });
 
@@ -68,22 +68,22 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
       if (!user) throw new WsException('Can\'t Connect to network');
 
       await this.socketService.removeUsersFromRoom(user, this.room.id);
+      this.connectedUsers--;
+      // const userPos = this.connectedUsers.indexOf(user);
 
-      const userPos = this.connectedUsers.indexOf(user);
-
-      if (userPos > -1) {
-        this.connectedUsers = [
-          ...this.connectedUsers.slice(0, userPos),
-          ...this.connectedUsers.slice(userPos + 1)
-        ];
-      }
+      // if (userPos > -1) {
+      //   this.connectedUsers = [
+      //     ...this.connectedUsers.slice(0, userPos),
+      //     ...this.connectedUsers.slice(userPos + 1)
+      //   ];
+      // }
       // Send connected Users to all on a public room
-      this.server.to(this.room.name).emit('users', {'connectedUsers': this.connectedUsers, room: this.room.name});
+      this.server.to(this.room.name).emit('totalUsers', this.connectedUsers);
       // Send this user disconnected information to others
       client.to(this.room.name).emit('users-changed', {text: userName + ' left public room', event: 'left'});
 
     } catch (err) {
-      console.log(err);        
+      console.log(err);
     }
   }
 
