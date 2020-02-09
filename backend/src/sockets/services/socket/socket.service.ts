@@ -20,7 +20,7 @@ export class SocketService {
          message: message,
          userName: user.name,
          userImage: user.image,
-         isAdminUser: user.isAdmin,
+         isAdminUser: user.isAdmin || false,
       });
       await createdMessage.save();
 

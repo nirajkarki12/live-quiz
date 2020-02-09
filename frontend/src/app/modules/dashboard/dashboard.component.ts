@@ -1,4 +1,4 @@
-import { Component, AfterViewChecked, ElementRef, ViewChild, OnInit } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 // Services
 import { ValidatorMessageService } from 'src/app/modules/shared/services/validator-message/validator-message.service';
 import { DashboardService } from './services/dashboard.service';
@@ -10,11 +10,11 @@ import { ScrollToBottomDirective } from '../shared/directives/scroll-to-bottom.d
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent implements OnInit, AfterViewChecked {
-  @ViewChild('inputBox', {static: false}) inputBox: ElementRef;
+export class DashboardComponent implements OnInit {
   @ViewChild(ScrollToBottomDirective, {static: false}) scroll: ScrollToBottomDirective;
 
   messages: Array<any>;
+  users: Array<any>;
   message = '';
 
   constructor(
@@ -23,14 +23,17 @@ export class DashboardComponent implements OnInit, AfterViewChecked {
   ) { }
 
   ngOnInit() {
-    this.dashboardService.preChat().subscribe((message: any) => {
-      this.messages = message;
+    this.dashboardService.preChat().subscribe((preMessage: any) => {
+      this.messages = preMessage;
+      this.dashboardService.receiveChat().subscribe((message: any) => {
+        this.messages.push(message);
+      });
     });
 
-    this.dashboardService.receiveChat().subscribe((message: any) => {
-      this.messages.push(message);
+    this.dashboardService.getUsers().subscribe((users: any) => {
+      console.log('users', users);
+      this.users = users.connectedUsers;
     });
-
     this.dashboardService.usersChanged().subscribe((data: any) => {
       if (data['event'] === 'left') {
         this.toastr.showMessage(data.text, 'error');
@@ -40,14 +43,9 @@ export class DashboardComponent implements OnInit, AfterViewChecked {
     });
   }
 
-  ngAfterViewChecked() {
-    this.inputBox.nativeElement.focus();
-  }
-
   sendMessage() {
     this.dashboardService.sendChat(this.message);
     this.message = '';
-    this.inputBox.nativeElement.focus();
   }
 
 }
