@@ -9,6 +9,8 @@ export class AppRoutes {
   public static users = 'users';
   public static detail = 'detail/:id';
   public static chat = 'chat';
+  public static questions = 'questions';
+  public static sets = 'sets';
   public static message = 'message/:nickname';
   // pages
   public static serverError = '500';

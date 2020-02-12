@@ -19,7 +19,8 @@ import { MomentModule } from 'ngx-moment';
 // Pagination Component
 import {
   PaginationModule,
-  CollapseModule
+  CollapseModule,
+  BsDatepickerModule,
 } from 'ngx-bootstrap';
 import { NoRecordsFoundComponent } from './components/no-records-found/no-records-found.component';
 import { LoadingComponent } from './components/loading/loading.component';
@@ -44,6 +45,7 @@ import { ScrollToBottomDirective } from './directives/scroll-to-bottom.directive
         'm': 59
       }
     }),
+    BsDatepickerModule.forRoot(),
   ],
   declarations: [
     NoRecordsFoundComponent,
@@ -63,6 +65,7 @@ import { ScrollToBottomDirective } from './directives/scroll-to-bottom.directive
     LoadingComponent,
     MomentModule,
     ScrollToBottomDirective,
+    BsDatepickerModule,
   ],
   providers: [
     DatePipe,

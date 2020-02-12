@@ -56,6 +56,14 @@ export const routes: Routes = [
           path: AppRoutes.chat,
           loadChildren: () => import('./modules/chat/chat.module').then(m => m.ChatModule)
         },
+        {
+          path: AppRoutes.questions,
+          loadChildren: () => import('./modules/questions/questions.module').then(m => m.QuestionsModule)
+        },
+        {
+          path: AppRoutes.questions + '/' + AppRoutes.sets,
+          loadChildren: () => import('./modules/questions/sets/sets.module').then(m => m.SetsModule)
+        },
       ]
   },
   { path: '**', component: P404Component }

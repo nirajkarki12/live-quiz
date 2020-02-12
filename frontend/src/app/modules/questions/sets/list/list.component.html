@@ -1,0 +1,45 @@
+<div class="animated fadeIn">
+   <div class="row">
+      <div class="col-lg-12">
+         <div class="card">
+            <div class="card-header">
+               <i class="fa fa-align-justify"></i> Sets List
+            </div>
+            <app-loading *ngIf="!sets || loading"></app-loading>
+            <div *ngIf="sets ?.length > 0; then tableData; else noRecordsFound"></div>
+            <ng-template #tableData>
+               <div class="card-body">
+                  <table class="table table-striped">
+                     <thead>
+                        <tr>
+                           <th style="width: 10px">#</th>
+                           <th>Name</th>
+                           <th>Schedule On</th>
+                           <th>Action</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        <tr *ngFor="let set of sets; let index = index">
+                           <td>{{ index + 1 }}</td>
+                           <td>{{ set.name }}</td>
+                           <td>{{ set.scheduleDate | date:'yyyy-MM-dd' }}</td>
+                           <td>
+                              <a [routerLink]="['/questions/sets/edit', set._id]" title="Edit"><i class="fa fa-edit fa-lg"></i></a>
+                              &nbsp;
+                              <a href="javascript:void(0)" title="Delete" (click)="removeSet(set)"><i class="fa fa-remove fa-lg"></i></a>
+                           </td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+            </ng-template>
+         </div>
+      </div>
+      <!--/.col-->
+   </div>
+   <!--/.row-->
+<!-- No records found -->
+<ng-template #noRecordsFound>
+   <app-no-records-found></app-no-records-found>
+</ng-template>
+</div>
