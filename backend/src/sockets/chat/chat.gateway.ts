@@ -3,7 +3,8 @@ import {
   OnGatewayDisconnect,
   WebSocketServer,
   SubscribeMessage,
-  WebSocketGateway 
+  WebSocketGateway, 
+  WsException
 } from '@nestjs/websockets';
 import { UseGuards } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
@@ -19,8 +20,7 @@ import { UsersService } from 'src/users/services/users.service';
 @WebSocketGateway() 
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
   @WebSocketServer() server;
-  connectedUsers: User[] = [];
-  user: User;
+  connectedUsers: number = 0;
   room: Room;
 
   constructor(
@@ -29,46 +29,64 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
   ){}
 
   async handleConnection(client: Socket) {
-    const token = client.handshake.query.token;
-    const user: User = <User> jwt.decode(token);
+    try {
+      const token = client.handshake.query.token;
+      const user: User = <User> jwt.decode(token);
+      if (!user) throw new WsException('Can\'t Connect to network');
+      const userName: string = user.name;
 
-    // creating and joining users to public
-    this.room = await this.socketService.findRoomByName('public');
-    if(!this.room) {
-      this.room = await this.socketService.createRoom('public');
+      // creating and joining users to public
+      this.room = await this.socketService.findRoomByName('public');
+      if(!this.room) {
+        this.room = await this.socketService.createRoom('public');
+      }
+      // await this.socketService.addUsersToRoom(user, this.room.id);
+      this.connectedUsers++;
+      client.join(this.room.name);
+
+      // Send last messages to the connected user
+      const messages = await this.socketService.findMessages(this.room.id, 40);
+      client.emit(this.room.name).emit('pre-messages', messages);
+
+      // Send connected Users to all on a public room
+      this.server.to(this.room.name).emit('totalUsers', this.connectedUsers);
+      // Send this user connected information to others
+      client.to(this.room.name).emit('users-changed', {text: userName + ' Joined a public room', event: 'joined' });
+
+    } catch (err) {
+      console.log(err);
     }
-    this.connectedUsers.push(user);
-    await this.socketService.addUsersToRoom(user, this.room.id);
-    client.join(this.room.name);
-
-    // Send last messages to the connected user
-    const messages = await this.socketService.findMessages(this.room.id, 25);
-    client.emit(this.room.name).emit('pre-messages', messages);
-
-    // Send connected Users to all on a public room
-    this.server.to(this.room.name).emit('users', {'connectedUsers': this.connectedUsers, room: this.room.name});
-    // Send this user connected information to others
-    client.to(this.room.name).emit('users-changed', {text: user.name + ' Joined a public room', event: 'joined' });
   }
 
   async handleDisconnect(client: Socket) {
-    const token = client.handshake.query.token;
-    const user: User = <User> jwt.decode(token);
+    try {
 
-    await this.socketService.removeUsersFromRoom(user, this.room.id);
+      const token = client.handshake.query.token;
+      const user: User = <User> jwt.decode(token);
+      console.log('logged out token', token);
+      console.log('logged out user', user);
 
-    const userPos = this.connectedUsers.indexOf(user);
+      const userName: string = user.name;
+      if (!user) throw new WsException('Can\'t Connect to network');
 
-    if (userPos > -1) {
-      this.connectedUsers = [
-        ...this.connectedUsers.slice(0, userPos),
-        ...this.connectedUsers.slice(userPos + 1)
-      ];
+      // await this.socketService.removeUsersFromRoom(user, this.room.id);
+      this.connectedUsers--;
+      // const userPos = this.connectedUsers.indexOf(user);
+
+      // if (userPos > -1) {
+      //   this.connectedUsers = [
+      //     ...this.connectedUsers.slice(0, userPos),
+      //     ...this.connectedUsers.slice(userPos + 1)
+      //   ];
+      // }
+      // Send connected Users to all on a public room
+      this.server.to(this.room.name).emit('totalUsers', this.connectedUsers);
+      // Send this user disconnected information to others
+      client.to(this.room.name).emit('users-changed', {text: userName + ' left public room', event: 'left'});
+
+    } catch (err) {
+      console.log(err);
     }
-    // Send connected Users to all on a public room
-    this.server.to(this.room.name).emit('users', {'connectedUsers': this.connectedUsers, room: this.room.name});
-    // Send this user disconnected information to others
-    client.to(this.room.name).emit('users-changed', {text: user.name + ' left public room', event: 'left'});
   }
 
   @UseGuards(WsJwtGuard)
@@ -78,7 +96,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
     const user: User = <User> jwt.decode(token);
     let roomMessage = await this.socketService.addMessage(message, user, this.room.id); 
 
-    this.server.to(this.room.name).emit('message', roomMessage);
+    await this.server.to(this.room.name).emit('message', roomMessage);
   }
 
 }

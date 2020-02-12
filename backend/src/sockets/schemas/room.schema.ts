@@ -11,7 +11,7 @@ export const RoomSchema = new mongoose.Schema({
       type: Boolean,
       default: false
     },
-    users: [UserSchema],
+    // users: [UserSchema],
     messages: [MessageSchema],
     createdAt: {
       type: Date,
