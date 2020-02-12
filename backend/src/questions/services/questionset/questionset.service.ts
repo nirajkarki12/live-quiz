@@ -1,5 +1,4 @@
-import { Model} from 'mongoose';
-import { Mongoose } from 'mongoose';
+import { Model,mongoose} from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { QuestionSet } from 'src/questions/interfaces/questionset.interface';
@@ -25,13 +24,12 @@ export class QuestionsetService {
         return await this.questionSetModel.remove({_id:id});
       }
 
-      async findOneById(id) {
-        let mon = new Mongoose();
-        return await this.questionSetModel.find(mon.Types.ObjectId(id));
+      async findOneById(id): Model<QuestionSet>{
+        return await this.questionSetModel.find({_id: id});
       }
 
-      async update()
+      async findAndUpdate(id,data:CreateQuestionSetDto)
       {
-
+        return await this.questionSetModel.findOneAndUpdate(id,data,{new:true});
       }
 }
