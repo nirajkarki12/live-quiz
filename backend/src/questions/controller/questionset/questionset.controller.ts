@@ -28,7 +28,6 @@ export class QuestionsetController {
                 data:questionsSets,
                 statusCode: HttpStatus.OK,
             });
-            return res;
         } catch (error) {
             throw new HttpException(error, HttpStatus.AMBIGUOUS);
         }
@@ -47,17 +46,25 @@ export class QuestionsetController {
     async findOneById(@Param('id') id, @Res() res)
     {
         try {
-            let questionSet = this.questionSetService.findOneById(id);
+            let questionSet = await this.questionSetService.findOneById(id);
             res.status(HttpStatus.OK)
                 .send({
                     success:true,
                     data:questionSet,
                     statusCode:HttpStatus.OK
                 });
-            console.log(questionSet);
-            return res;
         } catch (error) {
             throw new HttpException(error,HttpStatus.AMBIGUOUS);
+        }
+    }
+
+    @Patch(':id')
+    async updateOne(@Body() body: CreateQuestionSetDto,@Param('id') id)
+    {
+        try {
+            return await this.questionSetService.findAndUpdate(id, body);
+        } catch (error) {
+            
         }
     }
     
