@@ -20,6 +20,7 @@ export class UpdateComponent implements OnInit {
   setEdit: Sets = new Sets();
   buttonClicked = false;
   sub: Subscription;
+  currentDate = new Date();
 
   constructor(
     private router: Router,
@@ -32,12 +33,12 @@ export class UpdateComponent implements OnInit {
   ngOnInit() {
     this.route.data
     .subscribe((data) => {
-      this.setEdit = data.sets.body.data;
+      this.setEdit = data.sets.data;
       this.setForm = this.setFormService.createForm(this.setEdit);
     });
   }
 
-  edit() {
+  update() {
     this.buttonClicked = true;
     this.setService
       .update(this.setForm.value)

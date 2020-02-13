@@ -1,1 +1,37 @@
-<p>update works!</p>
+<div class="animated fadeIn">
+   <div class="col-sm-9">
+      <div class="card">
+         <div class="card-header">
+            Update a <strong>Sets</strong>
+         </div>
+         <div class="card-body">
+            <form [formGroup]="setForm" (submit)="update()">
+               <div class="row">
+                  <div class="form-group col-sm-8">
+                     <label for="bank-name">Name</label>
+                     <input type="text" class="form-control" id="bank-name" placeholder="Sets Name" formControlName="name">
+                     <span *ngIf="setForm.get('name').errors && (setForm.get('name').dirty || setForm.get('name').touched)">
+                        <span class="help-block text-red" *ngIf="setForm.get('name').errors.required">Set name is required</span>
+                        <span class="help-block text-red" *ngIf="setForm.get('name').errors.minlength">Too short name</span>
+                        <span class="help-block text-red" *ngIf="setForm.get('name').errors.maxlength">Too long name</span>
+                     </span>
+                  </div>
+                  <div class="form-group col-sm-4">
+                     <label for="ScheduleDate">Schedule Date</label>
+                     <input type="text" class="form-control" bsDatepicker #datepickerYMD="bsDatepicker" [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD', minDate: currentDate }" id="ScheduleDate" placeholder="Schedule Date" formControlName="scheduleDate">
+                     <span *ngIf="setForm.get('scheduleDate').errors && (setForm.get('scheduleDate').dirty || setForm.get('scheduleDate').touched)">
+                        <span class="help-block text-red" *ngIf="setForm.get('scheduleDate').errors.required">Schedule Date is required</span>
+                        <span class="help-block text-red" *ngIf="setForm.get('scheduleDate').errors.minDate">Schedule Date should be greater than today</span>
+                     </span>
+                  </div>
+               </div><!--/.row-->
+               
+               <div class="form-actions">
+                  <button type="submit" class="btn btn-success" [disabled]="buttonClicked || setForm.invalid">Save changes</button>
+                  <!-- <button class="btn btn-secondary" type="button">Cancel</button> -->
+               </div>
+            </form>
+         </div>
+      </div>
+   </div><!--/.col-->
+</div>
