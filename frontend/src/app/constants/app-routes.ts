@@ -5,6 +5,7 @@ export class AppRoutes {
   public static dashboard = 'dashboard';
   public static edit = 'edit/:id';
   public static create = 'create';
+  public static createWithId = 'create/:id';
   public static list = 'list';
   public static users = 'users';
   public static detail = 'detail/:id';

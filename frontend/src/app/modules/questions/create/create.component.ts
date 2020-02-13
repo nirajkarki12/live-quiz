@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup } from '@angular/forms';
 import { AppRoutes } from 'src/app/constants/app-routes';
 // Services
@@ -18,17 +18,23 @@ import { Question } from '../models/question.model';
 export class CreateComponent implements OnInit {
   questionForm: FormGroup;
   question: Question = new Question();
+  sets: Sets = new Sets();
   buttonClicked: Boolean = false;
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private questionService: QuestionService,
     private questionFormService: QuestionFormService,
     private toastr: ValidatorMessageService,
   ) { }
 
   ngOnInit() {
-    this.questionForm = this.questionFormService.createForm(this.question);
+    this.route.data
+    .subscribe((data) => {
+      this.sets = data.sets.data;
+      this.questionForm = this.questionFormService.createForm(this.question, this.sets);
+    });
   }
 
   create() {
