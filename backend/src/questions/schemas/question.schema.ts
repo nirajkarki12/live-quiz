@@ -4,6 +4,7 @@ export const QuestionSchema = new mongoose.Schema({
    name: {
       type: String,
       required: true,
+      unique: true
    },
 
    option1: {
@@ -30,11 +31,16 @@ export const QuestionSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+
+    level: {
+        type: Number,
+        required: true
+    },
     
-    questionSetId: [{
+    questionSetId:{
         type: mongoose.Schema.Types.ObjectId,
-        ref:'QuestionSet'
-    }],
+        ref:'QuestionSetSchema'
+    },
 
     createdAt: {
         type: Date,
