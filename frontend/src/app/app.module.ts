@@ -7,6 +7,7 @@ import { ToastrModule } from 'ngx-toastr';
 
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
+import { ApiConstants } from './constants/api-constants';
 
 import {
   AppAsideModule,
@@ -18,6 +19,14 @@ import {
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
+};
+// https://www.npmjs.com/package/ngx-socket-io
+import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+const config: SocketIoConfig = { url: ApiConstants.socketUrl, options: {
+      query: {
+        token: localStorage.getItem('X-Authorization')
+      }
+    }
 };
 
 // Modules
@@ -64,6 +73,7 @@ const toastrConfig = {
     PerfectScrollbarModule,
     BsDropdownModule.forRoot(),
     TabsModule.forRoot(),
+    SocketIoModule.forRoot(config),
   ],
   declarations: [
     ...APP_CONTAINERS,
@@ -82,4 +92,8 @@ const toastrConfig = {
   ],
   bootstrap: [ AppComponent ]
 })
-export class AppModule { }
+export class AppModule {
+  constructor() {
+    console.log(localStorage.getItem('X-Authorization'));
+  }
+}

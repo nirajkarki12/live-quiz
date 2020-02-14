@@ -6,6 +6,7 @@ import { ListComponent } from './list/list.component';
 import { UpdateComponent } from './update/update.component';
 import { CreateComponent } from './create/create.component';
 // Resolver
+import { SetsDetailResolverService } from './sets/services/resolver/sets-detail-resolver.service';
 
 const routes: Routes = [
   {
@@ -22,8 +23,11 @@ const routes: Routes = [
         }
       },
       {
-        path: AppRoutes.create,
+        path: AppRoutes.createWithId,
         component: CreateComponent,
+        resolve: {
+          'sets': SetsDetailResolverService,
+        },
         data: {
           title: 'Add a Question'
         }

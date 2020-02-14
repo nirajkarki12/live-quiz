@@ -58,9 +58,9 @@ export class SetsService {
   }
 
   update(setModel: Sets): Promise<any> {
-    return this.http.post(
+    return this.http.patch(
       ApiConstants.API_ENDPOINT +
-      ApiConstants.QUESTIONSETS
+      ApiConstants.QUESTIONSETS + '/' + setModel._id
       , setModel,
       { observe: 'response'} )
      .toPromise()

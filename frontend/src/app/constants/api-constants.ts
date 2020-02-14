@@ -1,9 +1,8 @@
 import {environment} from '../../environments/environment';
 
 export class ApiConstants {
-  
   public static API_ENDPOINT = environment.API;
-  public static socketAPI = environment.socketAPI;
+  public static socketUrl = environment.socketUrl;
 
   public static AUTH = '/auth';
   public static V1 = '/v1';
@@ -18,6 +17,7 @@ export class ApiConstants {
   public static CREATE = '/create';
   public static UPDATE = '/update';
   public static DELETE = '/delete';
+  public static QUESTION = '/question';
   public static QUESTIONSETS = '/questionsets';
   public static VERIFY_TOKEN = '/verify-token';
   public static TOKEN = '/token';

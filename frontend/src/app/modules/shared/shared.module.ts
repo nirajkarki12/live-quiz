@@ -7,13 +7,6 @@ import { DatePipe } from '@angular/common';
 import { CustomFormsModule } from 'ngx-custom-validators';
 // https://www.npmjs.com/package/angular2-multiselect-dropdown
 import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
-// https://www.npmjs.com/package/ngx-socket-io
-import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
-const config: SocketIoConfig = { url: ApiConstants.socketAPI, options: {
-  query: {
-    token: localStorage.getItem('X-Authorization')
-  }
-}};
 // https://www.npmjs.com/package/ngx-moment
 import { MomentModule } from 'ngx-moment';
 // Pagination Component
@@ -22,6 +15,7 @@ import {
   CollapseModule,
   BsDatepickerModule,
 } from 'ngx-bootstrap';
+
 import { NoRecordsFoundComponent } from './components/no-records-found/no-records-found.component';
 import { LoadingComponent } from './components/loading/loading.component';
 // Services
@@ -39,7 +33,6 @@ import { ScrollToBottomDirective } from './directives/scroll-to-bottom.directive
     PaginationModule.forRoot(),
     CollapseModule.forRoot(),
     CustomFormsModule,
-    SocketIoModule.forRoot(config),
     MomentModule.forRoot({
       relativeTimeThresholdOptions: {
         'm': 59
