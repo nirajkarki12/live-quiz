@@ -1,21 +1,25 @@
 import { Controller, Get, HttpException, HttpStatus, Post, Body, Res, Param, Delete, Patch, UploadedFile, UseInterceptors, FileInterceptor } from '@nestjs/common';
 import { QuestionService } from 'src/questions/services/question/question.service';
 import { CreateQuestionDto } from 'src/questions/dto/question/create-question.dto';
-import readXlsxFile from 'read-excel-file/node'
+import { QuestionsetService } from '../../services/questionset/questionset.service';
+import { diskStorage } from 'multer';
 
 @Controller('question')
 export class QuestionController {
 
-    constructor(private questionService:QuestionService) {}
+    constructor(private questionService:QuestionService,private questionsetService:QuestionsetService) {}
 
-    @Get('set')
-    async eachQuestionSet(@Res() res)
+    @Get('set/:id')
+    async eachQuestionSet(@Res() res, @Param('id') id)
     {
         try {
-            let questions = await this.questionService.getQuestionSet();
+            let questions = await this.questionService.getQuestionSet(id);
+            let set = await this.questionsetService.findOneById(id);
             res.status(HttpStatus.OK)
                 .send({
-                    data:questions
+                    success:true,
+                    data:{questions:questions,set:set},
+                    statusCode:HttpStatus.OK
                 })
         } catch (error) {
             throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -30,12 +34,20 @@ export class QuestionController {
             res.status(HttpStatus.OK)
             .send({
                 success: true,
-                data:questions,
                 statusCode: HttpStatus.OK,
+                data:questions
             });
             return res;
         } catch (error) {
             throw new HttpException(error, HttpStatus.AMBIGUOUS);
+        }
+    }
+    @Patch(':id')
+    async updateOne(@Body() body: CreateQuestionDto, @Param('id') id) {
+        try {
+            return await this.questionService.findAndUpdate(id, body);
+        } catch (error) {
+            throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -73,24 +85,53 @@ export class QuestionController {
         }
     }
 
-    @Patch()
-    async updateOne(@Body() body: CreateQuestionDto, @Param('id') id) {
-        try {
-            return await this.questionService.findAndUpdate(id, body);
-        } catch (error) {
-            throw new HttpException(error, HttpStatus.AMBIGUOUS);
-        }
-    }
 
-    @Post('upload')
-    @UseInterceptors(FileInterceptor('file'))
-    async uploadFile(@UploadedFile() file) {
+    @Post('upload/:id')
+    @UseInterceptors(FileInterceptor(
+        'file',
+        {
+            storage: diskStorage({destination: './uploads'})
+        }
+    ))
+    async uploadFile(@UploadedFile() file,@Param('id') id, @Res() res) {
         try {
-            readXlsxFile(file).then((row) =>{
-                console.log(row);
+
+            let self = this;
+            
+            let Excel = require('exceljs');
+            let workbook = new Excel.Workbook();
+
+            workbook.xlsx.readFile(file.path).then(async function(){
+
+                let worksheet = workbook.getWorksheet('Sheet1');
+
+                worksheet.eachRow( async function(row, rowNumber) {
+                    var questionObj  = {
+                        name:row.values[1],
+                        option1:row.values[2],
+                        option2:row.values[3],
+                        option3:row.values[4],
+                        option4:row.values[5],
+                        answer:row.values[6],
+                        level:row.values[7],
+                        questionSetId:id,
+                    }
+
+                    await self.questionService.create(questionObj);
+
+                });
+
             });
+
+            res.status(HttpStatus.OK)
+                .send({
+                    success: true,
+                    message:'Questions imported',
+                    data: [],
+                    statusCode: HttpStatus.OK
+                })
+
         } catch (error) {
-            console.log(error.errmsg);
             throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

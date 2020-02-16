@@ -75,7 +75,7 @@ export class QuestionsetController {
         }
     }
 
-    @Patch()
+    @Patch(':id')
     async updateOne(@Body() body: CreateQuestionSetDto,@Param('id') id)
     {
         try {

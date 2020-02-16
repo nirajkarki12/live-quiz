@@ -27,19 +27,10 @@ export class QuestionService {
     }
 
     async findAndUpdate(id, data: CreateQuestionDto) {
-        return await this.questionModel.finOneAndUpdate(id,data,{new: true});
+        return await this.questionModel.findOneAndUpdate(id,data,{new: true});
     }
 
-    async getQuestionSet() {
-        return await this.questionModel.aggregate([
-            {
-                $lookup:{
-                    from:'questionsets',
-                    localField:'id',
-                    foreignField:'questionSetId',
-                    as:'questionset'
-                }
-            }
-        ]);
+    async getQuestionSet(id) {
+        return await this.questionModel.find({questionSetId:id});
     }
 }

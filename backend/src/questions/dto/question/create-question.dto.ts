@@ -5,4 +5,6 @@ export class CreateQuestionDto {
     readonly option3: string;
     readonly option4: string;
     readonly answer: string;
+    readonly questionSetId:string;
+    readonly level:number;
  }
