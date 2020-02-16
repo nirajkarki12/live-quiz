@@ -9,13 +9,13 @@ import {
 import { UseGuards } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
 import { Socket } from 'socket.io';
-import { WsJwtGuard } from 'src/sockets/guards/ws-jwt.guard';
+import { WsJwtGuard } from '../../sockets/guards/ws-jwt.guard';
 // Interfaces
-import { User } from 'src/users/interfaces/user.interface';
+import { User } from '../../users/interfaces/user.interface';
 import { Room } from '../interfaces/room.interface';
 // Services
 import { SocketService } from '../services/socket/socket.service';
-import { UsersService } from 'src/users/services/users.service';
+import { UsersService } from '../../users/services/users.service';
 
 @WebSocketGateway() 
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {

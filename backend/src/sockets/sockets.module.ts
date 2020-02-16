@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ChatGateway } from './chat/chat.gateway';
-import { UsersModule } from 'src/users/users.module';
+import { UsersModule } from '../users/users.module';
 import { MongooseModule } from '@nestjs/mongoose';
 // Services
 import { SocketService } from './services/socket/socket.service';

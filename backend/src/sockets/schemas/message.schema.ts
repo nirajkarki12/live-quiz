@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import { UserSchema } from 'src/users/schemas/user.schema';
+import { UserSchema } from '../../users/schemas/user.schema';
 
 export const MessageSchema = new mongoose.Schema({
    message: {

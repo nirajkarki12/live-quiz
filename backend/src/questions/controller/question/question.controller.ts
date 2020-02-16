@@ -1,6 +1,6 @@
 import { Controller, Get, HttpException, HttpStatus, Post, Body, Res, Param, Delete, Patch, UploadedFile, UseInterceptors, FileInterceptor } from '@nestjs/common';
-import { QuestionService } from 'src/questions/services/question/question.service';
-import { CreateQuestionDto } from 'src/questions/dto/question/create-question.dto';
+import { QuestionService } from '../../../questions/services/question/question.service';
+import { CreateQuestionDto } from '../../../questions/dto/question/create-question.dto';
 import { QuestionsetService } from '../../services/questionset/questionset.service';
 import { diskStorage } from 'multer';
 

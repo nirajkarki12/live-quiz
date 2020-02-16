@@ -1,8 +1,8 @@
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Question } from 'src/questions/interfaces/question.interface';
-import { CreateQuestionDto } from 'src/questions/dto/question/create-question.dto';
+import { Question } from '../../../questions/interfaces/question.interface';
+import { CreateQuestionDto } from '../../../questions/dto/question/create-question.dto';
 
 @Injectable()
 export class QuestionService {
