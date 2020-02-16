@@ -61,7 +61,7 @@ export const routes: Routes = [
           loadChildren: () => import('./modules/questions/questions.module').then(m => m.QuestionsModule)
         },
         {
-          path: AppRoutes.questions + '/' + AppRoutes.sets,
+          path: AppRoutes.sets,
           loadChildren: () => import('./modules/questions/sets/sets.module').then(m => m.SetsModule)
         },
       ]

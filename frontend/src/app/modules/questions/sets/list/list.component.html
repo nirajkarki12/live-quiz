@@ -26,9 +26,9 @@
                            <td>
                               <a [routerLink]="['/questions/create', set._id]" title="Add Questions"><i class="fa fa-plus fa-lg"></i></a>
                                  &nbsp;
-                              <a [routerLink]="['/questions', set._id]" title="View Questions"><i class="fa fa-list fa-lg"></i></a>
+                              <a [routerLink]="['/questions/list', set._id]" title="View Questions"><i class="fa fa-list fa-lg"></i></a>
                                  &nbsp;
-                              <a [routerLink]="['/questions/sets/edit', set._id]" title="Edit"><i class="fa fa-edit fa-lg"></i></a>
+                              <a [routerLink]="['/sets/edit', set._id]" title="Edit"><i class="fa fa-edit fa-lg"></i></a>
                               &nbsp;
                               <a href="javascript:void(0)" title="Delete" (click)="removeSet(set)"><i class="fa fa-remove fa-lg"></i></a>
                            </td>

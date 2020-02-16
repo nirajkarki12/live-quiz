@@ -1,6 +1,7 @@
 import {Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
+import { navItems } from 'src/app/_nav';
 
 import { Subscription } from 'rxjs';
 
@@ -17,6 +18,7 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   currentYear: string = moment().format('YYYY');
 
   public sidebarMinimized = false;
+  public navItems = navItems;
 
   ownDetail: Profile = new Profile();
   ownDetailSubscription: Subscription;

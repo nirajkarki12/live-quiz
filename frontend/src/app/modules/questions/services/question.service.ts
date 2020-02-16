@@ -23,6 +23,54 @@ export class QuestionService {
      .catch(this.handleError);
   }
 
+  getQuestion(id): Promise<any> {
+    return this.http
+      .get(
+        ApiConstants.API_ENDPOINT +
+        ApiConstants.QUESTION + '/' +
+        id
+      )
+      .toPromise()
+      .then(this.handleSuccess)
+      .catch(this.handleError);
+  }
+
+  fetchQuestionsList(id): Promise<any> {
+    return this.http
+      .get(
+        ApiConstants.API_ENDPOINT +
+        ApiConstants.QUESTION +
+        ApiConstants.SET + '/' +
+        id
+      )
+      .toPromise()
+      .then(this.handleSuccess)
+      .catch(this.handleError);
+  }
+
+  removeQuestion(questionId: string): Promise<any> {
+    return this.http
+      .delete(
+        ApiConstants.API_ENDPOINT +
+        ApiConstants.QUESTION + '/' +
+        questionId
+      )
+      .toPromise()
+      .then(this.handleSuccess)
+      .catch(this.handleError);
+  }
+
+  update(question: Question): Promise<any> {
+    return this.http.patch(
+      ApiConstants.API_ENDPOINT +
+      ApiConstants.QUESTION + '/' + question._id
+      , question,
+      { observe: 'response'} )
+     .toPromise()
+     .then(this.handleSuccess)
+     .catch(this.handleError);
+  }
+
   handleSuccess(response: any): Promise<any> {
     return Promise.resolve(response);
   }

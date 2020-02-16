@@ -11,6 +11,7 @@ export class AppRoutes {
   public static detail = 'detail/:id';
   public static chat = 'chat';
   public static questions = 'questions';
+  public static listWithId = 'list/:id';
   public static sets = 'sets';
   public static message = 'message/:nickname';
   // pages
