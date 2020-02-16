@@ -4,12 +4,28 @@ import { CreateQuestionSetDto } from '../../dto/questionset/create-questionset.d
 import { QuestionsetService } from '../../services/questionset/questionset.service';
 
 @Controller('questionsets')
+// @UseGuards(AuthGuard())
 export class QuestionsetController {
     
     constructor(private questionSetService: QuestionsetService) {}
     
+    @Post('getquestion')
+    async getQuestions(@Res() res, @Param() id) {
+        try {
+            return id;
+            let questions = await this.questionSetService.getQuestions(id);
+            res.status(HttpStatus.OK)
+            .send({
+                success: true,
+                data:questions,
+                statusCode: HttpStatus.OK,
+            });
+        } catch (error) {
+            throw new HttpException(error, HttpStatus.AMBIGUOUS);
+        }
+    }
+
     @Post('create')
-    // @UseGuards(AuthGuard())
     async create(@Body() createQuestionSetDto: CreateQuestionSetDto) {
         try {
             return await this.questionSetService.create(createQuestionSetDto);
@@ -17,6 +33,7 @@ export class QuestionsetController {
             throw new HttpException(error, HttpStatus.AMBIGUOUS);
         }
     }
+
 
     @Get()
     async all(@Res() res) {
@@ -33,7 +50,7 @@ export class QuestionsetController {
         }
     }
 
-    @Delete(':id')
+    @Delete()
     async delete(@Param('id') id) {
         try {
             return await this.questionSetService.delete(id);
@@ -64,7 +81,7 @@ export class QuestionsetController {
         try {
             return await this.questionSetService.findAndUpdate(id, body);
         } catch (error) {
-            
+            throw new HttpException(error, HttpStatus.AMBIGUOUS);
         }
     }
     

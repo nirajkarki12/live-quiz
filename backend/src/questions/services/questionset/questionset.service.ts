@@ -1,4 +1,4 @@
-import { Model,mongoose} from 'mongoose';
+import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { QuestionSet } from 'src/questions/interfaces/questionset.interface';
@@ -25,11 +25,27 @@ export class QuestionsetService {
       }
 
       async findOneById(id): Model<QuestionSet>{
-        return await this.questionSetModel.find({_id: id});
+        return await this.questionSetModel.findOne({_id: id});
       }
 
-      async findAndUpdate(id,data:CreateQuestionSetDto)
+      async findAndUpdate(id, data: CreateQuestionSetDto)
       {
         return await this.questionSetModel.findOneAndUpdate(id,data,{new:true});
       }
+
+      async getQuestions(id)
+      {
+        return await this.questionSetModel.find({id:id}).children;
+        return await this.questionSetModel.aggregate([
+          {
+            $lookup:{
+              from:'questions',
+              localField:'id',
+              foreignField:'questions',
+              as:'questions'
+            }
+          }
+        ]);
+      }
+
 }

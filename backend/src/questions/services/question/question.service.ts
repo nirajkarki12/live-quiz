@@ -17,4 +17,20 @@ export class QuestionService {
     async fetchQuestions(): Model<Question> {
         return await this.questionModel.find();
     }
+
+    async delete(id) {
+        return await this.questionModel.remove({_id: id});
+    }
+
+    async findOneById(id) {
+        return await this.questionModel.findOne({_id: id});
+    }
+
+    async findAndUpdate(id, data: CreateQuestionDto) {
+        return await this.questionModel.findOneAndUpdate(id,data,{new: true});
+    }
+
+    async getQuestionSet(id) {
+        return await this.questionModel.find({questionSetId:id});
+    }
 }

@@ -5,5 +5,6 @@ export interface Question {
     option3: string;
     option4: string;
     answer: string;
+    level: number;
     questionSetId: string;
 }
