@@ -3,7 +3,6 @@ import { FormBuilder, Validators, FormControl } from '@angular/forms';
 import { CustomValidators } from 'ngx-custom-validators';
 
 // Models
-import { Sets } from '../models/sets.model';
 import { Question } from '../models/question.model';
 
 @Injectable({
@@ -15,7 +14,7 @@ export class QuestionFormService {
     private fb: FormBuilder,
   ) { }
 
-  createForm(question: Question, set: Sets) {
+  createForm(question: Question, setId: String) {
     let option1 = new FormControl(question.option1, Validators.required);
     let option2 = new FormControl(question.option2, Validators.required);
     let option3 = new FormControl(question.option3, Validators.required);
@@ -31,7 +30,7 @@ export class QuestionFormService {
         option4: option4,
         answer: answer,
         level: [question.level, [Validators.required, CustomValidators.min(1), CustomValidators.max(15)]],
-        questionSetId: [set._id, [Validators.required]],
+        questionSetId: [setId, [Validators.required]],
       });
   }
 }

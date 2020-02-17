@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable, Inject } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
-import { JwtPayload } from 'src/auth/interfaces/jwt-payload.interface';
+import { JwtPayload } from '../../auth/interfaces/jwt-payload.interface';
 
 @Injectable()
 export class WsJwtGuard implements CanActivate {

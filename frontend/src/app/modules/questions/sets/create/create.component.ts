@@ -39,7 +39,7 @@ export class CreateComponent implements OnInit {
       .create(this.setsForm.value)
       .then(response => {
         this.toastr.showMessage('Questions Set Added Successfully');
-        this.router.navigate([AppRoutes.questions + '/' + AppRoutes.sets]);
+        this.router.navigate([AppRoutes.sets]);
       })
       .catch(errorResponse => {
         console.log(errorResponse);

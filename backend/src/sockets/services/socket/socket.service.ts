@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 // Interfaces
-import { Room } from 'src/sockets/interfaces/room.interface';
-import { User } from 'src/users/interfaces/user.interface';
-import { Message } from 'src/sockets/interfaces/message.interface';
+import { Room } from '../../../sockets/interfaces/room.interface';
+import { User } from '../../../users/interfaces/user.interface';
+import { Message } from '../../../sockets/interfaces/message.interface';
 
 @Injectable()
 export class SocketService {

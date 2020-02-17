@@ -18,6 +18,7 @@ export class ApiConstants {
   public static UPDATE = '/update';
   public static DELETE = '/delete';
   public static QUESTION = '/question';
+  public static SET = '/set';
   public static QUESTIONSETS = '/questionsets';
   public static VERIFY_TOKEN = '/verify-token';
   public static TOKEN = '/token';

@@ -7,6 +7,8 @@ import { UpdateComponent } from './update/update.component';
 import { CreateComponent } from './create/create.component';
 // Resolver
 import { SetsDetailResolverService } from './sets/services/resolver/sets-detail-resolver.service';
+import { QuestionDetailResolverService } from './services/resolver/question-detail-resolver.service';
+import { QuestionDetailsResolverService } from './services/resolver/question-details-resolver.service';
 
 const routes: Routes = [
   {
@@ -16,8 +18,11 @@ const routes: Routes = [
     },
     children: [
       {
-        path: '',
+        path: AppRoutes.listWithId,
         component: ListComponent,
+        resolve: {
+          'data': QuestionDetailsResolverService,
+        },
         data: {
           title: 'Questions List'
         }
@@ -35,6 +40,9 @@ const routes: Routes = [
       {
         path: AppRoutes.edit,
         component: UpdateComponent,
+        resolve: {
+          'question': QuestionDetailResolverService
+        },
         data: {
           title: 'Update Questions'
         }

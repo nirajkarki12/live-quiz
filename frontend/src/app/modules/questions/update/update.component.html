@@ -1,1 +1,73 @@
-<p>update works!</p>
+<div class="animated fadeIn">
+   <div class="col-sm-9">
+      <div class="card">
+         <div class="card-header">
+            Edit a <strong>Question</strong>
+         </div>
+         <div class="card-body">
+            <form [formGroup]="questionForm" (submit)="update()">
+               <div class="row">
+                  <div class="form-group col-sm-12">
+                     <label for="question">Question {{ questionForm.get('level')?.value }}</label>
+                     <input type="text" class="form-control" id="question" placeholder="Question" formControlName="name">
+                     <span *ngIf="questionForm.get('name').errors && (questionForm.get('name').dirty || questionForm.get('name').touched)">
+                        <span class="help-block text-red" *ngIf="questionForm.get('name').errors.required">Question is required</span>
+                        <span class="help-block text-red" *ngIf="questionForm.get('name').errors.minlength">Too short Question</span>
+                        <span class="help-block text-red" *ngIf="questionForm.get('name').errors.maxlength">Too long Question</span>
+                     </span>
+                  </div>
+
+                  <div class="form-group col-sm-6">
+                     <input type="text" class="form-control" placeholder="Option 1" formControlName="option1">
+                     <span *ngIf="questionForm.get('option1').errors && (questionForm.get('option1').dirty || questionForm.get('option1').touched)">
+                        <span class="help-block text-red" *ngIf="questionForm.get('option1').errors.required">Option is required</span>
+                     </span>
+                  </div>
+
+                  <div class="form-group col-sm-6">
+                     <input type="text" class="form-control" placeholder="Option 2" formControlName="option2">
+                     <span *ngIf="questionForm.get('option2').errors && (questionForm.get('option2').dirty || questionForm.get('option2').touched)">
+                        <span class="help-block text-red" *ngIf="questionForm.get('option2').errors.required">Option is required</span>
+                     </span>
+                  </div>
+
+                  <div class="form-group col-sm-6">
+                     <input type="text" class="form-control" placeholder="Option 3" formControlName="option3">
+                     <span *ngIf="questionForm.get('option3').errors && (questionForm.get('option3').dirty || questionForm.get('option3').touched)">
+                        <span class="help-block text-red" *ngIf="questionForm.get('option3').errors.required">Option is required</span>
+                     </span>
+                  </div>
+                  
+                  <div class="form-group col-sm-6">
+                     <input type="text" class="form-control" placeholder="Option 4" formControlName="option4">
+                     <span *ngIf="questionForm.get('option4').errors && (questionForm.get('option4').dirty || questionForm.get('option4').touched)">
+                        <span class="help-block text-red" *ngIf="questionForm.get('option4').errors.required">Option is required</span>
+                     </span>
+                  </div>
+
+                  <div class="form-group col-sm-6">
+                     <input type="text" class="form-control" placeholder="Order Number" formControlName="level">
+                     <span *ngIf="questionForm.get('level').errors && (questionForm.get('level').dirty || questionForm.get('level').touched)">
+                        <span class="help-block text-red" *ngIf="questionForm.get('level').errors.required">Order Number is required</span>
+                        <span class="help-block text-red" *ngIf="questionForm.get('level').errors?.min">Question Order Number should be between 1-15</span>
+                        <span class="help-block text-red" *ngIf="questionForm.get('level').errors?.max">Question Order Number should be between 1-15</span>
+                     </span>
+                  </div>
+
+                  <div class="form-group col-sm-6">
+                     <input type="text" class="form-control" placeholder="Right Option" formControlName="answer">
+                     <span *ngIf="questionForm.get('answer').errors && (questionForm.get('answer').dirty || questionForm.get('answer').touched)">
+                        <span class="help-block text-red" *ngIf="questionForm.get('answer').errors.required">Right Option is required</span>
+                     </span>
+                  </div>
+               </div><!--/.row-->
+               
+               <div class="form-actions">
+                  <button type="submit" class="btn btn-success" [disabled]="buttonClicked || questionForm.invalid">Save changes</button>
+                  <!-- <button class="btn btn-secondary" type="button">Cancel</button> -->
+               </div>
+            </form>
+         </div>
+      </div>
+   </div><!--/.col-->
+</div>

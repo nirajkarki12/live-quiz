@@ -44,7 +44,7 @@ export class UpdateComponent implements OnInit {
       .update(this.setForm.value)
       .then(response => {
         this.toastr.showMessage('Sets updated Successfully');
-        this.router.navigate([AppRoutes.questions + '/' + AppRoutes.sets]);
+        this.router.navigate([AppRoutes.sets]);
       })
       .catch(errorResponse => {
         console.log(errorResponse);
