@@ -1,10 +1,12 @@
 import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 // Services
 import { ValidatorMessageService } from 'src/app/modules/shared/services/validator-message/validator-message.service';
 import { DashboardService } from './services/dashboard.service';
+import { SetsService } from '../questions/sets/services/sets.service';
 // Directives
 import { ScrollToBottomDirective } from '../shared/directives/scroll-to-bottom.directive';
-import { Subscription } from 'rxjs';
+import { Sets } from '../questions/models/sets.model';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,7 +15,7 @@ import { Subscription } from 'rxjs';
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   @ViewChild(ScrollToBottomDirective, {static: false}) scroll: ScrollToBottomDirective;
-
+  sets: Sets;
   messages: Array<any>;
   totalUsers: number;
   message = '';
@@ -25,10 +27,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   constructor(
     private toastr: ValidatorMessageService,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+    private setsService: SetsService
   ) { }
 
   ngOnInit() {
+    this.fetchLists();
     this.dashboardService.getAndSyncPreChat();
     this.preMessageSubscription = this.dashboardService.getPreMessageRxSubject()
       .subscribe(preMessage => {
@@ -51,6 +55,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
       } else {
         this.toastr.showMessage(data.text, 'success');
       }
+    });
+  }
+
+  fetchLists() {
+    this.setsService.list()
+      .then(successResponse => {
+        this.sets = successResponse.body.data;
+    })
+    .catch(errorResponse => {
+      this.toastr.showMessage(errorResponse.error.message, 'error');
     });
   }
 

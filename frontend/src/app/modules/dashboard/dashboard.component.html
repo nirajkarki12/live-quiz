@@ -41,6 +41,29 @@
   </div>
    <!--/.card-->
     <div class="row">
+      <div class="col-md-4">
+        <div class="card">
+
+          <div class="card-header">
+            Questions Set
+          </div>
+          <div class="card-body">
+            <table class="table table-striped">
+              <tbody>
+                <tr *ngFor="let set of sets">
+                  <td>
+                    {{ set.name }}
+                    <br>
+                    <em><small>{{ set.scheduleDate | date:'yyyy-MM-dd' }}</small></em>
+                  </td>
+                  <td><button type="button" class="btn btn-pill btn-block btn-primary">Start</button></td>
+                </tr>
+              </tbody>
+            </table>
+            <hr>
+          </div>
+        </div>
+      </div>
       <div class="col-md-8">
         <div class="card">
           <div id="frame">
@@ -67,20 +90,6 @@
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-4">
-        <div class="card">
-
-          <div class="card-header">
-            Public Chat
-          </div>
-          <div class="card-body">
-            <ul>
-              <li *ngFor="let message of messages">{{ message | json }}</li>
-            </ul>
           </div>
         </div>
       </div>

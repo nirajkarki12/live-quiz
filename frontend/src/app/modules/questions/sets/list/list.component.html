@@ -15,6 +15,7 @@
                            <th style="width: 10px">#</th>
                            <th>Name</th>
                            <th>Schedule On</th>
+                           <th>Status</th>
                            <th>Action</th>
                         </tr>
                      </thead>
@@ -23,6 +24,7 @@
                            <td>{{ index + 1 }}</td>
                            <td>{{ set.name }}</td>
                            <td>{{ set.scheduleDate | date:'yyyy-MM-dd' }}</td>
+                           <td>{{ set.isCompleted ? 'Finished' : 'Pending' }}</td>
                            <td>
                               <a [routerLink]="['/questions/create', set._id]" title="Add Questions"><i class="fa fa-plus fa-lg"></i></a>
                                  &nbsp;
