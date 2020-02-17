@@ -51,7 +51,7 @@ export class QuestionsetService {
       {
          return await this.questionSetModel.find({
            $where : function(){
-             return (this.isCompleted == false && this.scheduleDate >= new Date());
+             return (this.isCompleted == false);
            }
          })
       }
