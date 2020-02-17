@@ -4,9 +4,12 @@ import { Subscription } from 'rxjs';
 import { ValidatorMessageService } from 'src/app/modules/shared/services/validator-message/validator-message.service';
 import { DashboardService } from './services/dashboard.service';
 import { SetsService } from '../questions/sets/services/sets.service';
+import { QuestionService } from '../questions/services/question.service';
 // Directives
 import { ScrollToBottomDirective } from '../shared/directives/scroll-to-bottom.directive';
+// Models
 import { Sets } from '../questions/models/sets.model';
+import { Question } from '../questions/models/question.model';
 
 @Component({
   selector: 'app-dashboard',
@@ -16,9 +19,12 @@ import { Sets } from '../questions/models/sets.model';
 export class DashboardComponent implements OnInit, OnDestroy {
   @ViewChild(ScrollToBottomDirective, {static: false}) scroll: ScrollToBottomDirective;
   sets: Sets;
+  set: Sets;
+  questions: Question[];
   messages: Array<any>;
   totalUsers: number;
   message = '';
+  quizStarted = false;
 
   preMessageSubscription: Subscription;
   messageSubscription: Subscription;
@@ -28,7 +34,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   constructor(
     private toastr: ValidatorMessageService,
     private dashboardService: DashboardService,
-    private setsService: SetsService
+    private setsService: SetsService,
+    private questionService: QuestionService
   ) { }
 
   ngOnInit() {
@@ -71,6 +78,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
   sendMessage() {
     this.dashboardService.sendChat(this.message);
     this.message = '';
+  }
+
+  startQuiz(set: Sets) {
+    this.quizStarted = true;
+    this.questionService.fetchQuestionsList(set._id)
+      .then(successResponse => {
+        this.questions = successResponse.data.questions;
+        this.set = successResponse.data.set;
+        console.log(this.questions);
+    })
+    .catch(errorResponse => {
+      this.quizStarted = false;
+      this.toastr.showMessage(errorResponse.error.message, 'error');
+    });
   }
 
   ngOnDestroy() {

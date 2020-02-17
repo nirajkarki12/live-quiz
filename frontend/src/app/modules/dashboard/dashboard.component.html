@@ -45,21 +45,36 @@
         <div class="card">
 
           <div class="card-header">
-            Questions Set
+            {{ quizStarted ? 'Quiz is in Progress (' + set.name + ' Set)' : 'Questions Set' }}
           </div>
           <div class="card-body">
-            <table class="table table-striped">
-              <tbody>
-                <tr *ngFor="let set of sets">
-                  <td>
-                    {{ set.name }}
-                    <br>
-                    <em><small>{{ set.scheduleDate | date:'yyyy-MM-dd' }}</small></em>
-                  </td>
-                  <td><button type="button" class="btn btn-pill btn-block btn-primary">Start</button></td>
-                </tr>
-              </tbody>
-            </table>
+            <app-loading *ngIf="!sets || !questions || loading"></app-loading>
+            <div *ngIf="questions; then questionsData; else setData"></div>
+            <ng-template #setData>
+              <table class="table table-striped">
+                <tbody>
+                  <tr *ngFor="let set of sets">
+                    <td>
+                      {{ set.name }}
+                      <br>
+                      <em><small>{{ set.scheduleDate | date:'yyyy-MM-dd' }}</small></em>
+                    </td>
+                    <td><button type="button" class="btn btn-pill btn-block btn-primary" (click)="startQuiz(set)">Start</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </ng-template>
+            <ng-template #questionsData>
+              <table class="table table-striped">
+                <tbody>
+                  <tr *ngFor="let question of questions">
+                    <td>{{ question.level }}</td>
+                    <td>{{ question.name }}</td>
+                    <td><button type="button" class="btn btn-pill btn-block btn-primary" (click)="startQuiz(question)">Send</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </ng-template>
             <hr>
           </div>
         </div>
