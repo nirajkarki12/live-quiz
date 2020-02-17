@@ -12,7 +12,6 @@ export class QuestionsetController {
     @Post('getquestion')
     async getQuestions(@Res() res, @Param() id) {
         try {
-            return id;
             let questions = await this.questionSetService.getQuestions(id);
             res.status(HttpStatus.OK)
             .send({
@@ -82,6 +81,16 @@ export class QuestionsetController {
             return await this.questionSetService.findAndUpdate(id, body);
         } catch (error) {
             throw new HttpException(error, HttpStatus.AMBIGUOUS);
+        }
+    }
+
+    @Get('active')
+    async getActiveSet()
+    {
+        try {
+            return await this.questionSetService.getActiveSets();
+        } catch (error) {
+            throw new HttpException(error, HttpStatus.BAD_GATEWAY);
         }
     }
     

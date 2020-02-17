@@ -42,6 +42,7 @@ export class QuestionController {
             throw new HttpException(error, HttpStatus.AMBIGUOUS);
         }
     }
+    
     @Patch(':id')
     async updateOne(@Body() body: CreateQuestionDto, @Param('id') id) {
         try {

@@ -8,13 +8,15 @@ export class WsJwtGuard implements CanActivate {
 
   async canActivate(
     context: ExecutionContext,
-  ) : Promise<boolean> {
+  ) : Promise<boolean>
+  {
       const client = context.switchToWs().getClient();
       const token = client.handshake.query.token;
       const jwtPayload: JwtPayload = <JwtPayload> jwt.decode(token);
       console.log('client', jwtPayload);
       
       if(!jwtPayload) return false;
+      
       if(jwtPayload.isAdmin) return true;
 
       if (!await this.usersService.findOneByEmail(jwtPayload.email)) {
