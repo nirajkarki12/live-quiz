@@ -59,9 +59,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   fetchLists() {
-    this.setsService.list()
+    this.setsService.activeQuestionSets()
       .then(successResponse => {
-        this.sets = successResponse.body.data;
+        this.sets = successResponse.body;
     })
     .catch(errorResponse => {
       this.toastr.showMessage(errorResponse.error.message, 'error');

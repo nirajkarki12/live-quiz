@@ -60,7 +60,7 @@ export class QuestionsetController {
         }
     }
 
-    @Delete()
+    @Delete(':id')
     async delete(@Param('id') id) {
         try {
             return await this.questionSetService.delete(id);
