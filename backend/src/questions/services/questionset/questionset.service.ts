@@ -35,7 +35,6 @@ export class QuestionsetService {
 
       async getQuestions(id)
       {
-        return await this.questionSetModel.find({id:id}).children;
         return await this.questionSetModel.aggregate([
           {
             $lookup:{
@@ -50,7 +49,11 @@ export class QuestionsetService {
 
       async getActiveSets()
       {
-         
+         return await this.questionSetModel.find({
+           $where : function(){
+             return (this.isCompleted == false && this.scheduleDate >= new Date());
+           }
+         })
       }
 
 }
