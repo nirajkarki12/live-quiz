@@ -9,10 +9,20 @@ export class QuestionsetController {
     
     constructor(private questionSetService: QuestionsetService) {}
     
+
+    @Get('active')
+    async getActiveSet()
+    {
+        try {
+            return await this.questionSetService.getActiveSets();
+        } catch (error) {
+            throw new HttpException(error, HttpStatus.BAD_GATEWAY);
+        }
+    }
+
     @Post('getquestion')
     async getQuestions(@Res() res, @Param() id) {
         try {
-            return id;
             let questions = await this.questionSetService.getQuestions(id);
             res.status(HttpStatus.OK)
             .send({
@@ -84,6 +94,8 @@ export class QuestionsetController {
             throw new HttpException(error, HttpStatus.AMBIGUOUS);
         }
     }
+    
+
     
     
 }
