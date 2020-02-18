@@ -23,6 +23,7 @@ import { ValidatorMessageService } from './services/validator-message/validator-
 // API Constants
 import { ApiConstants } from 'src/app/constants/api-constants';
 import { ScrollToBottomDirective } from './directives/scroll-to-bottom.directive';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -43,7 +44,7 @@ import { ScrollToBottomDirective } from './directives/scroll-to-bottom.directive
   declarations: [
     NoRecordsFoundComponent,
     LoadingComponent,
-    ScrollToBottomDirective
+    ScrollToBottomDirective,
   ],
   exports: [
     CommonModule,

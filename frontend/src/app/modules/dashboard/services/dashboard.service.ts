@@ -53,8 +53,17 @@ export class DashboardService {
     this.socket.emit('quizEvent', {'question': question});
   }
 
+  resultRequest(question: Question) {
+    this.socket.emit('result-request', {'question': question});
+  }
+
+
   sendChat(message) {
     this.socket.emit('add-message', message);
+  }
+
+  questionResult(): Observable<Question> {
+    return this.socket.fromEvent('question-result');
   }
 
   receiveChat(): Observable<any[]> {

@@ -41,7 +41,7 @@
   </div>
    <!--/.card-->
     <div class="row">
-      <div class="col-md-4">
+      <div class="{{ quizStarted ? 'col-md-8' : 'col-md-4' }}">
         <div class="card">
 
           <div class="card-header">
@@ -66,11 +66,40 @@
             </ng-template>
             <ng-template #questionsData>
               <table class="table table-striped">
-                <tbody>
-                  <tr *ngFor="let question of questions">
+                <tbody *ngFor="let question of questions">
+                  <tr>
                     <td>{{ question.level }}</td>
                     <td>{{ question.name }}</td>
-                    <td><button type="button" class="btn btn-pill btn-block btn-primary" (click)="sendQuestionsToClient(question)">Send</button></td>
+                    <td>
+                      <div *ngIf="question.waitingAnswer; then waitingAnswer; else sendQuestion"></div>
+                      <ng-template #sendQuestion>
+                        <button class="btn btn-pill btn-block btn-primary" type="button" (click)="sendQuestionsToClient(question)" [disabled]="questionSent || question.disabled || loading">
+                          <span *ngIf="question.disabled">
+                            <i class="fa fa-lg fa-check" aria-hidden="true"></i>
+                          </span>
+                          <span *ngIf="!question.disabled">
+                            Send
+                          </span>
+                        </button>
+                      </ng-template>
+                      {{ question.results | json }}
+                      <ng-template #waitingAnswer>
+                        <button class="btn btn-pill btn-block btn-primary" type="button" disabled>
+                          <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                        </button>
+                      </ng-template>
+                    </td>
+                  </tr>
+                  <tr *ngIf="question.waitingAnswer || question.disabled ">
+                    <td colspan="3">
+                      <ul class="answers">
+                        <li>{{ question.option1 }}</li>
+                        <li>{{ question.option2 }}</li>
+                        <li>{{ question.option3 }}</li>
+                        <li>{{ question.option4 }}</li>
+                        
+                      </ul>
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -79,7 +108,7 @@
           </div>
         </div>
       </div>
-      <div class="col-md-8">
+      <div class="{{ quizStarted ? 'col-md-4' : 'col-md-8'}}">
         <div class="card">
           <div id="frame">
             <div class="content">

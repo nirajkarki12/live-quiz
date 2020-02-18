@@ -213,3 +213,10 @@ body {
  #frame .messages ul{
   padding-left: 0;
 }
+ul.answers {
+  list-style-type: upper-alpha;
+}
+ul.answers li {
+  width: 50%;
+  float: left;
+}
