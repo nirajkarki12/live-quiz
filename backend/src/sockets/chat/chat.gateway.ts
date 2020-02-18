@@ -16,6 +16,8 @@ import { Room } from '../interfaces/room.interface';
 // Services
 import { SocketService } from '../services/socket/socket.service';
 import { UsersService } from '../../users/services/users.service';
+import { QuestionService } from '../../questions/services/question/question.service';
+import { QuizService } from 'src/quiz/services/quiz.service';
 
 @WebSocketGateway() 
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
@@ -26,6 +28,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
   constructor(
     private socketService: SocketService,
     private userService: UsersService,
+    private questionService: QuestionService,
+    private quizService: QuizService
   ){}
 
   async handleConnection(client: Socket) {
@@ -119,8 +123,38 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
     console.log(data);
     const token = client.handshake.query.token;
     const user: User = <User> jwt.decode(token);
+
+    const question = await this.questionService.findOneById(data._id);
+
+    let isCorrect = false;
+
+    if(data.option === question.answer)
+    {
+      isCorrect = true;
+    }
+    
+    await this.quizService.create({
+                  user:user,
+                  question:question,
+                  answer:data.option,
+                  isCorrect:isCorrect
+                })
     // let roomMessage = await this.socketService.addMessage(message, user, this.room.id); 
-    await this.server.to(this.room.name).emit('quiz-answer', {question: data});
+    await this.server.to(this.room.name).emit('quiz-answer', {question: question, isCorrect: isCorrect});
+  }
+
+  // request for result of every question
+  @UseGuards(WsJwtGuard)
+  @SubscribeMessage('result-request')
+  async questionResult(client: Socket, data: any) {
+    console.log('result-request',data);
+    const token = client.handshake.query.token;
+    const user: User = <User> jwt.decode(token);
+
+    const questionResult = await this.quizService.count(data.question);
+    
+    console.log('result',questionResult);
+    await this.server.to(this.room.name).emit('question-result', questionResult);
   }
 
 }
