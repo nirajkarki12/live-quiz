@@ -31,6 +31,10 @@ export class QuestionService {
     }
 
     async getQuestionSet(id) {
-        return await this.questionModel.find({questionSetId:id});
+        return await this.questionModel.find({questionSetId:id}).sort({level: 1});
+    }
+
+    async getQuestionForClient(id) {
+        return await this.questionModel.find({questionSetId:id}).sort({level: 1}).select("_id name option1 option2 option3 option4 level questionSetId");
     }
 }

@@ -49,7 +49,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
       client.emit(this.room.name).emit('pre-messages', messages);
 
       // Send connected Users to all on a public room
-      this.server.to(this.room.name).emit('totalUsers', this.connectedUsers);
+      this.server.to(this.room.name).emit('totalUsers', client.engine.clientsCount);
       // Send this user connected information to others
       client.to(this.room.name).emit('users-changed', {text: userName + ' Joined a public room', event: 'joined' });
 
