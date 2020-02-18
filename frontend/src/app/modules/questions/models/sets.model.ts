@@ -1,6 +1,6 @@
 export class Sets {
    _id: string;
    name: string;
-   scheduleDate: Date;
+   scheduleDate: any;
    isCompleted: Boolean;
 }

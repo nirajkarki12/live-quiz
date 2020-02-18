@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { FormGroup } from '@angular/forms';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { AppRoutes } from 'src/app/constants/app-routes';
+import * as moment from 'moment';
 // Services
 import { ValidatorMessageService } from 'src/app/modules/shared/services/validator-message/validator-message.service';
 import { SetsFormService } from '../services/sets-form.service';
@@ -27,7 +28,7 @@ export class CreateComponent implements OnInit {
     private setsService: SetsService,
     private setsFormService: SetsFormService,
     private toastr: ValidatorMessageService,
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.setsForm = this.setsFormService.createForm(this.sets);
