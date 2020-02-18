@@ -7,4 +7,5 @@ export interface Question {
     answer: string;
     level: number;
     questionSetId: string;
+    results?: any;
 }

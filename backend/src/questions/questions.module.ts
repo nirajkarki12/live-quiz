@@ -14,7 +14,7 @@ import { PassportModule } from '@nestjs/passport';
     MongooseModule.forFeature([{name: 'QuestionSet', schema: QuestionSetSchema},{name: 'Question', schema: QuestionSchema}]),
     PassportModule.register({ defaultStrategy: 'jwt', session: false })
   ],
-  exports: [QuestionsetService],
+  exports: [QuestionsetService,QuestionService],
   providers: [QuestionService, QuestionsetService],
   controllers: [QuestionController, QuestionsetController]
 })

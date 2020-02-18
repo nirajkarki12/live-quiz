@@ -22,7 +22,7 @@ export class QuestionService {
         return await this.questionModel.remove({_id: id});
     }
 
-    async findOneById(id) {
+    async findOneById(id): Model<Question> {
         return await this.questionModel.findOne({_id: id});
     }
 
