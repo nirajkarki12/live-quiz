@@ -84,6 +84,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.quizStarted = true;
     this.questionService.fetchQuestionsList(set._id)
       .then(successResponse => {
+        this.dashboardService.startQuiz(set);
         this.questions = successResponse.data.questions;
         this.set = successResponse.data.set;
         console.log(this.questions);
@@ -92,6 +93,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.quizStarted = false;
       this.toastr.showMessage(errorResponse.error.message, 'error');
     });
+  }
+
+  sendQuestionsToClient(question: Question) {
+    this.quizStarted = true;
+    this.dashboardService.emitQuestionsToCLient(question);
   }
 
   ngOnDestroy() {

@@ -21,6 +21,7 @@ export class ApiConstants {
   public static SET = '/set';
   public static QUESTIONSETS = '/questionsets';
   public static ACTIVE = '/active';
+  public static CLIENT = '/client';
   public static VERIFY_TOKEN = '/verify-token';
   public static TOKEN = '/token';
 }

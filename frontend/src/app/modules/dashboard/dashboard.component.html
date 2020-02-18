@@ -70,7 +70,7 @@
                   <tr *ngFor="let question of questions">
                     <td>{{ question.level }}</td>
                     <td>{{ question.name }}</td>
-                    <td><button type="button" class="btn btn-pill btn-block btn-primary" (click)="startQuiz(question)">Send</button></td>
+                    <td><button type="button" class="btn btn-pill btn-block btn-primary" (click)="sendQuestionsToClient(question)">Send</button></td>
                   </tr>
                 </tbody>
               </table>

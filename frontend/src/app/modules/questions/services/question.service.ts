@@ -40,7 +40,7 @@ export class QuestionService {
       .get(
         ApiConstants.API_ENDPOINT +
         ApiConstants.QUESTION +
-        ApiConstants.SET + '/' +
+        ApiConstants.CLIENT + '/' +
         id
       )
       .toPromise()

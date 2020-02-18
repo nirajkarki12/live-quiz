@@ -99,4 +99,15 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
     await this.server.to(this.room.name).emit('message', roomMessage);
   }
 
+  @UseGuards(WsJwtGuard)
+  @SubscribeMessage('quiz')
+  async quiz(client: Socket, data: any) {
+    console.log(data);
+    const token = client.handshake.query.token;
+    const user: User = <User> jwt.decode(token);
+    // let roomMessage = await this.socketService.addMessage(message, user, this.room.id); 
+
+    await this.server.to(this.room.name).emit('questions', data.question);
+  }
+
 }

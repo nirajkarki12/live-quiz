@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
 import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import { Question } from '../../questions/models/question.model';
+import { Sets } from '../../questions/models/sets.model';
 
 @Injectable({
   providedIn: 'root'
@@ -41,6 +43,14 @@ export class DashboardService {
       this.totalUsers = successResponse;
       this.syncTotalUsers();
     });
+  }
+
+  startQuiz(set: Sets) {
+    this.socket.emit('quiz', set);
+  }
+
+  emitQuestionsToCLient(question: Question) {
+    this.socket.emit('quiz', question);
   }
 
   sendChat(message) {
