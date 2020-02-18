@@ -84,9 +84,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.quizStarted = true;
     this.questionService.fetchQuestionsList(set._id)
       .then(successResponse => {
-        this.dashboardService.startQuiz(set);
         this.questions = successResponse.data.questions;
         this.set = successResponse.data.set;
+        this.dashboardService.startQuiz(this.set);
         console.log(this.questions);
     })
     .catch(errorResponse => {

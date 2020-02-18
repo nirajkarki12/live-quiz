@@ -46,11 +46,11 @@ export class DashboardService {
   }
 
   startQuiz(set: Sets) {
-    this.socket.emit('quiz', set);
+    this.socket.emit('quizEvent', {'set': set});
   }
 
   emitQuestionsToCLient(question: Question) {
-    this.socket.emit('quiz', question);
+    this.socket.emit('quizEvent', {'question': question});
   }
 
   sendChat(message) {
