@@ -12,15 +12,33 @@ export class QuestionController {
     @Get('set/:id')
     async eachQuestionSet(@Res() res, @Param('id') id)
     {
+        let questions = await this.questionService.getQuestionSet(id);
+        let set = await this.questionsetService.findOneById(id);
+        res.status(HttpStatus.OK)
+            .send({
+                success:true,
+                data:{questions:questions,set:set},
+                statusCode:HttpStatus.OK
+            })
+            
         try {
-            let questions = await this.questionService.getQuestionSet(id);
-            let set = await this.questionsetService.findOneById(id);
-            res.status(HttpStatus.OK)
-                .send({
-                    success:true,
-                    data:{questions:questions,set:set},
-                    statusCode:HttpStatus.OK
-                })
+        } catch (error) {
+            throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Get('client/:id')
+    async questionForClient(@Res() res, @Param('id') id)
+    {
+        let questions = await this.questionService.getQuestionForClient(id);
+        let set = await this.questionsetService.findOneById(id);
+        res.status(HttpStatus.OK)
+            .send({
+                success:true,
+                data:{questions:questions,set:set},
+                statusCode:HttpStatus.OK
+            })
+        try {
         } catch (error) {
             throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
