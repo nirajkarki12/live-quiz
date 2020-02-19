@@ -17,12 +17,13 @@ export class QuizService {
 
     async count(question)
     {
-        question.results.option1 = await this.quizModel.count({ question: question.id, answer: question.option1});
-        question.results.option2 = await this.quizModel.count({ question: question.id, answer: question.option2});
-        question.results.option3 = await this.quizModel.count({ question: question.id, answer: question.option3});
-        question.results.option4 = await this.quizModel.count({ question: question.id, answer: question.option4});
-        question.results.answer = question.answer
-        return question;
+        
+        const option1 = await this.quizModel.count({ question: question.id, answer: question.option1});
+        const option2 = await this.quizModel.count({ question: question.id, answer: question.option2});
+        const option3 = await this.quizModel.count({ question: question.id, answer: question.option3});
+        const option4 = await this.quizModel.count({ question: question.id, answer: question.option4});
+        const answer = question.answer
+        return {option1,option2,option3,option4,answer};
        
     }
 
