@@ -59,16 +59,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
 
     this.questionResultSubscription = this.dashboardService.questionResult().subscribe((result: any) => {
-      let question = result.question;
       console.log('q', result);
-      let currentIndex = this.questions.findIndex(x => x._id === question._id);
-      this.questions[currentIndex].results = {
-        option1: result.option1,
-        option2: result.option2,
-        option3: result.option3,
-        option4: result.option4,
-        answer: result.answer,
-      }
+      let question = result;
+      // let currentIndex = this.questions.findIndex(x => x._id === question._id);
+      // this.questions[currentIndex].results = {
+      //   option1: result.option1,
+      //   option2: result.option2,
+      //   option3: result.option3,
+      //   option4: result.option4,
+      //   answer: result.answer,
+      // }
     });
 
     this.usersChangedSubscription = this.dashboardService.usersChanged().subscribe((data: any) => {
@@ -107,7 +107,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.questions = successResponse.data.questions;
         this.set = successResponse.data.set;
         this.dashboardService.startQuiz(this.set);
-        console.log(this.questions);
     })
     .catch(errorResponse => {
       this.loading = false;
@@ -122,7 +121,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.questions[currentIndex].waitingAnswer = true;
     this.questions[currentIndex].questionSent = true;
 
-    console.log(currentIndex);
     question.questionSent = true;
     question.waitingAnswer = true;
     this.dashboardService.emitQuestionsToCLient(question);
