@@ -141,6 +141,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
                 })
     // let roomMessage = await this.socketService.addMessage(message, user, this.room.id); 
     await this.server.to(this.room.name).emit('quiz-answer', {question: question, isCorrect: isCorrect});
+    
   }
 
   // request for result of every question
