@@ -134,8 +134,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
     }
     
     await this.quizService.create({
-                  user:user,
-                  question:question,
+                  user:user.id,
+                  question:question.id,
                   answer:data.option,
                   isCorrect:isCorrect
                 })
@@ -147,6 +147,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
   @UseGuards(WsJwtGuard)
   @SubscribeMessage('result-request')
   async questionResult(client: Socket, data: any) {
+    console.log(data)
     const token = client.handshake.query.token;
     const user: User = <User> jwt.decode(token);
 
