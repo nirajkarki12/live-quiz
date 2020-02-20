@@ -147,7 +147,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
   @UseGuards(WsJwtGuard)
   @SubscribeMessage('result-request')
   async questionResult(client: Socket, data: any) {
-    console.log('result-request',data);
     const token = client.handshake.query.token;
     const user: User = <User> jwt.decode(token);
 

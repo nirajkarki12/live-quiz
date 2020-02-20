@@ -19,17 +19,19 @@ import { Question } from '../questions/models/question.model';
 export class DashboardComponent implements OnInit, OnDestroy {
   @ViewChild(ScrollToBottomDirective, {static: false}) scroll: ScrollToBottomDirective;
   sets: Sets;
-  set: Sets;
+  set: Sets = new Sets();
   questions: Question[];
   messages: Array<any>;
   totalUsers: number;
   message = '';
   quizStarted = false;
+  loading = false;
 
   preMessageSubscription: Subscription;
   messageSubscription: Subscription;
   totalUsersSubscription: Subscription;
   usersChangedSubscription: Subscription;
+  questionResultSubscription: Subscription;
 
   constructor(
     private toastr: ValidatorMessageService,
@@ -56,6 +58,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.messages.push(message);
     });
 
+    this.questionResultSubscription = this.dashboardService.questionResult().subscribe((result: any) => {
+      console.log('q', result);
+      let question = result;
+      // let currentIndex = this.questions.findIndex(x => x._id === question._id);
+      // this.questions[currentIndex].results = {
+      //   option1: result.option1,
+      //   option2: result.option2,
+      //   option3: result.option3,
+      //   option4: result.option4,
+      //   answer: result.answer,
+      // }
+    });
+
     this.usersChangedSubscription = this.dashboardService.usersChanged().subscribe((data: any) => {
       if (data['event'] === 'left') {
         this.toastr.showMessage(data.text, 'error');
@@ -66,11 +81,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   fetchLists() {
+    this.loading = true;
     this.setsService.activeQuestionSets()
       .then(successResponse => {
+        this.loading = false;
         this.sets = successResponse.body;
     })
     .catch(errorResponse => {
+      this.loading = false;
       this.toastr.showMessage(errorResponse.error.message, 'error');
     });
   }
@@ -81,23 +99,40 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   startQuiz(set: Sets) {
+    this.loading = true;
     this.quizStarted = true;
     this.questionService.fetchQuestionsList(set._id)
       .then(successResponse => {
+        this.loading = false;
         this.questions = successResponse.data.questions;
         this.set = successResponse.data.set;
         this.dashboardService.startQuiz(this.set);
-        console.log(this.questions);
     })
     .catch(errorResponse => {
+      this.loading = false;
       this.quizStarted = false;
       this.toastr.showMessage(errorResponse.error.message, 'error');
     });
   }
 
   sendQuestionsToClient(question: Question) {
-    this.quizStarted = true;
+    this.loading = true;
+    let currentIndex = this.questions.findIndex(x => x._id === question._id);
+    this.questions[currentIndex].waitingAnswer = true;
+    this.questions[currentIndex].questionSent = true;
+
+    question.questionSent = true;
+    question.waitingAnswer = true;
     this.dashboardService.emitQuestionsToCLient(question);
+
+    setTimeout(() => {
+      this.dashboardService.resultRequest(question);
+
+      this.questions[currentIndex].waitingAnswer = false;
+      this.questions[currentIndex].disabled = true;
+      this.loading = false;
+      // this.questions[currentIndex].questionSent = false;
+    }, 3000);
   }
 
   ngOnDestroy() {
@@ -115,6 +150,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     if (this.usersChangedSubscription) {
       this.usersChangedSubscription.unsubscribe();
+    }
+
+    if (this.questionResultSubscription) {
+      this.questionResultSubscription.unsubscribe();
     }
   }
 

@@ -8,4 +8,9 @@ export class Question {
    option4: string;
    answer: string;
    level: string;
+   questionSent?: Boolean;
+   waitingAnswer?: Boolean;
+   disabled: Boolean = false;
+   results?: any;
+
 }
