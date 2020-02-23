@@ -53,10 +53,17 @@ export class DashboardService {
     this.socket.emit('quizEvent', {'question': question});
   }
 
+  endQuiz(set: Sets) {
+    this.socket.emit('quizEvent', {'quiz-end': true});
+  }
+
   resultRequest(question: Question) {
     this.socket.emit('result-request', {'question': question});
   }
 
+  viewOnly(): Observable<any[]> {
+    return this.socket.fromEvent('view-only');
+  }
 
   sendChat(message) {
     this.socket.emit('add-message', message);

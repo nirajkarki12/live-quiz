@@ -40,6 +40,19 @@ export class QuestionService {
       .get(
         ApiConstants.API_ENDPOINT +
         ApiConstants.QUESTION +
+        ApiConstants.SET + '/' +
+        id
+      )
+      .toPromise()
+      .then(this.handleSuccess)
+      .catch(this.handleError);
+  }
+
+  fetchQuestionsClient(id): Promise<any> {
+    return this.http
+      .get(
+        ApiConstants.API_ENDPOINT +
+        ApiConstants.QUESTION +
         ApiConstants.CLIENT + '/' +
         id
       )

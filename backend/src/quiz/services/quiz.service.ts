@@ -18,11 +18,9 @@ export class QuizService {
       return await createdQuiz.save();
    }
 
-
-   async count(question) {
-      
-      let dbQuestion = await this.questionModel.findOne(question.id);
-      let res = await this.quizModel.find({question: question._id})
+   async getQuizResults(question) {
+      let dbQuestion = await this.questionModel.findOne({_id: question._id});
+      let res = await this.quizModel.find({question: question._id});
      
       let results = {
          option1: 0,

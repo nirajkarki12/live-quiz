@@ -24,6 +24,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
   @WebSocketServer() server;
   connectedUsers: number = 0;
   room: Room;
+  quizStarted: Boolean = false;
 
   constructor(
     private socketService: SocketService,
@@ -34,8 +35,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
 
   async handleConnection(client: Socket) {
     try {
+      console.log('quiz-started', ((this.quizStarted) ? 'started' : 'ended'));
       const token = client.handshake.query.token;
       const user: User = <User> jwt.decode(token);
+      console.log('socket-id', client.id);
       if (!user) throw new WsException('Can\'t Connect to network');
       const userName: string = user.name;
 
@@ -45,6 +48,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
         this.room = await this.socketService.createRoom('public');
       }
       // await this.socketService.addUsersToRoom(user, this.room.id);
+      
       this.connectedUsers++;
       client.join(this.room.name);
 
@@ -55,7 +59,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
       // Send connected Users to all on a public room
       this.server.to(this.room.name).emit('totalUsers', this.connectedUsers);
       // Send this user connected information to others
-      client.to(this.room.name).emit('users-changed', {text: userName + ' Joined a public room', event: 'joined' });
+      if(this.quizStarted) {
+        this.server.to(client.id).emit('view-only', {viewOnly: true});
+      }
+      client.to(this.room.name).emit('users-changed', {text: userName + ' Joined a public room', event: 'joined'});
 
     } catch (err) {
       console.log(err);
@@ -67,8 +74,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
 
       const token = client.handshake.query.token;
       const user: User = <User> jwt.decode(token);
-      console.log('logged out token', token);
-      console.log('logged out user', user);
 
       const userName: string = user.name;
       if (!user) throw new WsException('Can\'t Connect to network');
@@ -86,7 +91,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
       // Send connected Users to all on a public room
       this.server.to(this.room.name).emit('totalUsers', this.connectedUsers);
       // Send this user disconnected information to others
-      client.to(this.room.name).emit('users-changed', {text: userName + ' left public room', event: 'left'});
+      client.to(this.room.name).emit('users-changed', {text: userName + ' left public room', event: 'left', viewOnly: true});
 
     } catch (err) {
       console.log(err);
@@ -106,55 +111,49 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
   @UseGuards(WsJwtGuard)
   @SubscribeMessage('quizEvent')
   async quizEvent(client: Socket, data: any) {
-    console.log(data);
     const token = client.handshake.query.token;
     const user: User = <User> jwt.decode(token);
-    // let roomMessage = await this.socketService.addMessage(message, user, this.room.id); 
+
     if(data.set) {
+      this.quizStarted = true;
       await this.server.to(this.room.name).emit('quiz-started', {currentTime: new Date()});
     }else if(data.question) {
       await this.server.to(this.room.name).emit('quiz-question', {question: data.question});
+    }else{
+      this.quizStarted = false;
     }
   }
 
   @UseGuards(WsJwtGuard)
   @SubscribeMessage('quiz-option')
   async quizAnswer(client: Socket, data: any) {
-    console.log('data received',data);
     const token = client.handshake.query.token;
     const user: User = <User> jwt.decode(token);
 
     const question = await this.questionService.findOneById(data._id);
-
-    console.log('question ',question)
-
     let isCorrect = false;
 
-    if(data.option === question.answer)
+    if (data.option === question.answer)
     {
       isCorrect = true;
+    } else{
+      this.server.to(client.id).emit('view-only', {viewOnly: true});
     }
     
     await this.quizService.create({
-                  user:user.id,
+                  user:user.userId,
                   question:question.id,
                   answer:data.option,
                   isCorrect:isCorrect
                 });
-    // let roomMessage = await this.socketService.addMessage(message, user, this.room.id); 
-    await this.server.to(this.room.name).emit('quiz-answer', {question: question, isCorrect: isCorrect});
-
   }
 
   // request for result of every question
   @UseGuards(WsJwtGuard)
   @SubscribeMessage('result-request')
   async questionResult(client: Socket, data: any) {
-    const token = client.handshake.query.token;
-    const user: User = <User> jwt.decode(token);
+    const questionResult = await this.quizService.getQuizResults(data.question);
 
-    const questionResult = await this.quizService.count(data.question);
-    
     await this.server.to(this.room.name).emit('question-result', questionResult);
   }
 

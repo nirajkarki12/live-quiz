@@ -214,9 +214,32 @@ body {
   padding-left: 0;
 }
 ul.answers {
+  padding: 0;
   list-style-type: upper-alpha;
+  list-style-position: inside;
 }
 ul.answers li {
-  width: 50%;
+  width: 49%;
   float: left;
+  margin: 2px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 6px 5px;
+  border-radius: 7px;
+  color:#353434;
+}
+.answers .green {
+  background: green;
+  color: #FFF;
+}
+.answers .default {
+  background: #192b4e;
+  color: #FFF;
+}
+.table button.btn{
+  width: 50%;
+  float: right;
+}
+.table .level{
+  width: 1%;
 }

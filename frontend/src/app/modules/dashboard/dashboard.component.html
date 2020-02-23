@@ -46,9 +46,12 @@
 
           <div class="card-header">
             {{ quizStarted ? 'Quiz is in Progress (' + set.name + ' Set)' : 'Questions Set' }}
+            <div class="pull-right" *ngIf="quizStarted">
+              <button type="button" class="btn btn-pill btn-block btn-primary" (click)="endQuiz()">End Quiz</button>
+            </div>
           </div>
           <div class="card-body">
-            <app-loading *ngIf="!sets || !questions || loading"></app-loading>
+            <app-loading *ngIf="!sets || loading"></app-loading>
             <div *ngIf="questions; then questionsData; else setData"></div>
             <ng-template #setData>
               <table class="table table-striped">
@@ -68,8 +71,8 @@
               <table class="table table-striped">
                 <tbody *ngFor="let question of questions">
                   <tr>
-                    <td>{{ question.level }}</td>
-                    <td>{{ question.name }}</td>
+                    <td class="level">{{ question.level }}</td>
+                    <td class="question">{{ question.name }}</td>
                     <td>
                       <div *ngIf="question.waitingAnswer; then waitingAnswer; else sendQuestion"></div>
                       <ng-template #sendQuestion>
@@ -77,12 +80,11 @@
                           <span *ngIf="question.disabled">
                             <i class="fa fa-lg fa-check" aria-hidden="true"></i>
                           </span>
-                          <span *ngIf="!question.disabled">
+                          <span class="send-button" *ngIf="!question.disabled">
                             Send
                           </span>
                         </button>
                       </ng-template>
-                      {{ question.results | json }}
                       <ng-template #waitingAnswer>
                         <button class="btn btn-pill btn-block btn-primary" type="button" disabled>
                           <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
@@ -93,11 +95,38 @@
                   <tr *ngIf="question.waitingAnswer || question.disabled ">
                     <td colspan="3">
                       <ul class="answers">
-                        <li>{{ question.option1 }}</li>
-                        <li>{{ question.option2 }}</li>
-                        <li>{{ question.option3 }}</li>
-                        <li>{{ question.option4 }}</li>
-                        
+                        <li [ngClass]="[(question.option1 === question.results?.answer) ? 'green' : 'default']">
+                          {{ question.option1 }} 
+                          <span *ngIf="question.results">
+                            <span class="pull-right">
+                              {{ question.results?.option1 }}
+                            </span>
+                          </span>
+                        </li>
+                        <li [ngClass]="[(question.option2 === question.results?.answer) ? 'green' : 'default']">
+                          {{ question.option2 }} 
+                          <span *ngIf="question.results">
+                            <span class="pull-right">
+                              {{ question.results?.option2}}
+                            </span>
+                          </span>
+                        </li>
+                        <li [ngClass]="[(question.option3 === question.results?.answer) ? 'green' : 'default']">
+                          {{ question.option3 }}
+                          <span *ngIf="question.results">
+                            <span class="pull-right">
+                              {{ question.results?.option3}}
+                            </span>
+                          </span>
+                        </li>
+                        <li [ngClass]="[(question.option4 === question.results?.answer) ? 'green' : 'default']">
+                          {{ question.option4 }}
+                          <span *ngIf="question.results">
+                            <span class="pull-right">
+                              {{ question.results?.option4}}
+                            </span>
+                          </span>
+                          </li>
                       </ul>
                     </td>
                   </tr>

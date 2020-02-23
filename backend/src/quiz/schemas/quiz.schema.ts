@@ -3,8 +3,8 @@ import * as mongoose from 'mongoose';
 export const QuizSchema = new mongoose.Schema({
 
     user:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref:'UserSchema'
+        type: String,
+        required: true,
     },
     
     question:{

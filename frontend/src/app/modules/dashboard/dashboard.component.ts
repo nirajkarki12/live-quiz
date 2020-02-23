@@ -54,14 +54,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
           this.totalUsers = total;
     });
 
+    this.messageSubscription = this.dashboardService.viewOnly().subscribe((data: any) => {
+      console.log(data);
+    });
+
     this.messageSubscription = this.dashboardService.receiveChat().subscribe((message: any) => {
       this.messages.push(message);
     });
 
-    this.questionResultSubscription = this.dashboardService.questionResult().subscribe((result: any) => {
-      let currentIndex = this.questions.findIndex(x => x._id === result._id);
-      this.questions[currentIndex] = result
-      console.log('q', this.questions);
+    this.questionResultSubscription = this.dashboardService.questionResult().subscribe((data: any) => {
+      let currentIndex = this.questions.findIndex(x => x._id === data._id);
+      this.questions[currentIndex].results = data.results
     });
 
     this.usersChangedSubscription = this.dashboardService.usersChanged().subscribe((data: any) => {
@@ -94,7 +97,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   startQuiz(set: Sets) {
     this.loading = true;
     this.quizStarted = true;
-    this.questionService.fetchQuestionsList(set._id)
+    this.questionService.fetchQuestionsClient(set._id)
       .then(successResponse => {
         this.loading = false;
         this.questions = successResponse.data.questions;
@@ -108,9 +111,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
 
+  endQuiz() {
+    this.dashboardService.endQuiz(this.set);
+    this.quizStarted = false;
+    this.questions = null;
+    this.fetchLists();
+  }
+
   sendQuestionsToClient(question: Question) {
     this.loading = true;
+
     let currentIndex = this.questions.findIndex(x => x._id === question._id);
+
     this.questions[currentIndex].waitingAnswer = true;
     this.questions[currentIndex].questionSent = true;
 
@@ -125,7 +137,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.questions[currentIndex].disabled = true;
       this.loading = false;
       // this.questions[currentIndex].questionSent = false;
-    }, 3000);
+    }, 10000);
   }
 
   ngOnDestroy() {
