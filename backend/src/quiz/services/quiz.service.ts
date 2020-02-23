@@ -3,7 +3,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Quiz } from '../../quiz/interfaces/quiz.interface';
 import { CreateQuizDto } from '../../quiz/dto/quiz.dto';
-import { QuestionsModule } from '../../questions/questions.module';
 import { Question } from '../../questions/interfaces/question.interface';
 
 @Injectable()
@@ -22,26 +21,28 @@ export class QuizService {
 
    async count(question) {
       
-      let res = await this.quizModel.aggregate([
-            { 
-                $proejct : {
-                    "question" : question._id
-                },
+      question = await this.questionModel.find(question._id);
 
-                $lookup : {
-                    from:'questions',
-                    localField:'id',
-                    foreignField:'question',
-                    as:'question'
-                },
+      let res = await this.quizModel.find({question: question._id})
+      
+      // aggregate([
+      //       { 
+      //           $proejct : {
+      //               "question" : question._id
+      //           },
 
-                "$unwind": {
-                    "path": "$question"
-                }
-            }
-        ]);
+      //           $lookup : {
+      //               from:'questions',
+      //               localField:'id',
+      //               foreignField:'question',
+      //               as:'question'
+      //           },
 
-    return res;
+      //           "$unwind": {
+      //               "path": "$question"
+      //           }
+      //       }
+      //   ]);
 
       let results = {
          option1: 0,
@@ -52,13 +53,13 @@ export class QuizService {
       };
 
       res.forEach((x) => {
-         if(x.answer === "1") {
+         if(x.answer === question.oprion1) {
             results.option1++;
-         }else if (x.answer === "2") {
+         }else if (x.answer === question.option2) {
             results.option2++;
-         }else if (x.answer === "3") {
+         }else if (x.answer === question.option3) {
             results.option3++;
-         }else if (x.answer === "4") {
+         }else if (x.answer === question.option4) {
             results.option4++;
          }
       });

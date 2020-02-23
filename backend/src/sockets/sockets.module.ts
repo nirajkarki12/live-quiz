@@ -18,7 +18,7 @@ import { QuizModule } from 'src/quiz/quiz.module';
     ]),
     QuestionsModule,
     UsersModule,
-    QuizModule
+    QuizModule  
   ],
   providers: [
     ChatGateway,

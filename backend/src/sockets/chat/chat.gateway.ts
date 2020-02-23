@@ -120,11 +120,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
   @UseGuards(WsJwtGuard)
   @SubscribeMessage('quiz-option')
   async quizAnswer(client: Socket, data: any) {
-    console.log(data);
+    console.log('data received',data);
     const token = client.handshake.query.token;
     const user: User = <User> jwt.decode(token);
 
     const question = await this.questionService.findOneById(data._id);
+
+    console.log('question ',question)
 
     let isCorrect = false;
 
@@ -138,10 +140,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
                   question:question.id,
                   answer:data.option,
                   isCorrect:isCorrect
-                })
+                });
     // let roomMessage = await this.socketService.addMessage(message, user, this.room.id); 
     await this.server.to(this.room.name).emit('quiz-answer', {question: question, isCorrect: isCorrect});
-    
+
   }
 
   // request for result of every question
