@@ -59,16 +59,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
 
     this.questionResultSubscription = this.dashboardService.questionResult().subscribe((result: any) => {
-      console.log('q', result);
-      let question = result;
-      // let currentIndex = this.questions.findIndex(x => x._id === question._id);
-      // this.questions[currentIndex].results = {
-      //   option1: result.option1,
-      //   option2: result.option2,
-      //   option3: result.option3,
-      //   option4: result.option4,
-      //   answer: result.answer,
-      // }
+      let currentIndex = this.questions.findIndex(x => x._id === result._id);
+      this.questions[currentIndex] = result
+      console.log('q', this.questions);
     });
 
     this.usersChangedSubscription = this.dashboardService.usersChanged().subscribe((data: any) => {

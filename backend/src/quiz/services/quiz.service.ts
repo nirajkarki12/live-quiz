@@ -21,45 +21,25 @@ export class QuizService {
 
    async count(question) {
       
-      question = await this.questionModel.find(question._id);
-
+      let dbQuestion = await this.questionModel.findOne(question.id);
       let res = await this.quizModel.find({question: question._id})
-      
-      // aggregate([
-      //       { 
-      //           $proejct : {
-      //               "question" : question._id
-      //           },
-
-      //           $lookup : {
-      //               from:'questions',
-      //               localField:'id',
-      //               foreignField:'question',
-      //               as:'question'
-      //           },
-
-      //           "$unwind": {
-      //               "path": "$question"
-      //           }
-      //       }
-      //   ]);
-
+     
       let results = {
          option1: 0,
          option2: 0,
          option3: 0,
          option4: 0,
-         answer: null
+         answer: dbQuestion.answer
       };
 
       res.forEach((x) => {
-         if(x.answer === question.oprion1) {
+         if(x.answer === dbQuestion.option1) {
             results.option1++;
-         }else if (x.answer === question.option2) {
+         }else if (x.answer === dbQuestion.option2) {
             results.option2++;
-         }else if (x.answer === question.option3) {
+         }else if (x.answer === dbQuestion.option3) {
             results.option3++;
-         }else if (x.answer === question.option4) {
+         }else if (x.answer === dbQuestion.option4) {
             results.option4++;
          }
       });

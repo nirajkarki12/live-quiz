@@ -150,13 +150,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
   @UseGuards(WsJwtGuard)
   @SubscribeMessage('result-request')
   async questionResult(client: Socket, data: any) {
-    console.log(data)
     const token = client.handshake.query.token;
     const user: User = <User> jwt.decode(token);
 
     const questionResult = await this.quizService.count(data.question);
     
-    console.log('result',questionResult);
     await this.server.to(this.room.name).emit('question-result', questionResult);
   }
 
