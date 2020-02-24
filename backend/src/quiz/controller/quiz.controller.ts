@@ -10,7 +10,7 @@ export class QuizController {
     async count(@Body() body)
     {
         const question = await this.questionService.findOneById(body.id);
-        return await this.quizService.count(question);
+        return await this.quizService.getQuizResults(question);
     }
     
     @Post()

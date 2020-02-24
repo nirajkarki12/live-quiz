@@ -35,10 +35,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
 
   async handleConnection(client: Socket) {
     try {
-      console.log('quiz-started', ((this.quizStarted) ? 'started' : 'ended'));
       const token = client.handshake.query.token;
       const user: User = <User> jwt.decode(token);
-      console.log('socket-id', client.id);
       if (!user) throw new WsException('Can\'t Connect to network');
       const userName: string = user.name;
 
@@ -59,9 +57,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
       // Send connected Users to all on a public room
       this.server.to(this.room.name).emit('totalUsers', this.connectedUsers);
       // Send this user connected information to others
-      if(this.quizStarted) {
-        this.server.to(client.id).emit('view-only', {viewOnly: true});
-      }
+      // if(this.quizStarted) {
+      //   this.server.to(client.id).emit('view-only', {viewOnly: true});
+      // }
       client.to(this.room.name).emit('users-changed', {text: userName + ' Joined a public room', event: 'joined'});
 
     } catch (err) {
@@ -115,7 +113,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
     const user: User = <User> jwt.decode(token);
 
     if(data.set) {
-      this.quizStarted = true;
+      // this.quizStarted = true;
       await this.server.to(this.room.name).emit('quiz-started', {currentTime: new Date()});
     }else if(data.question) {
       await this.server.to(this.room.name).emit('quiz-question', {question: data.question});

@@ -22,7 +22,7 @@
                      </thead>
                      <tbody>
                         <tr *ngFor="let question of questions; let index = index">
-                           <td>{{ index + 1 }}</td>
+                           <td>{{ question.level }}</td>
                            <td>{{ question.name }}</td>
                            <td>{{ question.option1 + ', ' + question.option2 + ', ' + question.option3 + ', ' + question.option4 }}</td>
                            <td>{{ question.answer }}</td>

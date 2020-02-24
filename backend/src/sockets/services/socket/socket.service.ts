@@ -30,7 +30,7 @@ export class SocketService {
    }
 
    async addUsersToRoom(user: User, roomId: string) {
-      return await this.roomModel.findOneAndUpdate(roomId, {
+      return await this.roomModel.findOneAndUpdate({_id: roomId}, {
          $push: {
             users: user
          }
@@ -38,7 +38,7 @@ export class SocketService {
    }
 
    async removeUsersFromRoom(user: User, roomId: string) {
-      return await this.roomModel.findOneAndUpdate(roomId, {
+      return await this.roomModel.findOneAndUpdate({_id: roomId}, {
          $pull: {
             users: {
                email: user.email

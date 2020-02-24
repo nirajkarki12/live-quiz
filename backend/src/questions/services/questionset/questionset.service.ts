@@ -30,7 +30,7 @@ export class QuestionsetService {
 
       async findAndUpdate(id, data: CreateQuestionSetDto)
       {
-        return await this.questionSetModel.findOneAndUpdate(id,data,{new:true});
+        return await this.questionSetModel.findOneAndUpdate({_id: id},data,{new:true});
       }
 
       async getQuestions(id)
