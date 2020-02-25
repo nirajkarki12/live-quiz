@@ -29,7 +29,7 @@ export class QuestionFormService {
         option3: option3,
         option4: option4,
         answer: answer,
-        level: [question.level, [Validators.required, CustomValidators.min(1), CustomValidators.max(15)]],
+        level: [question.level, [Validators.required]],
         questionSetId: [setId, [Validators.required]],
       });
   }

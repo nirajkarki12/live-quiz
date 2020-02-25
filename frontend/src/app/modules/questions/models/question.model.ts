@@ -7,7 +7,7 @@ export class Question {
    option3: string;
    option4: string;
    answer: string;
-   level: string;
+   level: number = 1;
    questionSent?: Boolean;
    waitingAnswer?: Boolean;
    disabled: Boolean = false;

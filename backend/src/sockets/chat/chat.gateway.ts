@@ -80,14 +80,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
 
       // await this.socketService.removeUsersFromRoom(user, this.room.id);
       this.connectedUsers--;
-      // const userPos = this.connectedUsers.indexOf(user);
-
-      // if (userPos > -1) {
-      //   this.connectedUsers = [
-      //     ...this.connectedUsers.slice(0, userPos),
-      //     ...this.connectedUsers.slice(userPos + 1)
-      //   ];
-      // }
       // Send connected Users to all on a public room
       this.server.to(this.room.name).emit('totalUsers', this.connectedUsers);
       // Send this user disconnected information to others
@@ -163,11 +155,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
   // Subscribe through client if user failed to answer the question on a given period of time
   @UseGuards(WsJwtGuard)
   @SubscribeMessage('quiz-timeout')
-  async quizTimeOut(client: Socket, data: Question) {
+  async quizTimeOut(client: Socket, questionId: string) {
     const token = client.handshake.query.token;
     const user: User = <User> jwt.decode(token);
 
-    let question = await this.questionService.findOneById(data.id);
+    let question = await this.questionService.findOneById(questionId);
     if(!question) throw new WsException('Question not found');
 
     await this.server.to(client.id).emit('view-only', {viewOnly: true}); // User mode changed to View only

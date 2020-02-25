@@ -49,7 +49,7 @@ export class AuthService {
       };
 
       return {
-         expiresIn: 3600,
+         expiresIn: '365d',
          token: this.jwtService.sign(jwtData),
          data: jwtData,
       };

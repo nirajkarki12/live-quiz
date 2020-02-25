@@ -18,46 +18,87 @@
                   </div>
 
                   <div class="form-group col-sm-6">
-                     <input type="text" class="form-control" placeholder="Option 1" formControlName="option1">
-                     <span *ngIf="questionForm.get('option1').errors && (questionForm.get('option1').dirty || questionForm.get('option1').touched)">
-                        <span class="help-block text-red" *ngIf="questionForm.get('option1').errors.required">Option is required</span>
-                     </span>
+                     <label for="option1">Option 1</label>
+                     <div class="input-group">
+                        <div class="input-group-prepend">
+                           <div class="input-group-text">
+                              <input type="radio" id="option1" formControlName="answer" value="{{ questionForm.get('option1')?.value }}">
+                           </div>
+                        </div>
+                        <input class="form-control" type="text" placeholder="Option 1" formControlName="option1">
+                        
+                        <span *ngIf="questionForm.get('option1').errors && (questionForm.get('option1').dirty || questionForm.get('option1').touched)">
+                           <span class="help-block text-red" *ngIf="questionForm.get('option1').errors.required">Option is required</span>
+                        </span>
+                     </div>
                   </div>
 
                   <div class="form-group col-sm-6">
-                     <input type="text" class="form-control" placeholder="Option 2" formControlName="option2">
-                     <span *ngIf="questionForm.get('option2').errors && (questionForm.get('option2').dirty || questionForm.get('option2').touched)">
-                        <span class="help-block text-red" *ngIf="questionForm.get('option2').errors.required">Option is required</span>
-                     </span>
+                     <label for="option2">Option 2</label>
+                     <div class="input-group">
+                        <div class="input-group-prepend">
+                           <div class="input-group-text">
+                              <input type="radio" id="option2" formControlName="answer" value="{{ questionForm.get('option2')?.value }}">
+                           </div>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Option 2" formControlName="option2">
+                        <span *ngIf="questionForm.get('option2').errors && (questionForm.get('option2').dirty || questionForm.get('option2').touched)">
+                           <span class="help-block text-red" *ngIf="questionForm.get('option2').errors.required">Option is required</span>
+                        </span>
+                     </div>
                   </div>
 
                   <div class="form-group col-sm-6">
-                     <input type="text" class="form-control" placeholder="Option 3" formControlName="option3">
-                     <span *ngIf="questionForm.get('option3').errors && (questionForm.get('option3').dirty || questionForm.get('option3').touched)">
-                        <span class="help-block text-red" *ngIf="questionForm.get('option3').errors.required">Option is required</span>
-                     </span>
+                     <label for="option3">Option 3</label>
+                     <div class="input-group">
+                        <div class="input-group-prepend">
+                           <div class="input-group-text">
+                              <input type="radio" id="option3" formControlName="answer" value="{{ questionForm.get('option3')?.value }}">
+                           </div>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Option 3" formControlName="option3">
+                        <span *ngIf="questionForm.get('option3').errors && (questionForm.get('option3').dirty || questionForm.get('option3').touched)">
+                           <span class="help-block text-red" *ngIf="questionForm.get('option3').errors.required">Option is required</span>
+                        </span>
+                     </div>
                   </div>
                   
                   <div class="form-group col-sm-6">
-                     <input type="text" class="form-control" placeholder="Option 4" formControlName="option4">
-                     <span *ngIf="questionForm.get('option4').errors && (questionForm.get('option4').dirty || questionForm.get('option4').touched)">
-                        <span class="help-block text-red" *ngIf="questionForm.get('option4').errors.required">Option is required</span>
-                     </span>
+                     <label for="option4">Option 4</label>
+                     <div class="input-group">
+                        <div class="input-group-prepend">
+                           <div class="input-group-text">
+                              <input type="radio" id="option4" formControlName="answer" value="{{ questionForm.get('option4')?.value }}">
+                           </div>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Option 4" formControlName="option4">
+                        <span *ngIf="questionForm.get('option4').errors && (questionForm.get('option4').dirty || questionForm.get('option4').touched)">
+                           <span class="help-block text-red" *ngIf="questionForm.get('option4').errors.required">Option is required</span>
+                        </span>
+                     </div>
                   </div>
 
                   <div class="form-group col-sm-6">
-                     <input type="text" class="form-control" placeholder="Order Number" formControlName="level">
+                     <label for="level">Level</label>
+                     <select class="form-control" id="level" formControlName="level">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                        <option>6</option>
+                        <option>7</option>
+                        <option>8</option>
+                        <option>9</option>
+                        <option>10</option>
+                        <option>11</option>
+                        <option>12</option>
+                        <option>13</option>
+                        <option>14</option>
+                        <option>15</option>
+                     </select>
                      <span *ngIf="questionForm.get('level').errors && (questionForm.get('level').dirty || questionForm.get('level').touched)">
-                        <span class="help-block text-red" *ngIf="questionForm.get('level').errors.required">Order Number is required</span>
-                        <span class="help-block text-red" *ngIf="questionForm.get('level').errors?.min">Question Order Number should be between 1-15</span>
-                        <span class="help-block text-red" *ngIf="questionForm.get('level').errors?.max">Question Order Number should be between 1-15</span>
-                     </span>
-                  </div>
-
-                  <div class="form-group col-sm-6">
-                     <input type="text" class="form-control" placeholder="Right Option" formControlName="answer">
-                     <span *ngIf="questionForm.get('answer').errors && (questionForm.get('answer').dirty || questionForm.get('answer').touched)">
-                        <span class="help-block text-red" *ngIf="questionForm.get('answer').errors.required">Right Option is required</span>
+                        <span class="help-block text-red" *ngIf="questionForm.get('level').errors.required">Level is required</span>
                      </span>
                   </div>
                </div><!--/.row-->
