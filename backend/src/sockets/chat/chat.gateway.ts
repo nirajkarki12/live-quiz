@@ -13,6 +13,8 @@ import { WsJwtGuard } from '../../sockets/guards/ws-jwt.guard';
 // Interfaces
 import { User } from '../../users/interfaces/user.interface';
 import { Room } from '../interfaces/room.interface';
+import { Question } from '../../questions/interfaces/question.interface';
+
 // Services
 import { SocketService } from '../services/socket/socket.service';
 import { UsersService } from '../../users/services/users.service';
@@ -96,6 +98,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
     }
   }
 
+  // Sends chat messages
   @UseGuards(WsJwtGuard)
   @SubscribeMessage('add-message')
   async addMessage(client: Socket, message: string) {
@@ -106,6 +109,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
     await this.server.to(this.room.name).emit('message', roomMessage);
   }
 
+  // Subscribe through backend for starting and sending questions
   @UseGuards(WsJwtGuard)
   @SubscribeMessage('quizEvent')
   async quizEvent(client: Socket, data: any) {
@@ -114,14 +118,15 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
 
     if(data.set) {
       // this.quizStarted = true;
-      await this.server.to(this.room.name).emit('quiz-started', {currentTime: new Date()});
+      await this.server.to(this.room.name).emit('quiz-started', {currentTime: new Date()}); // Quiz started
     }else if(data.question) {
-      await this.server.to(this.room.name).emit('quiz-question', {question: data.question});
+      await this.server.to(this.room.name).emit('quiz-question', {question: data.question}); // Sends Questions
     }else{
       this.quizStarted = false;
     }
   }
 
+  // Subscribe through client when user inputs given option
   @UseGuards(WsJwtGuard)
   @SubscribeMessage('quiz-option')
   async quizAnswer(client: Socket, data: any) {
@@ -129,21 +134,20 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
     const user: User = <User> jwt.decode(token);
 
     const question = await this.questionService.findOneById(data._id);
+    
     let isCorrect = false;
 
-    if (data.option === question.answer)
-    {
-      isCorrect = true;
-    } else{
-      this.server.to(client.id).emit('view-only', {viewOnly: true});
-    }
-    
+    if (data.option === question.answer) isCorrect = true;
+
+    // Adding log of quiz
     await this.quizService.create({
-                  user:user.userId,
-                  question:question.id,
-                  answer:data.option,
-                  isCorrect:isCorrect
-                });
+        user:user.userId,
+        question:question.id,
+        answer:data.option,
+        isCorrect:isCorrect
+    });
+
+    if(!isCorrect) await this.server.to(client.id).emit('view-only', {viewOnly: true}); // User mode changed to View only
   }
 
   // request for result of every question
@@ -153,6 +157,26 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
     const questionResult = await this.quizService.getQuizResults(data.question);
 
     await this.server.to(this.room.name).emit('question-result', questionResult);
+  }
+
+  // timeout event
+  // Subscribe through client if user failed to answer the question on a given period of time
+  @UseGuards(WsJwtGuard)
+  @SubscribeMessage('quiz-timeout')
+  async quizTimeOut(client: Socket, data: Question) {
+    const token = client.handshake.query.token;
+    const user: User = <User> jwt.decode(token);
+
+    let question = await this.questionService.findOneById(data.id);
+    if(!question) throw new WsException('Question not found');
+
+    await this.server.to(client.id).emit('view-only', {viewOnly: true}); // User mode changed to View only
+    // Adding log of quiz
+    await this.quizService.create({
+        user:user.userId,
+        question:question.id,
+        isTimeOut: true
+    });
   }
 
 }
