@@ -14,7 +14,7 @@ import { WsJwtGuard } from '../../sockets/guards/ws-jwt.guard';
 import { User } from '../../users/interfaces/user.interface';
 import { Room } from '../interfaces/room.interface';
 import { Question } from '../../questions/interfaces/question.interface';
-
+import { QuestionSet } from '../../questions/interfaces/questionset.interface';
 // Services
 import { SocketService } from '../services/socket/socket.service';
 import { UsersService } from '../../users/services/users.service';
@@ -112,7 +112,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
       // this.quizStarted = true;
       await this.server.to(this.room.name).emit('quiz-started', {currentTime: new Date()}); // Quiz started
     }else if(data.question) {
-      await this.server.to(this.room.name).emit('quiz-question', {question: data.question}); // Sends Questions
+      await this.server.to(this.room.name).emit('quiz-question', {question: data.question, timer: 10}); // Sends Questions
     }else{
       this.quizStarted = false;
     }
@@ -142,13 +142,22 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
     if(!isCorrect) await this.server.to(client.id).emit('view-only', {viewOnly: true}); // User mode changed to View only
   }
 
-  // request for result of every question
+  // request for result of every question from backend
   @UseGuards(WsJwtGuard)
   @SubscribeMessage('result-request')
   async questionResult(client: Socket, data: any) {
     const questionResult = await this.quizService.getQuizResults(data.question);
 
-    await this.server.to(this.room.name).emit('question-result', questionResult);
+    await this.server.to(this.room.name).emit('question-result', {question: questionResult});
+  }
+
+  // quiz result for client
+  @UseGuards(WsJwtGuard)
+  @SubscribeMessage('quiz-ended')
+  async quizEnded(client: Socket, set: QuestionSet) {
+    const result = await this.quizService.getFinalResults(set);
+
+    await this.server.to(this.room.name).emit('quiz-final-result', result);
   }
 
   // timeout event

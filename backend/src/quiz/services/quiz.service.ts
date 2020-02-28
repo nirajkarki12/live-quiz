@@ -46,4 +46,9 @@ export class QuizService {
       return question;
    }
 
+   async getFinalResults(set) {
+      
+      return set;
+   }
+
 }

@@ -26,12 +26,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
   message = '';
   quizStarted = false;
   loading = false;
+  questionCompleted = true;
 
   preMessageSubscription: Subscription;
   messageSubscription: Subscription;
   totalUsersSubscription: Subscription;
   usersChangedSubscription: Subscription;
   questionResultSubscription: Subscription;
+  viewOnlySubscription: Subscription;
+  finalResultSubscription: Subscription;
 
   constructor(
     private toastr: ValidatorMessageService,
@@ -54,7 +57,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           this.totalUsers = total;
     });
 
-    this.messageSubscription = this.dashboardService.viewOnly().subscribe((data: any) => {
+    this.viewOnlySubscription = this.dashboardService.viewOnly().subscribe((data: any) => {
       console.log(data);
     });
 
@@ -63,8 +66,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
 
     this.questionResultSubscription = this.dashboardService.questionResult().subscribe((data: any) => {
-      let currentIndex = this.questions.findIndex(x => x._id === data._id);
-      this.questions[currentIndex].results = data.results
+      let question = data.question;
+      let currentIndex = this.questions.findIndex(x => x._id === question._id);
+      this.questions[currentIndex].results = question.results;
+    });
+
+    this.finalResultSubscription = this.dashboardService.finalResult().subscribe((data: any) => {
+      console.log('final result', data);
     });
 
     this.usersChangedSubscription = this.dashboardService.usersChanged().subscribe((data: any) => {
@@ -115,11 +123,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.dashboardService.endQuiz(this.set);
     this.quizStarted = false;
     this.questions = null;
+    this.questionCompleted = true;
     this.fetchLists();
   }
 
   sendQuestionsToClient(question: Question) {
     this.loading = true;
+    this.questionCompleted = false;
 
     let currentIndex = this.questions.findIndex(x => x._id === question._id);
 
@@ -131,13 +141,21 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.dashboardService.emitQuestionsToCLient(question);
 
     setTimeout(() => {
+      // this.dashboardService.resultRequest(question);
+      this.questions[currentIndex].disabled = true;
+      this.loading = false;
+    }, 5000);
+  }
+
+  requestQuestionResult(question: Question) {
+      let currentIndex = this.questions.findIndex(x => x._id === question._id);
+
       this.dashboardService.resultRequest(question);
 
       this.questions[currentIndex].waitingAnswer = false;
       this.questions[currentIndex].disabled = true;
       this.loading = false;
-      // this.questions[currentIndex].questionSent = false;
-    }, 10000);
+      this.questionCompleted = true;
   }
 
   ngOnDestroy() {
@@ -159,6 +177,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     if (this.questionResultSubscription) {
       this.questionResultSubscription.unsubscribe();
+    }
+
+    if (this.viewOnlySubscription) {
+      this.viewOnlySubscription.unsubscribe();
+    }
+
+    if (this.finalResultSubscription) {
+      this.finalResultSubscription.unsubscribe();
     }
   }
 

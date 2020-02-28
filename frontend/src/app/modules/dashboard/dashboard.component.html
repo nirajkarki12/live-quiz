@@ -73,23 +73,37 @@
                   <tr>
                     <td class="level">{{ question.level }}</td>
                     <td class="question">{{ question.name }}</td>
-                    <td>
-                      <div *ngIf="question.waitingAnswer; then waitingAnswer; else sendQuestion"></div>
+                    <td wid>
+                      <div *ngIf="(question.waitingAnswer && !question.disabled); then waitingAnswer; else sendQuestion"></div>
+                      <div *ngIf="(question.questionSent); then requestAnswer;"></div>
                       <ng-template #sendQuestion>
-                        <button class="btn btn-pill btn-block btn-primary" type="button" (click)="sendQuestionsToClient(question)" [disabled]="questionSent || question.disabled || loading">
+                        <button class="btn btn-pill btn-block btn-primary" type="button" (click)="sendQuestionsToClient(question)" [disabled]="!questionCompleted || question.disabled || loading" title="Send Question">
                           <span *ngIf="question.disabled">
                             <i class="fa fa-lg fa-check" aria-hidden="true"></i>
                           </span>
                           <span class="send-button" *ngIf="!question.disabled">
-                            Send
+                            <i class="fa fa-bell-o" aria-hidden="true"></i>
                           </span>
                         </button>
                       </ng-template>
+
                       <ng-template #waitingAnswer>
                         <button class="btn btn-pill btn-block btn-primary" type="button" disabled>
                           <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
                         </button>
                       </ng-template>
+
+                      <ng-template #requestAnswer>
+                        <button class="btn btn-pill btn-block btn-primary" type="button" (click)="requestQuestionResult(question)" [disabled]="question.results || loading" title="Request Result">
+                          <span *ngIf="question.results">
+                            <i class="fa fa-lg fa-check" aria-hidden="true"></i>
+                          </span>
+                          <span class="send-button" *ngIf="question.waitingAnswer && !question.results">
+                            <i class="fa fa-hourglass-end" aria-hidden="true"></i>
+                          </span>
+                        </button>
+                      </ng-template>
+
                     </td>
                   </tr>
                   <tr *ngIf="question.waitingAnswer || question.disabled ">

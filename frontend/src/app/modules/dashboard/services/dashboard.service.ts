@@ -54,7 +54,11 @@ export class DashboardService {
   }
 
   endQuiz(set: Sets) {
-    this.socket.emit('quizEvent', {'quiz-end': true});
+    this.socket.emit('quiz-ended', set);
+  }
+
+  finalResult(): Observable<any> {
+    return this.socket.fromEvent('quiz-final-result');
   }
 
   resultRequest(question: Question) {
