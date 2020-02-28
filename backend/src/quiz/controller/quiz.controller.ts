@@ -1,6 +1,6 @@
 import { Controller, Get, HttpException, HttpStatus, Post, Body, Res, Param, Delete, Patch, UploadedFile, UseInterceptors, FileInterceptor } from '@nestjs/common';
-import { QuizService } from 'src/quiz/services/quiz.service';
-import { QuestionService } from 'src/questions/services/question/question.service';
+import { QuizService } from '../services/quiz.service';
+import { QuestionService } from '../../questions/services/question/question.service';
 
 @Controller('quiz')
 export class QuizController {

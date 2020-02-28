@@ -4,7 +4,7 @@ import { PassportModule } from '@nestjs/passport';
 import { QuizSchema } from './schemas/quiz.schema';
 import { QuizService } from './services/quiz.service';
 import { QuizController } from './controller/quiz.controller';
-import { QuestionsModule } from 'src/questions/questions.module';
+import { QuestionsModule } from '../questions/questions.module';
 
 
 @Module({

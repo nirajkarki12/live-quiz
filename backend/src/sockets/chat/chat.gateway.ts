@@ -19,7 +19,7 @@ import { QuestionSet } from '../../questions/interfaces/questionset.interface';
 import { SocketService } from '../services/socket/socket.service';
 import { UsersService } from '../../users/services/users.service';
 import { QuestionService } from '../../questions/services/question/question.service';
-import { QuizService } from 'src/quiz/services/quiz.service';
+import { QuizService } from '../../quiz/services/quiz.service';
 
 @WebSocketGateway() 
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {

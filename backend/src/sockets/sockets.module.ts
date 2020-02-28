@@ -7,8 +7,8 @@ import { SocketService } from './services/socket/socket.service';
 // Schema
 import { RoomSchema } from './schemas/room.schema';
 import { MessageSchema } from './schemas/message.schema';
-import { QuestionsModule } from 'src/questions/questions.module';
-import { QuizModule } from 'src/quiz/quiz.module';
+import { QuestionsModule } from '../questions/questions.module';
+import { QuizModule } from '../quiz/quiz.module';
 
 @Module({
   imports: [
