@@ -13,8 +13,8 @@ import { QuestionsModule } from '../questions/questions.module';
         PassportModule.register({defaultStrategy: 'jwt', session: false}),
         QuestionsModule
     ],
-    exports: [QuizService],
     providers: [QuizService],
+    exports: [QuizService],
     controllers: [QuizController]
 
 })

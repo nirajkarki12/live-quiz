@@ -4,7 +4,7 @@ import { QuestionService } from './services/question/question.service';
 import { QuestionsetService } from './services/questionset/questionset.service';
 import { QuestionController } from './controller/question/question.controller';
 import { QuestionsetController } from './controller/questionset/questionset.controller';
-import { QuestionSetSchema } from './schemas/questinset.schema';
+import { QuestionSetSchema } from './schemas/questionset.schema';
 import { QuestionSchema } from './schemas/question.schema';
 import { PassportModule } from '@nestjs/passport';
 
@@ -14,8 +14,8 @@ import { PassportModule } from '@nestjs/passport';
     MongooseModule.forFeature([{name: 'QuestionSet', schema: QuestionSetSchema},{name: 'Question', schema: QuestionSchema}]),
     PassportModule.register({ defaultStrategy: 'jwt', session: false })
   ],
-  exports: [QuestionsetService,QuestionService],
   providers: [QuestionService, QuestionsetService],
+  exports: [QuestionsetService,QuestionService],
   controllers: [QuestionController, QuestionsetController]
 })
 export class QuestionsModule {}

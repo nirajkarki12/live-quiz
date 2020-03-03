@@ -112,7 +112,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
       // this.quizStarted = true;
       await this.server.to(this.room.name).emit('quiz-started', {currentTime: new Date()}); // Quiz started
     }else if(data.question) {
-      await this.server.to(this.room.name).emit('quiz-question', {question: data.question, timer: 10}); // Sends Questions
+      await this.server.to(this.room.name).emit('quiz-question', {question: data.question, timer: 10000}); // Sends Questions
     }else{
       this.quizStarted = false;
     }

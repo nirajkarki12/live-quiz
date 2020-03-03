@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Quiz } from '../../quiz/interfaces/quiz.interface';
 import { CreateQuizDto } from '../../quiz/dto/quiz.dto';
 import { Question } from '../../questions/interfaces/question.interface';
+import { QuestionSet } from '../../questions/interfaces/questionset.interface';
 
 @Injectable()
 export class QuizService {
@@ -11,6 +12,7 @@ export class QuizService {
    constructor(
       @InjectModel('Quiz') private quizModel: Model<Quiz>,
       @InjectModel('Question') private questionModel: Model<Question>,
+      @InjectModel('QuestionSet') private setModel: Model<QuestionSet>,
    ) {}
 
    async create(createQuizDto: CreateQuizDto) {
@@ -47,8 +49,9 @@ export class QuizService {
    }
 
    async getFinalResults(set) {
+      let questions = await this.questionModel.find({questionSetId: set._id});
       
-      return set;
+      return questions;
    }
 
 }
