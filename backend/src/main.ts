@@ -3,15 +3,15 @@ import { AppModule } from './app.module';
 require('dotenv').config({ path: '.env' });
 
 async function bootstrap() {
-  const fs = require('fs');
-  const keyFile  = fs.readFileSync('/etc/letsencrypt/live/gotubepro.com/privkey.pem');
-  const certFile = fs.readFileSync('/etc/letsencrypt/live/gotubepro.com/fullchain.pem');
+  // const fs = require('fs');
+  // const keyFile  = fs.readFileSync('/etc/letsencrypt/live/gotubepro.com/privkey.pem');
+  // const certFile = fs.readFileSync('/etc/letsencrypt/live/gotubepro.com/fullchain.pem');
 
   const app = await NestFactory.create(AppModule, {
-    httpsOptions: {
-      key: keyFile,
-      cert: certFile,
-    }
+    // httpsOptions: {
+    //   key: keyFile,
+    //   cert: certFile,
+    // }
   });
   app.enableCors({
     origin: true,

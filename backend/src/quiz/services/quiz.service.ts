@@ -49,9 +49,31 @@ export class QuizService {
    }
 
    async getFinalResults(set) {
-      let questions = await this.questionModel.find({questionSetId: set._id});
+      let questions = await this.questionModel.find({questionSetId: set._id}, {"_id": true});
+      let totalQuestion = questions.length;
+      var questionIds = Object.keys(questions).map((k) => questions[k]._id);
+
+      let res = await this.quizModel.find({
+         question: {
+            $in: questionIds
+         },
+         isTimeOut: false,
+         isCorrect: true,
+      });
+
+      var userIds = Object.keys(res).map((k) => res[k].user);
+      console.log('res',userIds);
+
       
-      return questions;
+      return res;
    }
 
 }
+
+// totalQuestion: ,
+// amount: ,
+// winner : [
+//   { name:  image:  email: },
+//   { name:  image:  email: }
+// ]
+
