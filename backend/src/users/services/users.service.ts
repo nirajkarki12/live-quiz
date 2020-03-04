@@ -5,10 +5,17 @@ import { User } from '../../users/interfaces/user.interface';
 import { CreateUserDto } from '../../users/dto/create-user.dto';
 import { CreateSocketUserDto } from '../../users/dto/create-socket-user.dto';
 
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User as Users } from '../entities/user.entity';
+
 @Injectable()
 export class UsersService {
 
-  constructor(@InjectModel('User') private userModel: Model<User>) {}
+  constructor(
+    @InjectModel('User') private userModel: Model<User>,
+    @InjectRepository(Users) private usersRepository: Repository<Users>
+  ) {}
 
   async create(createUserDto: CreateUserDto) {
 
@@ -26,6 +33,10 @@ export class UsersService {
 
     return await this.userModel.findOne({email: email});
 
+  }
+
+  async updateUser(user: CreateUserDto) {
+    return await this.usersRepository.save(user);
   }
 
 }

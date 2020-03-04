@@ -24,13 +24,17 @@ var _a;
 const mongoose_1 = require("mongoose");
 const common_1 = require("@nestjs/common");
 const mongoose_2 = require("@nestjs/mongoose");
-const user_interface_1 = require("../interfaces/user.interface");
-const create_user_dto_1 = require("../dto/create-user.dto");
 let UsersService = class UsersService {
     constructor(userModel) {
         this.userModel = userModel;
     }
     create(createUserDto) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let createdUser = new this.userModel(createUserDto);
+            return yield createdUser.save();
+        });
+    }
+    createWsUser(createUserDto) {
         return __awaiter(this, void 0, void 0, function* () {
             let createdUser = new this.userModel(createUserDto);
             return yield createdUser.save();

@@ -14,23 +14,24 @@ exports.UserSchema = new mongoose.Schema({
     },
     image: {
         type: String,
+        default: null,
     },
     password: {
         type: String,
-        required: true,
+        default: null,
     },
     isAdmin: {
         type: Boolean,
         default: false,
     },
-    user_id: {
+    userId: {
         type: Number,
         default: null,
     },
 });
 exports.UserSchema.pre('save', function (next) {
     let user = this;
-    if (!user.isModified('password'))
+    if (!user.isModified('password') || user.password === null)
         return next();
     bcrypt.genSalt(10, (err, salt) => {
         if (err)

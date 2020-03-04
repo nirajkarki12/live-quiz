@@ -3,5 +3,5 @@ export class CreateUserDto {
    readonly email: string;
    readonly image: string;
    readonly password: string;
-   readonly isAdmin: Boolean;
+   readonly isAdmin: boolean;
 }

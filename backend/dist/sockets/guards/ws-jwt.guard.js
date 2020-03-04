@@ -22,10 +22,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
 const jwt = require("jsonwebtoken");
-const jwt_payload_interface_1 = require("../../auth/interfaces/jwt-payload.interface");
 let WsJwtGuard = class WsJwtGuard {
-    constructor(authService) {
-        this.authService = authService;
+    constructor(usersService) {
+        this.usersService = usersService;
     }
     canActivate(context) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -35,13 +34,18 @@ let WsJwtGuard = class WsJwtGuard {
             console.log('client', jwtPayload);
             if (!jwtPayload)
                 return false;
+            if (jwtPayload.isAdmin)
+                return true;
+            if (!(yield this.usersService.findOneByEmail(jwtPayload.email))) {
+                return yield this.usersService.createWsUser(jwtPayload);
+            }
             return true;
         });
     }
 };
 WsJwtGuard = __decorate([
     common_1.Injectable(),
-    __param(0, common_1.Inject('AuthService')),
+    __param(0, common_1.Inject('UsersService')),
     __metadata("design:paramtypes", [Object])
 ], WsJwtGuard);
 exports.WsJwtGuard = WsJwtGuard;

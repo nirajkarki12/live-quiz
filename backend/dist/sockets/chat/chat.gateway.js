@@ -17,48 +17,187 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var _a, _b;
+var _a, _b, _c, _d, _e, _f;
 const websockets_1 = require("@nestjs/websockets");
 const common_1 = require("@nestjs/common");
+const jwt = require("jsonwebtoken");
 const socket_io_1 = require("socket.io");
-const ws_jwt_guard_1 = require("../guards/ws-jwt.guard");
+const ws_jwt_guard_1 = require("../../sockets/guards/ws-jwt.guard");
+const socket_service_1 = require("../services/socket/socket.service");
+const users_service_1 = require("../../users/services/users.service");
+const question_service_1 = require("../../questions/services/question/question.service");
+const quiz_service_1 = require("../../quiz/services/quiz.service");
 let ChatGateway = class ChatGateway {
-    constructor() {
-        this.nicknames = new Map();
+    constructor(socketService, userService, questionService, quizService) {
+        this.socketService = socketService;
+        this.userService = userService;
+        this.questionService = questionService;
+        this.quizService = quizService;
+        this.connectedUsers = 0;
+        this.quizStarted = false;
     }
     handleConnection(client) {
         return __awaiter(this, void 0, void 0, function* () {
-            client.emit('users', 'connected ' + client);
+            try {
+                const token = client.handshake.query.token;
+                const user = jwt.decode(token);
+                if (!user)
+                    throw new websockets_1.WsException('Can\'t Connect to network');
+                const userName = user.name;
+                this.room = yield this.socketService.findRoomByName('public');
+                if (!this.room) {
+                    this.room = yield this.socketService.createRoom('public');
+                }
+                this.connectedUsers++;
+                client.join(this.room.name);
+                const messages = yield this.socketService.findMessages(this.room.id, 40);
+                client.emit(this.room.name).emit('pre-messages', messages);
+                this.server.to(this.room.name).emit('totalUsers', this.connectedUsers);
+                client.to(this.room.name).emit('users-changed', { text: userName + ' Joined a public room', event: 'joined' });
+            }
+            catch (err) {
+                console.log(err);
+            }
         });
     }
     handleDisconnect(client) {
-        client.server.emit('users-changed', { user: this.nicknames[client.id], event: 'left' });
-        this.nicknames.delete(client.id);
-    }
-    setNickname(client, nickname) {
-        this.nicknames[client.id] = nickname;
-        client.server.emit('users-changed', { user: nickname, event: 'joined' });
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const token = client.handshake.query.token;
+                const user = jwt.decode(token);
+                const userName = user.name;
+                if (!user)
+                    throw new websockets_1.WsException('Can\'t Connect to network');
+                this.connectedUsers--;
+                this.server.to(this.room.name).emit('totalUsers', this.connectedUsers);
+                client.to(this.room.name).emit('users-changed', { text: userName + ' left public room', event: 'left', viewOnly: true });
+            }
+            catch (err) {
+                console.log(err);
+            }
+        });
     }
     addMessage(client, message) {
-        client.server.emit('message', { text: message.text, from: this.nicknames[client.id], created: new Date() });
+        return __awaiter(this, void 0, void 0, function* () {
+            const token = client.handshake.query.token;
+            const user = jwt.decode(token);
+            let roomMessage = yield this.socketService.addMessage(message, user, this.room.id);
+            yield this.server.to(this.room.name).emit('message', roomMessage);
+        });
+    }
+    quizEvent(client, data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const token = client.handshake.query.token;
+            const user = jwt.decode(token);
+            if (data.set) {
+                yield this.server.to(this.room.name).emit('quiz-started', { currentTime: new Date() });
+            }
+            else if (data.question) {
+                yield this.server.to(this.room.name).emit('quiz-question', { question: data.question, timer: 10000 });
+            }
+            else {
+                this.quizStarted = false;
+            }
+        });
+    }
+    quizAnswer(client, data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const token = client.handshake.query.token;
+            const user = jwt.decode(token);
+            const question = yield this.questionService.findOneById(data._id);
+            let isCorrect = false;
+            if (data.option === question.answer)
+                isCorrect = true;
+            yield this.quizService.create({
+                user: user.userId,
+                question: question.id,
+                answer: data.option,
+                isCorrect: isCorrect
+            });
+            if (!isCorrect)
+                yield this.server.to(client.id).emit('view-only', { viewOnly: true });
+        });
+    }
+    questionResult(client, data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const questionResult = yield this.quizService.getQuizResults(data.question);
+            yield this.server.to(this.room.name).emit('question-result', { question: questionResult });
+        });
+    }
+    quizEnded(client, set) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield this.quizService.getFinalResults(set);
+            yield this.server.to(this.room.name).emit('quiz-final-result', result);
+        });
+    }
+    quizTimeOut(client, questionId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const token = client.handshake.query.token;
+            const user = jwt.decode(token);
+            let question = yield this.questionService.findOneById(questionId);
+            if (!question)
+                throw new websockets_1.WsException('Question not found');
+            yield this.server.to(client.id).emit('view-only', { viewOnly: true });
+            yield this.quizService.create({
+                user: user.userId,
+                question: question.id,
+                isTimeOut: true
+            });
+        });
     }
 };
 __decorate([
-    common_1.UseGuards(ws_jwt_guard_1.WsJwtGuard),
-    websockets_1.SubscribeMessage('set-nickname'),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [typeof (_a = typeof socket_io_1.Socket !== "undefined" && socket_io_1.Socket) === "function" ? _a : Object, String]),
-    __metadata("design:returntype", void 0)
-], ChatGateway.prototype, "setNickname", null);
+    websockets_1.WebSocketServer(),
+    __metadata("design:type", Object)
+], ChatGateway.prototype, "server", void 0);
 __decorate([
     common_1.UseGuards(ws_jwt_guard_1.WsJwtGuard),
     websockets_1.SubscribeMessage('add-message'),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [typeof (_b = typeof socket_io_1.Socket !== "undefined" && socket_io_1.Socket) === "function" ? _b : Object, Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [typeof (_a = typeof socket_io_1.Socket !== "undefined" && socket_io_1.Socket) === "function" ? _a : Object, String]),
+    __metadata("design:returntype", Promise)
 ], ChatGateway.prototype, "addMessage", null);
+__decorate([
+    common_1.UseGuards(ws_jwt_guard_1.WsJwtGuard),
+    websockets_1.SubscribeMessage('quizEvent'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [typeof (_b = typeof socket_io_1.Socket !== "undefined" && socket_io_1.Socket) === "function" ? _b : Object, Object]),
+    __metadata("design:returntype", Promise)
+], ChatGateway.prototype, "quizEvent", null);
+__decorate([
+    common_1.UseGuards(ws_jwt_guard_1.WsJwtGuard),
+    websockets_1.SubscribeMessage('quiz-option'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [typeof (_c = typeof socket_io_1.Socket !== "undefined" && socket_io_1.Socket) === "function" ? _c : Object, Object]),
+    __metadata("design:returntype", Promise)
+], ChatGateway.prototype, "quizAnswer", null);
+__decorate([
+    common_1.UseGuards(ws_jwt_guard_1.WsJwtGuard),
+    websockets_1.SubscribeMessage('result-request'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [typeof (_d = typeof socket_io_1.Socket !== "undefined" && socket_io_1.Socket) === "function" ? _d : Object, Object]),
+    __metadata("design:returntype", Promise)
+], ChatGateway.prototype, "questionResult", null);
+__decorate([
+    common_1.UseGuards(ws_jwt_guard_1.WsJwtGuard),
+    websockets_1.SubscribeMessage('quiz-ended'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [typeof (_e = typeof socket_io_1.Socket !== "undefined" && socket_io_1.Socket) === "function" ? _e : Object, Object]),
+    __metadata("design:returntype", Promise)
+], ChatGateway.prototype, "quizEnded", null);
+__decorate([
+    common_1.UseGuards(ws_jwt_guard_1.WsJwtGuard),
+    websockets_1.SubscribeMessage('quiz-timeout'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [typeof (_f = typeof socket_io_1.Socket !== "undefined" && socket_io_1.Socket) === "function" ? _f : Object, String]),
+    __metadata("design:returntype", Promise)
+], ChatGateway.prototype, "quizTimeOut", null);
 ChatGateway = __decorate([
-    websockets_1.WebSocketGateway()
+    websockets_1.WebSocketGateway(),
+    __metadata("design:paramtypes", [socket_service_1.SocketService,
+        users_service_1.UsersService,
+        question_service_1.QuestionService,
+        quiz_service_1.QuizService])
 ], ChatGateway);
 exports.ChatGateway = ChatGateway;
 //# sourceMappingURL=chat.gateway.js.map

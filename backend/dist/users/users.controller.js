@@ -21,7 +21,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
-const passport_1 = require("@nestjs/passport");
 const create_user_dto_1 = require("./dto/create-user.dto");
 const users_service_1 = require("./services/users.service");
 let UsersController = class UsersController {
@@ -35,8 +34,7 @@ let UsersController = class UsersController {
     }
 };
 __decorate([
-    common_1.Post('/'),
-    common_1.UseGuards(passport_1.AuthGuard()),
+    common_1.Post(),
     __param(0, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_user_dto_1.CreateUserDto]),

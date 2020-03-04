@@ -13,7 +13,7 @@ const app_module_1 = require("./app.module");
 require('dotenv').config({ path: '.env' });
 function bootstrap() {
     return __awaiter(this, void 0, void 0, function* () {
-        const app = yield core_1.NestFactory.create(app_module_1.AppModule);
+        const app = yield core_1.NestFactory.create(app_module_1.AppModule, {});
         app.enableCors({
             origin: true,
             exposedHeaders: 'X-Authorization',

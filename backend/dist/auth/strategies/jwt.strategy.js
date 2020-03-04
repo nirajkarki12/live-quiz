@@ -20,8 +20,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
 const passport_1 = require("@nestjs/passport");
 const passport_jwt_1 = require("passport-jwt");
-const auth_service_1 = require("../services/auth.service");
-const jwt_payload_interface_1 = require("../interfaces/jwt-payload.interface");
+const auth_service_1 = require("../../auth/services/auth.service");
 let JwtStrategy = class JwtStrategy extends passport_1.PassportStrategy(passport_jwt_1.Strategy) {
     constructor(authService) {
         super({

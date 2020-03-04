@@ -6,12 +6,16 @@ import { SocketsModule } from './sockets/sockets.module';
 import { QuestionsModule } from './questions/questions.module';
 import { QuizModule } from './quiz/quiz.module';
 
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Connection } from 'typeorm';
+
 @Module({
   imports: [
     MongooseModule.forRoot(
-      'mongodb://' + (process.env.DB_HOST || '127.0.0.1') + ':' + (process.env.DB_PORT || '27017') + '/' + (process.env.DB || 'live_quiz'), 
+      'mongodb://' + (process.env.DB_HOST || '127.0.0.1') + ':27017' + '/' + (process.env.DB || 'live_quiz'), 
       { useFindAndModify: false, setFeatureCompatibilityVersion: "3.4" }
     ),
+    TypeOrmModule.forRoot(),
     AuthModule, 
     UsersModule,
     SocketsModule,
@@ -19,4 +23,6 @@ import { QuizModule } from './quiz/quiz.module';
     QuizModule
   ],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private readonly connection: Connection) {}
+}

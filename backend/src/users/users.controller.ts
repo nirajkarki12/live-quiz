@@ -11,6 +11,10 @@ export class UsersController {
     @Post()
     // @UseGuards(AuthGuard())
     async create(@Body() createUserDto: CreateUserDto) {
-        return await this.usersService.create(createUserDto);
+        try {
+            return await this.usersService.updateUser(createUserDto);
+        } catch (error) {
+            throw new Error(error);
+        }
     }
 }

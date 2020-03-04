@@ -17,7 +17,9 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "migration:generate": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:generate -n",
+    "migration:run": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:run"
   },
   "dependencies": {
     "@nestjs/common": "^5.4.0",
@@ -25,17 +27,20 @@
     "@nestjs/jwt": "^0.2.0",
     "@nestjs/mongoose": "^5.2.2",
     "@nestjs/passport": "^5.1.0",
+    "@nestjs/typeorm": "^6.3.3",
     "@nestjs/websockets": "^5.7.4",
     "bcrypt": "^3.0.7",
     "dotenv": "^8.2.0",
     "exceljs": "^3.8.0",
     "mongoose": "^5.8.11",
+    "mysql": "^2.18.1",
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
     "read-excel-file": "^4.0.5",
     "reflect-metadata": "^0.1.12",
     "rimraf": "^2.6.2",
     "rxjs": "^6.2.2",
+    "typeorm": "^0.2.24",
     "typescript": "^3.0.1"
   },
   "devDependencies": {

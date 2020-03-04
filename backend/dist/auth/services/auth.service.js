@@ -19,8 +19,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
-const jwt_payload_interface_1 = require("../interfaces/jwt-payload.interface");
-const login_user_dto_1 = require("../../users/dto/login-user.dto");
 const users_service_1 = require("../../users/services/users.service");
 let AuthService = class AuthService {
     constructor(usersService, jwtService) {
@@ -61,10 +59,10 @@ let AuthService = class AuthService {
             email: user.email,
             image: user.image,
             isAdmin: user.isAdmin,
-            user_id: user.user_id,
+            userId: user.userId,
         };
         return {
-            expiresIn: 3600,
+            expiresIn: '365d',
             token: this.jwtService.sign(jwtData),
             data: jwtData,
         };
