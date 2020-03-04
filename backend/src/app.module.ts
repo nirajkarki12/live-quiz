@@ -6,6 +6,8 @@ import { SocketsModule } from './sockets/sockets.module';
 import { QuestionsModule } from './questions/questions.module';
 import { QuizModule } from './quiz/quiz.module';
 
+import { AnyExceptionFilter } from './common/exception-filter/any-exception.filter';
+
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Connection } from 'typeorm';
 
@@ -22,6 +24,7 @@ import { Connection } from 'typeorm';
     QuestionsModule,
     QuizModule
   ],
+  // providers: [AnyExceptionFilter]
 })
 export class AppModule {
   constructor(private readonly connection: Connection) {}

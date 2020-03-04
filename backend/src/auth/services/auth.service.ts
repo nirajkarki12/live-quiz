@@ -12,16 +12,15 @@ export class AuthService {
       // This will be used for the initial login
       if (!loginAttempt.email || !loginAttempt.password) throw new UnauthorizedException('Username/Password is Required');
 
-      const userToAttempt = await this.usersService.findOneByEmail(loginAttempt.email);
-
-      if (!userToAttempt) throw new UnauthorizedException('Username/Password Mismatched');
+      const user = await this.usersService.findOneByEmail(loginAttempt.email);
+      if (!user) throw new UnauthorizedException('Username/Password Mismatched');
 
       return new Promise((resolve, reject) => {
          // Check the supplied password against the hash stored for this email address
-         userToAttempt.checkPassword(loginAttempt.password, (err, isMatch) => {
+         user.checkPassword(loginAttempt.password, (err, isMatch) => {
             if (err || !isMatch) reject(new UnauthorizedException('Username/Password Mismatched'));
             // If there is a successful match, generate a JWT for the user
-            resolve(this.createJwtPayload(userToAttempt));
+            resolve(this.createJwtPayload(user));
          });
 
       });

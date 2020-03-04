@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { AnyExceptionFilter } from './common/exception-filter/any-exception.filter';
 require('dotenv').config({ path: '.env' });
 
 async function bootstrap() {
@@ -13,6 +14,7 @@ async function bootstrap() {
     //   cert: certFile,
     // }
   });
+  // app.useGlobalFilters(new AnyExceptionFilter());
   app.enableCors({
     origin: true,
     exposedHeaders: 'X-Authorization',

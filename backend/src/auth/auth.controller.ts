@@ -18,7 +18,6 @@ export class AuthController {
                 success: true,
                 statusCode: HttpStatus.OK,
             });
-        return await this.authService.validateUserByPassword(loginUserDto);
     }
 
     @Get('user')
