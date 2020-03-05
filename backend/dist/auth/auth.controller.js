@@ -37,7 +37,6 @@ let AuthController = class AuthController {
                 success: true,
                 statusCode: common_1.HttpStatus.OK,
             });
-            return yield this.authService.validateUserByPassword(loginUserDto);
         });
     }
     getUser(req) {

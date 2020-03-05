@@ -1,40 +1,51 @@
-import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Question } from '../../../questions/interfaces/question.interface';
-import { CreateQuestionDto } from '../../../questions/dto/question/create-question.dto';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { CreateQuestionDto } from '../../../questions/dto/create-question.dto';
+import { QuestionsetService } from '../questionset/questionset.service';
+
+import { Question } from '../../entities/question.entity';
 
 @Injectable()
 export class QuestionService {
 
-    constructor(@InjectModel('Question') private questionModel: Model<Question>) {}
+   constructor(
+      @InjectRepository(Question) private questionRepository: Repository<Question>
+   ) {}
 
-    async create(createQuestionDto: CreateQuestionDto) {
-        let createdQuestion = new this.questionModel(createQuestionDto);
-        return await createdQuestion.save();
-    }
+   async create(createQuestionDto: CreateQuestionDto) {
+      return await this.questionRepository.save(createQuestionDto);
+   }
 
-    async fetchQuestions(): Model<Question> {
-        return await this.questionModel.find();
-    }
+   async fetchQuestions(): Promise<any> {
+      return await this.questionRepository
+         .createQueryBuilder()
+         .addSelect('answer')
+         .getMany()
+   }
 
-    async delete(id) {
-        return await this.questionModel.remove({_id: id});
-    }
+   async delete(id: number) {
+      return await this.questionRepository.delete(id);
+   }
 
-    async findOneById(id): Model<Question> {
-        return await this.questionModel.findOne({_id: id});
-    }
+   async findOneById(id: number): Promise<any> {
+      return await this.questionRepository
+         .createQueryBuilder()
+         .addSelect('answer')
+         .where('id = :questionId', { questionId: id})
+         .getOne();
+   }
 
-    async findAndUpdate(id, data: CreateQuestionDto) {
-        return await this.questionModel.findOneAndUpdate({_id: id},data,{new: true});
-    }
+   async findAndUpdate(id: number, data: CreateQuestionDto) {
+      return await this.questionRepository.update(id, data);
+   }
 
-    async getQuestionSet(id) {
-        return await this.questionModel.find({questionSetId:id}).sort({level: 1});
-    }
-
-    async getQuestionForClient(id) {
-        return await this.questionModel.find({questionSetId:id}).sort({level: 1}).select("_id name option1 option2 option3 option4 level questionSetId");
-    }
+   async findOneByIdWithSet(id: number): Promise<any> {
+      return await this.questionRepository
+            .createQueryBuilder('question')
+            .innerJoinAndSelect('question.questionSet', 'questionSet')
+            .addSelect('question.answer')
+            .where('question.id = :questionId', { questionId: id})
+            .getOne();
+   }
 }

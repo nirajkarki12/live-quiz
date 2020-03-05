@@ -3,7 +3,7 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 // Interfaces
 import { Room } from '../../../sockets/interfaces/room.interface';
-import { User } from '../../../users/interfaces/user.interface';
+import { UserInterface } from '../../../users/interfaces/user.interface';
 import { Message } from '../../../sockets/interfaces/message.interface';
 
 @Injectable()
@@ -13,7 +13,7 @@ export class SocketService {
       @InjectModel('Message') private messageModel: Model<Message>,
    ) {}
 
-   async addMessage(message: string, user: User, roomId: string) {
+   async addMessage(message: string, user: UserInterface, roomId: string) {
       const room = await this.roomModel.findById(roomId);
 
       let createdMessage = new this.messageModel({
@@ -29,7 +29,7 @@ export class SocketService {
       return await createdMessage;
    }
 
-   async addUsersToRoom(user: User, roomId: string) {
+   async addUsersToRoom(user: UserInterface, roomId: string) {
       return await this.roomModel.findOneAndUpdate({_id: roomId}, {
          $push: {
             users: user
@@ -37,7 +37,7 @@ export class SocketService {
       }, {new: true});
    }
 
-   async removeUsersFromRoom(user: User, roomId: string) {
+   async removeUsersFromRoom(user: UserInterface, roomId: string) {
       return await this.roomModel.findOneAndUpdate({_id: roomId}, {
          $pull: {
             users: {
@@ -71,12 +71,12 @@ export class SocketService {
       return await this.roomModel.findOne({ name: roomName});
    }
 
-   async update(user: User) {
+   async update(user: UserInterface) {
       let createdPublicRoom = new this.roomModel({ 'user': user });
       return await createdPublicRoom.save();
    }
 
-   async remove(user: User) {
+   async remove(user: UserInterface) {
       return await this.roomModel.findOneAndDelete({ user: user });
    }
 

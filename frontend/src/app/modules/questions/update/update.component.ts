@@ -34,7 +34,7 @@ export class UpdateComponent implements OnInit {
     this.route.data
     .subscribe((data) => {
       this.question = data.question.data;
-      this.questionForm = this.questionFormService.createForm(this.question, this.question.questionSetId);
+      this.questionForm = this.questionFormService.createForm(this.question, this.question.questionSet);
     });
   }
 
@@ -44,7 +44,7 @@ export class UpdateComponent implements OnInit {
       .update(this.questionForm.value)
       .then(response => {
         this.toastr.showMessage('Questions updated Successfully');
-        this.router.navigate([AppRoutes.questions + '/list/' + this.question.questionSetId]);
+        this.router.navigate([AppRoutes.questions + '/list/' + this.question.questionSet.id]);
       })
       .catch(errorResponse => {
         this.buttonClicked = false;

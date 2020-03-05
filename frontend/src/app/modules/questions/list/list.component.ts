@@ -31,14 +31,14 @@ export class ListComponent implements OnInit {
     this.route.data
     .subscribe((res) => {
       this.loading = false;
-      this.questions = res.data.data.questions;
-      this.set = res.data.data.set;
+      this.set = res.set.data;
+      this.questions = this.set.questions;
     });
   }
 
   fetchLists() {
     this.loading = true;
-    this.questionService.fetchQuestionsList(this.set._id)
+    this.questionService.fetchQuestionsList(this.set.id)
       .then(successResponse => {
         this.loading = false;
         this.questions = successResponse.data.questions;
@@ -51,7 +51,7 @@ export class ListComponent implements OnInit {
   removeQuestion(question: Question) {
     if (confirm('Are you sure to delete ' + question.name + '\'s Question')) {
       this.questionService
-        .removeQuestion(question._id)
+        .removeQuestion(question.id)
         .then(successResponse => {
           this.toastr.showMessage('Question deleted Successfully');
           this.fetchLists();

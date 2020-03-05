@@ -11,10 +11,8 @@ import * as jwt from 'jsonwebtoken';
 import { Socket } from 'socket.io';
 import { WsJwtGuard } from '../../sockets/guards/ws-jwt.guard';
 // Interfaces
-import { User } from '../../users/interfaces/user.interface';
+import { UserInterface } from '../../users/interfaces/user.interface';
 import { Room } from '../interfaces/room.interface';
-import { Question } from '../../questions/interfaces/question.interface';
-import { QuestionSet } from '../../questions/interfaces/questionset.interface';
 // Services
 import { SocketService } from '../services/socket/socket.service';
 import { UsersService } from '../../users/services/users.service';
@@ -38,7 +36,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
   async handleConnection(client: Socket) {
     try {
       const token = client.handshake.query.token;
-      const user: User = <User> jwt.decode(token);
+      const user: UserInterface = <UserInterface> jwt.decode(token);
       if (!user) throw new WsException('Can\'t Connect to network');
       const userName: string = user.name;
 
@@ -73,7 +71,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
     try {
 
       const token = client.handshake.query.token;
-      const user: User = <User> jwt.decode(token);
+      const user: UserInterface = <UserInterface> jwt.decode(token);
 
       const userName: string = user.name;
       if (!user) throw new WsException('Can\'t Connect to network');
@@ -95,7 +93,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
   @SubscribeMessage('add-message')
   async addMessage(client: Socket, message: string) {
     const token = client.handshake.query.token;
-    const user: User = <User> jwt.decode(token);
+    const user: UserInterface = <UserInterface> jwt.decode(token);
     let roomMessage = await this.socketService.addMessage(message, user, this.room.id); 
 
     await this.server.to(this.room.name).emit('message', roomMessage);
@@ -106,7 +104,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
   @SubscribeMessage('quizEvent')
   async quizEvent(client: Socket, data: any) {
     const token = client.handshake.query.token;
-    const user: User = <User> jwt.decode(token);
+    const user: UserInterface = <UserInterface> jwt.decode(token);
 
     if(data.set) {
       // this.quizStarted = true;
@@ -123,9 +121,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
   @SubscribeMessage('quiz-option')
   async quizAnswer(client: Socket, data: any) {
     const token = client.handshake.query.token;
-    const user: User = <User> jwt.decode(token);
+    const user: UserInterface = <UserInterface> jwt.decode(token);
 
-    const question = await this.questionService.findOneById(data._id);
+    const question = await this.questionService.findOneById(data.id);
     
     let isCorrect = false;
 
@@ -154,7 +152,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
   // quiz result for client
   @UseGuards(WsJwtGuard)
   @SubscribeMessage('quiz-ended')
-  async quizEnded(client: Socket, set: QuestionSet) {
+  async quizEnded(client: Socket, set: any) {
     const result = await this.quizService.getFinalResults(set);
 
     await this.server.to(this.room.name).emit('quiz-final-result', result);
@@ -164,9 +162,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
   // Subscribe through client if user failed to answer the question on a given period of time
   @UseGuards(WsJwtGuard)
   @SubscribeMessage('quiz-timeout')
-  async quizTimeOut(client: Socket, questionId: string) {
+  async quizTimeOut(client: Socket, questionId: number) {
     const token = client.handshake.query.token;
-    const user: User = <User> jwt.decode(token);
+    const user: UserInterface = <UserInterface> jwt.decode(token);
 
     let question = await this.questionService.findOneById(questionId);
     if(!question) throw new WsException('Question not found');

@@ -20,36 +20,41 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var _a;
-const mongoose_1 = require("mongoose");
 const common_1 = require("@nestjs/common");
-const mongoose_2 = require("@nestjs/mongoose");
+const typeorm_1 = require("typeorm");
+const typeorm_2 = require("@nestjs/typeorm");
+const user_entity_1 = require("../entities/user.entity");
 let UsersService = class UsersService {
-    constructor(userModel) {
-        this.userModel = userModel;
+    constructor(userRepository) {
+        this.userRepository = userRepository;
+    }
+    findById(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.userRepository.findOneOrFail(id);
+        });
+    }
+    findOneByEmail(userEmail) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.userRepository.findOne({ email: userEmail });
+        });
     }
     create(createUserDto) {
         return __awaiter(this, void 0, void 0, function* () {
-            let createdUser = new this.userModel(createUserDto);
-            return yield createdUser.save();
+            let user = yield this.userRepository.create(createUserDto);
+            return yield this.userRepository.save(user);
         });
     }
     createWsUser(createUserDto) {
         return __awaiter(this, void 0, void 0, function* () {
-            let createdUser = new this.userModel(createUserDto);
-            return yield createdUser.save();
-        });
-    }
-    findOneByEmail(email) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield this.userModel.findOne({ email: email });
+            let createdUser = yield this.userRepository.create(createUserDto);
+            return yield this.userRepository.save(createdUser);
         });
     }
 };
 UsersService = __decorate([
     common_1.Injectable(),
-    __param(0, mongoose_2.InjectModel('User')),
-    __metadata("design:paramtypes", [typeof (_a = typeof mongoose_1.Model !== "undefined" && mongoose_1.Model) === "function" ? _a : Object])
+    __param(0, typeorm_2.InjectRepository(user_entity_1.User)),
+    __metadata("design:paramtypes", [typeorm_1.Repository])
 ], UsersService);
 exports.UsersService = UsersService;
 //# sourceMappingURL=users.service.js.map

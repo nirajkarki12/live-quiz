@@ -67,7 +67,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     this.questionResultSubscription = this.dashboardService.questionResult().subscribe((data: any) => {
       let question = data.question;
-      let currentIndex = this.questions.findIndex(x => x._id === question._id);
+      let currentIndex = this.questions.findIndex(x => x.id === question.id);
       this.questions[currentIndex].results = question.results;
     });
 
@@ -105,11 +105,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
   startQuiz(set: Sets) {
     this.loading = true;
     this.quizStarted = true;
-    this.questionService.fetchQuestionsClient(set._id)
+    this.questionService.fetchQuestionsClient(set.id)
       .then(successResponse => {
         this.loading = false;
-        this.questions = successResponse.data.questions;
-        this.set = successResponse.data.set;
+        this.set = successResponse.data;
+        this.questions = this.set.questions;
         this.dashboardService.startQuiz(this.set);
     })
     .catch(errorResponse => {
@@ -131,7 +131,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.questionCompleted = false;
 
-    let currentIndex = this.questions.findIndex(x => x._id === question._id);
+    let currentIndex = this.questions.findIndex(x => x.id === question.id);
 
     this.questions[currentIndex].waitingAnswer = true;
     this.questions[currentIndex].questionSent = true;
@@ -148,7 +148,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   requestQuestionResult(question: Question) {
-      let currentIndex = this.questions.findIndex(x => x._id === question._id);
+      let currentIndex = this.questions.findIndex(x => x.id === question.id);
 
       this.dashboardService.resultRequest(question);
 

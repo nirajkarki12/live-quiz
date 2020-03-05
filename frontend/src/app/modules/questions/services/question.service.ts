@@ -48,7 +48,7 @@ export class QuestionService {
       .catch(this.handleError);
   }
 
-  fetchQuestionsClient(id): Promise<any> {
+  fetchQuestionsClient(id: number): Promise<any> {
     return this.http
       .get(
         ApiConstants.API_ENDPOINT +
@@ -61,7 +61,7 @@ export class QuestionService {
       .catch(this.handleError);
   }
 
-  removeQuestion(questionId: string): Promise<any> {
+  removeQuestion(questionId: number): Promise<any> {
     return this.http
       .delete(
         ApiConstants.API_ENDPOINT +
@@ -76,7 +76,7 @@ export class QuestionService {
   update(question: Question): Promise<any> {
     return this.http.patch(
       ApiConstants.API_ENDPOINT +
-      ApiConstants.QUESTION + '/' + question._id
+      ApiConstants.QUESTION + '/' + question.id
       , question,
       { observe: 'response'} )
      .toPromise()

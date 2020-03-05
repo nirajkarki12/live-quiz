@@ -4,7 +4,7 @@
          <div class="card">
             <div class="card-header">
                <i class="fa fa-align-justify"></i> Questions List
-               <span class="float-right"><a [routerLink]="['/questions/create', set._id]" title="Add Questions"><i class="fa fa-plus fa-lg"></i></a></span>
+               <span class="float-right"><a [routerLink]="['/questions/create', set.id]" title="Add Questions"><i class="fa fa-plus fa-lg"></i></a></span>
             </div>
             <app-loading *ngIf="!questions || loading"></app-loading>
             <div *ngIf="questions ?.length > 0; then tableData; else noRecordsFound"></div>
@@ -27,7 +27,7 @@
                            <td>{{ question.option1 + ', ' + question.option2 + ', ' + question.option3 + ', ' + question.option4 }}</td>
                            <td>{{ question.answer }}</td>
                            <td>
-                              <a [routerLink]="['/questions/edit', question._id]" title="Edit"><i class="fa fa-edit fa-lg"></i></a>
+                              <a [routerLink]="['/questions/edit', question.id]" title="Edit"><i class="fa fa-edit fa-lg"></i></a>
                               &nbsp;
                               <a href="javascript:void(0)" title="Delete" (click)="removeQuestion(question)"><i class="fa fa-remove fa-lg"></i></a>
                            </td>

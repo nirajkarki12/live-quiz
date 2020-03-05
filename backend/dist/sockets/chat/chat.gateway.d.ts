@@ -1,7 +1,6 @@
 import { OnGatewayConnection, OnGatewayDisconnect } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
 import { Room } from '../interfaces/room.interface';
-import { QuestionSet } from '../../questions/interfaces/questionset.interface';
 import { SocketService } from '../services/socket/socket.service';
 import { UsersService } from '../../users/services/users.service';
 import { QuestionService } from '../../questions/services/question/question.service';
@@ -22,6 +21,6 @@ export declare class ChatGateway implements OnGatewayConnection, OnGatewayDiscon
     quizEvent(client: Socket, data: any): Promise<void>;
     quizAnswer(client: Socket, data: any): Promise<void>;
     questionResult(client: Socket, data: any): Promise<void>;
-    quizEnded(client: Socket, set: QuestionSet): Promise<void>;
-    quizTimeOut(client: Socket, questionId: string): Promise<void>;
+    quizEnded(client: Socket, set: any): Promise<void>;
+    quizTimeOut(client: Socket, questionId: number): Promise<void>;
 }

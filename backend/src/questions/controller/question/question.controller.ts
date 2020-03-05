@@ -1,6 +1,6 @@
 import { Controller, Get, HttpException, HttpStatus, Post, Body, Res, Param, Delete, Patch, UploadedFile, UseInterceptors, FileInterceptor } from '@nestjs/common';
 import { QuestionService } from '../../../questions/services/question/question.service';
-import { CreateQuestionDto } from '../../../questions/dto/question/create-question.dto';
+import { CreateQuestionDto } from '../../../questions/dto/create-question.dto';
 import { QuestionsetService } from '../../services/questionset/questionset.service';
 import { diskStorage } from 'multer';
 
@@ -10,14 +10,13 @@ export class QuestionController {
     constructor(private questionService:QuestionService,private questionsetService:QuestionsetService) {}
 
     @Get('set/:id')
-    async eachQuestionSet(@Res() res, @Param('id') id)
+    async eachQuestionSet(@Res() res, @Param('id') id: number)
     {
-        let questions = await this.questionService.getQuestionSet(id);
-        let set = await this.questionsetService.findOneById(id);
+        let set = await this.questionsetService.getQuestionsBySet(id);
         res.status(HttpStatus.OK)
             .send({
                 success:true,
-                data:{questions:questions,set:set},
+                data: set,
                 statusCode:HttpStatus.OK
             })
             
@@ -30,13 +29,12 @@ export class QuestionController {
     @Get('client/:id')
     async questionForClient(@Res() res, @Param('id') id)
     {
-        let questions = await this.questionService.getQuestionForClient(id);
-        let set = await this.questionsetService.findOneById(id);
+        let set = await this.questionsetService.getQuestionsBySetForClient(id);
         res.status(HttpStatus.OK)
             .send({
-                success:true,
-                data:{questions:questions,set:set},
-                statusCode:HttpStatus.OK
+                success: true,
+                data: set,
+                statusCode: HttpStatus.OK
             })
         try {
         } catch (error) {
@@ -49,6 +47,7 @@ export class QuestionController {
     {
         try {
             let questions = await this.questionService.fetchQuestions();
+            
             res.status(HttpStatus.OK)
             .send({
                 success: true,
@@ -81,9 +80,9 @@ export class QuestionController {
     }
 
     @Get(':id')
-    async findOneById(@Param('id') id, @Res() res) {
+    async findOneById(@Param('id') id: number, @Res() res) {
         try {
-            let question = await this.questionService.findOneById(id);
+            let question = await this.questionService.findOneByIdWithSet(id);
             res.status(HttpStatus.OK)
                 .send({
                     success: true,
@@ -133,7 +132,7 @@ export class QuestionController {
                         option4:row.values[5],
                         answer:row.values[6],
                         level:row.values[7],
-                        questionSetId:id,
+                        questionSet:id,
                     }
 
                     await self.questionService.create(questionObj);

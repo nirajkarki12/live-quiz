@@ -47,7 +47,6 @@ export class UpdateComponent implements OnInit {
         this.router.navigate([AppRoutes.sets]);
       })
       .catch(errorResponse => {
-        console.log(errorResponse);
         this.buttonClicked = false;
         this.toastr.showMessage(errorResponse.error.message, 'error');
       });

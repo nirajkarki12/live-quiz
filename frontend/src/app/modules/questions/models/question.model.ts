@@ -1,6 +1,8 @@
+import { Sets } from './sets.model';
+
 export class Question {
-   _id: string;
-   questionSetId: string;
+   id: number;
+   questionSet?: Sets;
    name: string;
    option1: string;
    option2: string;

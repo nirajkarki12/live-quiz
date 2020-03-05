@@ -104,7 +104,7 @@ let ChatGateway = class ChatGateway {
         return __awaiter(this, void 0, void 0, function* () {
             const token = client.handshake.query.token;
             const user = jwt.decode(token);
-            const question = yield this.questionService.findOneById(data._id);
+            const question = yield this.questionService.findOneById(data.id);
             let isCorrect = false;
             if (data.option === question.answer)
                 isCorrect = true;
@@ -189,7 +189,7 @@ __decorate([
     common_1.UseGuards(ws_jwt_guard_1.WsJwtGuard),
     websockets_1.SubscribeMessage('quiz-timeout'),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [typeof (_f = typeof socket_io_1.Socket !== "undefined" && socket_io_1.Socket) === "function" ? _f : Object, String]),
+    __metadata("design:paramtypes", [typeof (_f = typeof socket_io_1.Socket !== "undefined" && socket_io_1.Socket) === "function" ? _f : Object, Number]),
     __metadata("design:returntype", Promise)
 ], ChatGateway.prototype, "quizTimeOut", null);
 ChatGateway = __decorate([

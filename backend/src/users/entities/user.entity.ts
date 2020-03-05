@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, Unique, CreateDateColumn, UpdateDateColumn, BeforeInsert, BeforeUpdate } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { UserRO } from './ro/user.ro';
+import { UserRO } from '../ro/user.ro';
 
 @Entity()
 @Unique(["email"])

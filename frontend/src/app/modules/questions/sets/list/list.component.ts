@@ -30,7 +30,6 @@ export class ListComponent implements OnInit {
         this.sets = successResponse.body.data;
     })
     .catch(errorResponse => {
-      console.log(errorResponse);
       this.toastr.showMessage(errorResponse.error.message, 'error');
     });
   }
@@ -38,7 +37,7 @@ export class ListComponent implements OnInit {
   removeSet(set: Sets) {
     if (confirm('Are you sure to delete ' + set.name + '\'s Set')) {
       this.setsService
-        .removeSet(set._id)
+        .removeSet(set.id)
         .then(successResponse => {
           this.toastr.showMessage('Set deleted Successfully');
           this.fetchLists();

@@ -1,6 +1,7 @@
 export class Sets {
-   _id: string;
+   id: number;
    name: string;
    scheduleDate: any;
    isCompleted: Boolean;
+   questions?: [];
 }

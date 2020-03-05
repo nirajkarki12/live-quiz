@@ -33,7 +33,7 @@ export class CreateComponent implements OnInit {
     this.route.data
     .subscribe((data) => {
       this.sets = data.sets.data;
-      this.questionForm = this.questionFormService.createForm(this.question, this.sets._id);
+      this.questionForm = this.questionFormService.createForm(this.question, this.sets);
     });
   }
 
@@ -43,7 +43,7 @@ export class CreateComponent implements OnInit {
       .create(this.questionForm.value)
       .then(response => {
         this.toastr.showMessage('Questions Added Successfully');
-        this.router.navigate([AppRoutes.questions + '/list/' + this.sets._id]);
+        this.router.navigate([AppRoutes.questions + '/list/' + this.sets.id]);
       })
       .catch(errorResponse => {
         console.log(errorResponse);

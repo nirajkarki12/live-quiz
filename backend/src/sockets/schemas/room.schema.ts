@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import { UserSchema } from '../../users/schemas/user.schema';
+// import { UserSchema } from '../../users/schemas/user.schema';
 import { MessageSchema } from './message.schema';
 
 export const RoomSchema = new mongoose.Schema({

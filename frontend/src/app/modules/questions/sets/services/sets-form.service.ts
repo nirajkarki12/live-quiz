@@ -18,7 +18,7 @@ export class SetsFormService {
 
   createForm(sets: Sets) {
     return this.fb.group({
-        _id: [sets._id],
+        id: [sets.id],
         name: [sets.name, [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
         scheduleDate: [sets.scheduleDate, [Validators.required, CustomValidators.minDate(this.currentDate)]],
       });

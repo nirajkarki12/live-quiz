@@ -1,59 +1,68 @@
-import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { QuestionSet } from '../../../questions/interfaces/questionset.interface';
-import { CreateQuestionSetDto } from '../../../questions/dto/questionset/create-questionset.dto';
+import { Repository, MoreThanOrEqual } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { CreateQuestionSetDto } from '../../../questions/dto/create-questionset.dto';
+import * as moment from 'moment';
+
+import { QuestionSet } from '../../entities/question-set.entity';
 
 @Injectable()
 export class QuestionsetService {
 
-    constructor(@InjectModel('QuestionSet') private questionSetModel: Model<QuestionSet>) {}
+  constructor(
+    @InjectRepository(QuestionSet) private questionSetRepository: Repository<QuestionSet>
+  ) {}
 
+  async create(createQuestionSetDto: CreateQuestionSetDto) {
+    return await this.questionSetRepository.save(createQuestionSetDto);
+  }
+  
+  async fetchQuestionSets() {
+    return await this.questionSetRepository.find();
+  }
 
-    async create(createQuestionSetDto: CreateQuestionSetDto) {
+  async delete(id: number) {
+    return await this.questionSetRepository.delete(id);
+  }
 
-        let createdQuestionSet = new this.questionSetModel(createQuestionSetDto);
-        return await createdQuestionSet.save();
+  async findOneById(id: number) {
+    return await this.questionSetRepository.findOne(id);
+  }
+
+  async findAndUpdate(id: number, data: CreateQuestionSetDto)
+  {
+    return await this.questionSetRepository.update(id, data);
+  }
+
+  async getQuestionsBySet(setId: number) {
+    return await this.questionSetRepository
+          .createQueryBuilder('set')
+          .innerJoinAndSelect('set.questions', 'questions')
+          .addSelect('questions.answer')
+          .orderBy('questions.level', 'ASC')
+          .getOne();
+    // return await this.questionSetRepository.findOne(setId, { relations: ['questions'] });
+  }
+
+  async getQuestionsBySetForClient(setId: number) {
+    return await this.questionSetRepository
+          .createQueryBuilder('set')
+          .innerJoinAndSelect('set.questions', 'questions')
+          .orderBy('questions.level', 'ASC')
+          .getOne();
+  }
+
+  async getActiveSets()
+  {
+    return await this.questionSetRepository.find({
+      where: {
+        isCompleted: false,
+        scheduleDate: MoreThanOrEqual(moment(new Date()).format('YYYY-MM-DD'))
+      },
+      order: {
+        scheduleDate: 'ASC'
       }
-    
-      async fetchQuestionSets():Model<QuestionSet> {
-          return await this.questionSetModel.find();
-      }
-
-      async delete(id) {
-        return await this.questionSetModel.remove({_id:id});
-      }
-
-      async findOneById(id): Model<QuestionSet>{
-        return await this.questionSetModel.findOne({_id: id});
-      }
-
-      async findAndUpdate(id, data: CreateQuestionSetDto)
-      {
-        return await this.questionSetModel.findOneAndUpdate({_id: id},data,{new:true});
-      }
-
-      async getQuestions(id)
-      {
-        return await this.questionSetModel.aggregate([
-          {
-            $lookup:{
-              from:'questions',
-              localField:'id',
-              foreignField:'questions',
-              as:'questions'
-            }
-          }
-        ]);
-      }
-
-      async getActiveSets()
-      {
-         return await this.questionSetModel.find({
-           $where : function(){
-             return (this.isCompleted == false && this.scheduleDate >= new Date());
-           }
-         })
-      }
+    });
+  }
 
 }

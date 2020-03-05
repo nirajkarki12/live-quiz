@@ -47,7 +47,7 @@ export class SetsService {
      .catch(this.handleError);
   }
 
-  removeSet(setId: string): Promise<any> {
+  removeSet(setId: number): Promise<any> {
     return this.http
       .delete(
         ApiConstants.API_ENDPOINT +
@@ -76,7 +76,7 @@ export class SetsService {
 
     return this.http.patch(
       ApiConstants.API_ENDPOINT +
-      ApiConstants.QUESTIONSETS + '/' + setModel._id
+      ApiConstants.QUESTIONSETS + '/' + setModel.id
       , setModel,
       { observe: 'response'} )
      .toPromise()

@@ -21,7 +21,7 @@ const routes: Routes = [
         path: AppRoutes.listWithId,
         component: ListComponent,
         resolve: {
-          'data': QuestionDetailsResolverService,
+          'set': QuestionDetailsResolverService,
         },
         data: {
           title: 'Questions List'

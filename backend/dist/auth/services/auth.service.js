@@ -29,14 +29,14 @@ let AuthService = class AuthService {
         return __awaiter(this, void 0, void 0, function* () {
             if (!loginAttempt.email || !loginAttempt.password)
                 throw new common_1.UnauthorizedException('Username/Password is Required');
-            const userToAttempt = yield this.usersService.findOneByEmail(loginAttempt.email);
-            if (!userToAttempt)
+            const user = yield this.usersService.findOneByEmail(loginAttempt.email);
+            if (!user)
                 throw new common_1.UnauthorizedException('Username/Password Mismatched');
             return new Promise((resolve, reject) => {
-                userToAttempt.checkPassword(loginAttempt.password, (err, isMatch) => {
+                user.checkPassword(loginAttempt.password, (err, isMatch) => {
                     if (err || !isMatch)
                         reject(new common_1.UnauthorizedException('Username/Password Mismatched'));
-                    resolve(this.createJwtPayload(userToAttempt));
+                    resolve(this.createJwtPayload(user));
                 });
             });
         });

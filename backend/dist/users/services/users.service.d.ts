@@ -1,11 +1,12 @@
-import { Model } from 'mongoose';
-import { User } from '../../users/interfaces/user.interface';
+import { Repository } from 'typeorm';
 import { CreateUserDto } from '../../users/dto/create-user.dto';
 import { CreateSocketUserDto } from '../../users/dto/create-socket-user.dto';
+import { User } from '../entities/user.entity';
 export declare class UsersService {
-    private userModel;
-    constructor(userModel: Model<User>);
-    create(createUserDto: CreateUserDto): Promise<any>;
-    createWsUser(createUserDto: CreateSocketUserDto): Promise<any>;
-    findOneByEmail(email: any): Model<User>;
+    private userRepository;
+    constructor(userRepository: Repository<User>);
+    findById(id: number): Promise<User>;
+    findOneByEmail(userEmail: string): Promise<User>;
+    create(createUserDto: CreateUserDto): Promise<User>;
+    createWsUser(createUserDto: CreateSocketUserDto): Promise<User>;
 }

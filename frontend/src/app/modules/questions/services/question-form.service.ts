@@ -4,6 +4,7 @@ import { CustomValidators } from 'ngx-custom-validators';
 
 // Models
 import { Question } from '../models/question.model';
+import { Sets } from '../models/sets.model';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ export class QuestionFormService {
     private fb: FormBuilder,
   ) { }
 
-  createForm(question: Question, setId: String) {
+  createForm(question: Question, set: Sets) {
     let option1 = new FormControl(question.option1, Validators.required);
     let option2 = new FormControl(question.option2, Validators.required);
     let option3 = new FormControl(question.option3, Validators.required);
@@ -22,7 +23,7 @@ export class QuestionFormService {
     let answer = new FormControl(question.answer, [Validators.required]);
 
     return this.fb.group({
-        _id: [question._id],
+        id: [question.id],
         name: [question.name, [Validators.required, Validators.minLength(2), Validators.maxLength(200)]],
         option1: option1,
         option2: option2,
@@ -30,7 +31,7 @@ export class QuestionFormService {
         option4: option4,
         answer: answer,
         level: [question.level, [Validators.required]],
-        questionSetId: [setId, [Validators.required]],
+        questionSet: [set, [Validators.required]],
       });
   }
 }
