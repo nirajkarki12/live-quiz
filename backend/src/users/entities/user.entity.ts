@@ -1,9 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, Unique, CreateDateColumn, UpdateDateColumn, BeforeInsert, BeforeUpdate } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, Unique, Index, CreateDateColumn, UpdateDateColumn, BeforeInsert, BeforeUpdate } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { UserRO } from '../ro/user.ro';
 
 @Entity()
 @Unique(["email"])
+@Index(["userId"])
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
@@ -24,7 +25,7 @@ export class User {
   isAdmin: boolean;
 
   @Column({ default: null })
-  userId: string;
+  userId: number;
 
   @CreateDateColumn({ select: false})
   createdAt: Date;

@@ -93,7 +93,8 @@ let ChatGateway = class ChatGateway {
                 yield this.server.to(this.room.name).emit('quiz-started', { currentTime: new Date() });
             }
             else if (data.question) {
-                yield this.server.to(this.room.name).emit('quiz-question', { question: data.question, timer: 10000 });
+                let question = data.question;
+                yield this.server.to(this.room.name).emit('quiz-question', { question: question, timer: 10000 });
             }
             else {
                 this.quizStarted = false;
@@ -104,14 +105,16 @@ let ChatGateway = class ChatGateway {
         return __awaiter(this, void 0, void 0, function* () {
             const token = client.handshake.query.token;
             const user = jwt.decode(token);
-            const question = yield this.questionService.findOneById(data.id);
+            let question = yield this.questionService.findOneById(data.id);
+            let userObj = yield this.userService.findOneByUserId(user.userId);
             let isCorrect = false;
+            console.log('data', question);
             if (data.option === question.answer)
                 isCorrect = true;
             yield this.quizService.create({
-                user: user.userId,
-                question: question.id,
-                answer: data.option,
+                user: userObj,
+                question: question,
+                input: data.option,
                 isCorrect: isCorrect
             });
             if (!isCorrect)
@@ -135,13 +138,14 @@ let ChatGateway = class ChatGateway {
             const token = client.handshake.query.token;
             const user = jwt.decode(token);
             let question = yield this.questionService.findOneById(questionId);
+            let userObj = yield this.userService.findOneByUserId(user.userId);
             if (!question)
                 throw new websockets_1.WsException('Question not found');
             yield this.server.to(client.id).emit('view-only', { viewOnly: true });
             yield this.quizService.create({
-                user: user.userId,
-                question: question.id,
-                isTimeOut: true
+                user: userObj,
+                question: question,
+                isTimeout: true
             });
         });
     }

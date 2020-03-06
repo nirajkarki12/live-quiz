@@ -68,7 +68,31 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.questionResultSubscription = this.dashboardService.questionResult().subscribe((data: any) => {
       let question = data.question;
       let currentIndex = this.questions.findIndex(x => x.id === question.id);
-      this.questions[currentIndex].results = question.results;
+      let res = question.results;
+      let results = {
+        input: '', 
+        option1: '', 
+        option2: '', 
+        option3: '', 
+        option4: ''
+      }
+      res.forEach(x => {
+        if (x.input === this.questions[currentIndex].option1) {
+          results.input = x.input;
+          results.option1 = x.total;
+        } else if (x.input === this.questions[currentIndex].option2) {
+          results.input = x.input;
+          results.option2 = x.total;
+        } else if (x.input === this.questions[currentIndex].option3) {
+          results.input = x.input;
+          results.option3 = x.total;
+        } else if (x.input === this.questions[currentIndex].option4) {
+          results.input = x.input;
+          results.option4 = x.total;
+        } 
+      });
+
+      this.questions[currentIndex].results = results;
     });
 
     this.finalResultSubscription = this.dashboardService.finalResult().subscribe((data: any) => {
@@ -110,6 +134,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.loading = false;
         this.set = successResponse.data;
         this.questions = this.set.questions;
+        delete this.set.questions;
         this.dashboardService.startQuiz(this.set);
     })
     .catch(errorResponse => {

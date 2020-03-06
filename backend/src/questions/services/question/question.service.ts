@@ -19,9 +19,9 @@ export class QuestionService {
 
    async fetchQuestions(): Promise<any> {
       return await this.questionRepository
-         .createQueryBuilder()
-         .addSelect('answer')
-         .getMany()
+         .createQueryBuilder('questions')
+         .addSelect('questions.answer')
+         .getMany();
    }
 
    async delete(id: number) {
@@ -30,8 +30,8 @@ export class QuestionService {
 
    async findOneById(id: number): Promise<any> {
       return await this.questionRepository
-         .createQueryBuilder()
-         .addSelect('answer')
+         .createQueryBuilder('questions')
+         .addSelect('questions.answer')
          .where('id = :questionId', { questionId: id})
          .getOne();
    }

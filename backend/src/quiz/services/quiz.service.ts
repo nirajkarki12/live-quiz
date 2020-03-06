@@ -1,73 +1,70 @@
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Quiz } from '../../quiz/interfaces/quiz.interface';
 import { CreateQuizDto } from '../../quiz/dto/quiz.dto';
-import { Question } from '../../questions/interfaces/question.interface';
-import { QuestionSet } from '../../questions/interfaces/questionset.interface';
+
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+
+import { Quiz } from '../entities/quiz.entity';
+import { Question } from '../../questions/entities/question.entity';
 
 @Injectable()
 export class QuizService {
 
    constructor(
-      @InjectModel('Quiz') private quizModel: Model<Quiz>,
-      @InjectModel('Question') private questionModel: Model<Question>,
-      @InjectModel('QuestionSet') private setModel: Model<QuestionSet>,
+      @InjectRepository(Quiz) private quizRepository: Repository<Quiz>,
+      @InjectRepository(Question) private questionRepository: Repository<Question>,
    ) {}
 
    async create(createQuizDto: CreateQuizDto) {
-      let createdQuiz = new this.quizModel(createQuizDto);
-      return await createdQuiz.save();
+      return await this.quizRepository.save(createQuizDto);
+   }
+
+   async findQuestionById(id: number) {
+    // return await this.questionSetRepository.findOne(setId, { relations: ['questions'] });
+
+      return await this.quizRepository
+            .createQueryBuilder('quiz')
+            .innerJoinAndSelect('quiz.question', 'question')
+            .addSelect('question.answer')
+            .where('question.id = :questionId', { questionId: id})
+            .getOne();
    }
 
    async getQuizResults(question) {
-      let dbQuestion = await this.questionModel.findOne({_id: question._id});
-      let res = await this.quizModel.find({question: question._id});
-     
-      let results = {
-         option1: 0,
-         option2: 0,
-         option3: 0,
-         option4: 0,
-         answer: dbQuestion.answer
-      };
+      let res = await this.questionRepository
+            .query("SELECT qz.input, q.answer, COUNT(qz.input) AS total FROM questions AS q LEFT JOIN quiz AS qz ON qz.questionId = q.id WHERE q.id = ? GROUP BY qz.input", [question.id]);
+      
+      question.answer = res[0].answer;
 
-      res.forEach((x) => {
-         if(x.answer === dbQuestion.option1) {
-            results.option1++;
-         }else if (x.answer === dbQuestion.option2) {
-            results.option2++;
-         }else if (x.answer === dbQuestion.option3) {
-            results.option3++;
-         }else if (x.answer === dbQuestion.option4) {
-            results.option4++;
-         }
-      });
-      question.results = results;
+      question.results = [
+         {
+            input: question.option1,
+            total: (res.filter(x => x.input === question.option1).map(obj => obj.total)[0]) || '0'
+         },
+         {
+            input: question.option2,
+            total: res.filter(x => x.input === question.option2).map(obj => obj.total)[0] || '0'
+         },
+         {
+            input: question.option3,
+            total: res.filter(x => x.input === question.option3).map(obj => obj.total)[0] || '0'
+         },
+         {
+            input: question.option4,
+            total: res.filter(x => x.input === question.option4).map(obj => obj.total)[0] || '0'
+         },
+      ];
 
       return question;
    }
 
    async getFinalResults(set) {
-      let questions = await this.questionModel.find({questionSetId: set._id}, {"_id": true});
-      let totalQuestion = questions.length;
-      var questionIds = Object.keys(questions).map((k) => questions[k]._id);
-
-      let res = await this.quizModel.find({
-         question: {
-            $in: questionIds
-         },
-         isTimeOut: false,
-         isCorrect: true,
-      });
-
-      var userIds = Object.keys(res).map((k) => res[k].user);
-      console.log('res',userIds);
-
+      let res = await this.questionRepository
+            .query("SELECT qz.input, q.answer, COUNT(qz.input) AS total FROM questions AS q LEFT JOIN quiz AS qz ON qz.questionId = q.id WHERE q.id = ? GROUP BY qz.input", [set.id]);
       
       return res;
    }
-
 }
 
 // totalQuestion: ,

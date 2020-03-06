@@ -7,14 +7,13 @@ import { QuizController } from './controller/quiz.controller';
 import { QuestionsModule } from '../questions/questions.module';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { QuizInput } from './entities/quiz-input.entity';
 import { Quiz } from './entities/quiz.entity';
 @Module({
    imports : [
       MongooseModule.forFeature([{name: 'Quiz', schema: QuizSchema}]),
       PassportModule.register({defaultStrategy: 'jwt', session: false}),
       QuestionsModule,
-      TypeOrmModule.forFeature([Quiz, QuizInput])
+      TypeOrmModule.forFeature([Quiz])
    ],
    providers: [QuizService],
    exports: [TypeOrmModule, QuizService],

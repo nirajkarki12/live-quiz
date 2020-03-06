@@ -110,7 +110,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
       // this.quizStarted = true;
       await this.server.to(this.room.name).emit('quiz-started', {currentTime: new Date()}); // Quiz started
     }else if(data.question) {
-      await this.server.to(this.room.name).emit('quiz-question', {question: data.question, timer: 10000}); // Sends Questions
+      let question = data.question;
+      await this.server.to(this.room.name).emit('quiz-question', {question: question, timer: 10000}); // Sends Questions
     }else{
       this.quizStarted = false;
     }
@@ -122,19 +123,19 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
   async quizAnswer(client: Socket, data: any) {
     const token = client.handshake.query.token;
     const user: UserInterface = <UserInterface> jwt.decode(token);
-
-    const question = await this.questionService.findOneById(data.id);
+    let question = await this.questionService.findOneById(data.id);
     
-    let isCorrect = false;
+    let userObj = await this.userService.findOneByUserId(user.userId);
 
+    let isCorrect = false;
     if (data.option === question.answer) isCorrect = true;
 
     // Adding log of quiz
     await this.quizService.create({
-        user:user.userId,
-        question:question.id,
-        answer:data.option,
-        isCorrect:isCorrect
+        user: userObj,
+        question: question,
+        input: data.option,
+        isCorrect: isCorrect
     });
 
     if(!isCorrect) await this.server.to(client.id).emit('view-only', {viewOnly: true}); // User mode changed to View only
@@ -167,14 +168,16 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
     const user: UserInterface = <UserInterface> jwt.decode(token);
 
     let question = await this.questionService.findOneById(questionId);
+    let userObj = await this.userService.findOneByUserId(user.userId);
+
     if(!question) throw new WsException('Question not found');
 
     await this.server.to(client.id).emit('view-only', {viewOnly: true}); // User mode changed to View only
     // Adding log of quiz
     await this.quizService.create({
-        user:user.userId,
-        question:question.id,
-        isTimeOut: true
+        user: userObj,
+        question: question,
+        isTimeout: true
     });
   }
 

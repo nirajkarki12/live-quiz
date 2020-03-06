@@ -1,7 +1,10 @@
+import { Question } from "../../questions/entities/question.entity";
+import { User } from "../../users/entities/user.entity";
+
 export class CreateQuizDto {
-    readonly user: number;
-    readonly question: any;
-    readonly answer?: string;
+    readonly question: Question;
+    readonly user: User;
+    readonly input?: string;
     readonly isCorrect?: boolean;
-    readonly isTimeOut?: boolean;
- }
+    readonly isTimeout?: boolean;
+}

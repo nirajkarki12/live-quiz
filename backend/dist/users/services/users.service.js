@@ -38,6 +38,11 @@ let UsersService = class UsersService {
             return yield this.userRepository.findOne({ email: userEmail });
         });
     }
+    findOneByUserId(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.userRepository.findOne({ userId: userId });
+        });
+    }
     create(createUserDto) {
         return __awaiter(this, void 0, void 0, function* () {
             let user = yield this.userRepository.create(createUserDto);
