@@ -27,13 +27,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
   quizStarted = false;
   loading = false;
   questionCompleted = true;
+  finalResults = null;
 
   preMessageSubscription: Subscription;
   messageSubscription: Subscription;
   totalUsersSubscription: Subscription;
   usersChangedSubscription: Subscription;
   questionResultSubscription: Subscription;
-  viewOnlySubscription: Subscription;
   finalResultSubscription: Subscription;
 
   constructor(
@@ -55,10 +55,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.totalUsersSubscription = this.dashboardService.getTotalUsersRxSubject()
         .subscribe(total => {
           this.totalUsers = total;
-    });
-
-    this.viewOnlySubscription = this.dashboardService.viewOnly().subscribe((data: any) => {
-      console.log(data);
     });
 
     this.messageSubscription = this.dashboardService.receiveChat().subscribe((message: any) => {
@@ -92,11 +88,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
         } 
       });
 
+      this.questions[currentIndex].answer = question.answer;
       this.questions[currentIndex].results = results;
     });
 
     this.finalResultSubscription = this.dashboardService.finalResult().subscribe((data: any) => {
       console.log('final result', data);
+      this.finalResults = data;
     });
 
     this.usersChangedSubscription = this.dashboardService.usersChanged().subscribe((data: any) => {
@@ -145,11 +143,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   endQuiz() {
-    this.dashboardService.endQuiz(this.set);
-    this.quizStarted = false;
-    this.questions = null;
-    this.questionCompleted = true;
-    this.fetchLists();
+    if (confirm('Are you sure to end this quiz?')) {
+      this.dashboardService.endQuiz(this.set);
+      this.quizStarted = false;
+      this.questions = null;
+      this.fetchLists();
+    }
+  }
+
+  showFinalQuiz() {
+    if (confirm('Are you sure to show final results to players?')) {
+      this.dashboardService.quizFinalResult(this.set);
+      this.questionCompleted = true;
+    }
   }
 
   sendQuestionsToClient(question: Question) {
@@ -202,10 +208,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     if (this.questionResultSubscription) {
       this.questionResultSubscription.unsubscribe();
-    }
-
-    if (this.viewOnlySubscription) {
-      this.viewOnlySubscription.unsubscribe();
     }
 
     if (this.finalResultSubscription) {

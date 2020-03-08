@@ -123,6 +123,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
   async quizAnswer(client: Socket, data: any) {
     const token = client.handshake.query.token;
     const user: UserInterface = <UserInterface> jwt.decode(token);
+    console.log(user.name + '- ' + data.option)
     let question = await this.questionService.findOneById(data.id);
     
     let userObj = await this.userService.findOneByUserId(user.userId);
@@ -135,6 +136,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
         user: userObj,
         question: question,
         input: data.option,
+        inputTime: data.timeTaken,
         isCorrect: isCorrect
     });
 
@@ -152,11 +154,18 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
 
   // quiz result for client
   @UseGuards(WsJwtGuard)
-  @SubscribeMessage('quiz-ended')
-  async quizEnded(client: Socket, set: any) {
-    const result = await this.quizService.getFinalResults(set);
+  @SubscribeMessage('final-result')
+  async finalResult(client: Socket, set: any) {
+    const result = await this.quizService.getFinalResults(set.id);
 
     await this.server.to(this.room.name).emit('quiz-final-result', result);
+  }
+
+  // end quiz event from backend
+  @UseGuards(WsJwtGuard)
+  @SubscribeMessage('end-quiz')
+  async quizEnded(client: Socket, set: any) {
+    await this.server.to(this.room.name).emit('quiz-ended', {quizEnded: true});
   }
 
   // timeout event

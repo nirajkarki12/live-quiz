@@ -1,6 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn, Unique, Index, CreateDateColumn, UpdateDateColumn, BeforeInsert, BeforeUpdate } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, Unique, Index, OneToMany, CreateDateColumn, UpdateDateColumn, BeforeInsert, BeforeUpdate } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { UserRO } from '../ro/user.ro';
+import { Quiz } from "../../quiz/entities/quiz.entity";
 
 @Entity()
 @Unique(["email"])
@@ -26,6 +27,9 @@ export class User {
 
   @Column({ default: null })
   userId: number;
+
+  @OneToMany(type => Quiz, quiz => quiz.user)
+  quiz: Quiz[];
 
   @CreateDateColumn({ select: false})
   createdAt: Date;

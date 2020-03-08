@@ -25,6 +25,9 @@ export class Quiz {
    @Column({ nullable: true })
    input: string;
 
+   @Column({ default: 0 })
+   inputTime: number;
+
    @Column({ default: false })
    isCorrect: boolean;
 

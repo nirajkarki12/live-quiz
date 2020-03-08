@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { QuestionSet } from "./question-set.entity";
+import { Quiz } from "../../quiz/entities/quiz.entity";
 
 @Entity('questions')
 export class Question {
@@ -29,6 +30,9 @@ export class Question {
 
   @ManyToOne(type => QuestionSet, questionSet => questionSet.questions, { onUpdate: "CASCADE", onDelete: "CASCADE" })
   questionSet: QuestionSet;
+
+  @OneToMany(type => Quiz, quiz => quiz.question)
+  quiz: Quiz[];
 
   @CreateDateColumn({ select: false})
   createdAt: Date;

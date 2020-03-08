@@ -47,7 +47,8 @@
           <div class="card-header">
             {{ quizStarted ? 'Quiz is in Progress (' + set.name + ' Set)' : 'Questions Set' }}
             <div class="pull-right" *ngIf="quizStarted">
-              <button type="button" class="btn btn-pill btn-block btn-primary" (click)="endQuiz()">End Quiz</button>
+              <button type="button" class="btn btn-pill btn-block btn-primary" (click)="showFinalQuiz()">Show Final Result</button>
+              <button type="button" class="btn btn-pill btn-block btn-danger" (click)="endQuiz()">End Quiz</button>
             </div>
           </div>
           <div class="card-body">
@@ -109,7 +110,7 @@
                   <tr *ngIf="question.waitingAnswer || question.disabled ">
                     <td colspan="3">
                       <ul class="answers">
-                        <li [ngClass]="[(question.option1 === question.results?.input) ? 'green' : 'default']">
+                        <li [ngClass]="[(question.option1 === question?.answer) ? 'green' : 'default']">
                           {{ question.option1 }} 
                           <span *ngIf="question.results">
                             <span class="pull-right">
@@ -117,7 +118,7 @@
                             </span>
                           </span>
                         </li>
-                        <li [ngClass]="[(question.option2 === question.results?.input) ? 'green' : 'default']">
+                        <li [ngClass]="[(question.option2 === question?.answer) ? 'green' : 'default']">
                           {{ question.option2 }} 
                           <span *ngIf="question.results">
                             <span class="pull-right">
@@ -125,7 +126,7 @@
                             </span>
                           </span>
                         </li>
-                        <li [ngClass]="[(question.option3 === question.results?.input) ? 'green' : 'default']">
+                        <li [ngClass]="[(question.option3 === question?.answer) ? 'green' : 'default']">
                           {{ question.option3 }}
                           <span *ngIf="question.results">
                             <span class="pull-right">
@@ -133,7 +134,7 @@
                             </span>
                           </span>
                         </li>
-                        <li [ngClass]="[(question.option4 === question.results?.input) ? 'green' : 'default']">
+                        <li [ngClass]="[(question.option4 === question?.answer) ? 'green' : 'default']">
                           {{ question.option4 }}
                           <span *ngIf="question.results">
                             <span class="pull-right">

@@ -5,6 +5,7 @@ export class CreateQuizDto {
     readonly question: Question;
     readonly user: User;
     readonly input?: string;
+    readonly inputTime?: number;
     readonly isCorrect?: boolean;
     readonly isTimeout?: boolean;
 }

@@ -108,7 +108,6 @@ let ChatGateway = class ChatGateway {
             let question = yield this.questionService.findOneById(data.id);
             let userObj = yield this.userService.findOneByUserId(user.userId);
             let isCorrect = false;
-            console.log('data', question);
             if (data.option === question.answer)
                 isCorrect = true;
             yield this.quizService.create({
