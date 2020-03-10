@@ -154,31 +154,62 @@
       </div>
       <div class="{{ quizStarted ? 'col-md-4' : 'col-md-8'}}">
         <div class="card">
-          <div id="frame">
-            <div class="content">
-              <div class="card-header">
-                Public Chat
-              </div>
-              <div class="messages" #scrollMe [scrollTop]="scrollMe.scrollHeight">
-                <ul *ngIf="messages">
-                  <li *ngFor="let m of messages" [ngClass]="m.isAdminUser ? 'replies' : 'sent'">
-                    <span class="username">{{ m.userName }}</span>
-                    <img src="{{ m.userImage || 'assets/images/logo.png' }}" alt="" />
-                    <p>{{ m.message }}</p>
-                    <br>
-                    <sub>{{ m.createdAt | amTimeAgo }}</sub>
-                  </li>
-                </ul>
-              </div>
-              <div class="message-input">
-                <div class="wrap">
-                <input type="text" [(ngModel)]="message" (keyup.enter)="sendMessage()" placeholder="Write your message..." />
-                <i class="fa fa-paperclip attachment" aria-hidden="true"></i>
-                <button class="submit" (click)="sendMessage()"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+          <div *ngIf="quizStarted; then questionDetail; else chat"></div>
+          <ng-template #chat>
+            <div id="frame">
+              <div class="content">
+                <div class="card-header">
+                  Public Chat
+                </div>
+                <div class="messages" #scrollMe [scrollTop]="scrollMe.scrollHeight">
+                  <ul *ngIf="messages">
+                    <li *ngFor="let m of messages" [ngClass]="m.isAdminUser ? 'replies' : 'sent'">
+                      <span class="username">{{ m.userName }}</span>
+                      <img src="{{ m.userImage || 'assets/images/logo.png' }}" alt="" />
+                      <p>{{ m.message }}</p>
+                      <br>
+                      <sub>{{ m.createdAt | amTimeAgo }}</sub>
+                    </li>
+                  </ul>
+                </div>
+                <div class="message-input">
+                  <div class="wrap">
+                  <input type="text" [(ngModel)]="message" (keyup.enter)="sendMessage()" placeholder="Write your message..." />
+                  <i class="fa fa-paperclip attachment" aria-hidden="true"></i>
+                  <button class="submit" (click)="sendMessage()"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          </ng-template>
+
+          <ng-template #questionDetail>
+            <div class="questionFinishDetail">
+              <div class="heading">Correct Users Count</div>
+              <ol>
+                <li *ngFor="let q of questionFinished">
+
+                  <div *ngIf="q.results">
+                    <span class="question">
+                      {{q.name}}
+                    </span>
+                    <span class="totalAns" *ngIf="q.answer && q.results?.input1 === q.answer">
+                      {{q.results?.option1}}
+                    </span>
+                    <span class="totalAns" *ngIf="q.answer && q.results?.input2 === q.answer">
+                      {{q.results?.option2}}
+                    </span>
+                    <span class="totalAns" *ngIf="q.answer && q.results?.input3 === q.answer">
+                      {{q.results?.option3}}
+                    </span>
+                    <span class="totalAns" *ngIf="q.answer && q.results?.input4 === q.answer">
+                      {{q.results?.option4}}
+                    </span>
+                  </div>
+                </li>
+              </ol>
+            </div>
+          </ng-template>
         </div>
       </div>
    </div><!--/.row-->

@@ -21,6 +21,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   sets: Sets;
   set: Sets = new Sets();
   questions: Question[];
+  questionFinished: Question[];
   messages: Array<any>;
   totalUsers: number;
   message = '';
@@ -66,7 +67,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
       let currentIndex = this.questions.findIndex(x => x.id === question.id);
       let res = question.results;
       let results = {
-        input: '', 
+        input1: '', 
+        input2: '', 
+        input3: '', 
+        input4: '', 
         option1: '', 
         option2: '', 
         option3: '', 
@@ -74,22 +78,28 @@ export class DashboardComponent implements OnInit, OnDestroy {
       }
       res.forEach(x => {
         if (x.input === this.questions[currentIndex].option1) {
-          results.input = x.input;
+          results.input1 = x.input;
           results.option1 = x.total;
         } else if (x.input === this.questions[currentIndex].option2) {
-          results.input = x.input;
+          results.input2 = x.input;
           results.option2 = x.total;
         } else if (x.input === this.questions[currentIndex].option3) {
-          results.input = x.input;
+          results.input3 = x.input;
           results.option3 = x.total;
         } else if (x.input === this.questions[currentIndex].option4) {
-          results.input = x.input;
+          results.input4 = x.input;
           results.option4 = x.total;
         } 
       });
 
       this.questions[currentIndex].answer = question.answer;
       this.questions[currentIndex].results = results;
+
+      if(!this.questionFinished) {
+        this.questionFinished = [this.questions[currentIndex]];
+      }else{
+        this.questionFinished.push( this.questions[currentIndex]);
+      }
     });
 
     this.finalResultSubscription = this.dashboardService.finalResult().subscribe((data: any) => {
@@ -147,6 +157,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.dashboardService.endQuiz(this.set);
       this.quizStarted = false;
       this.questions = null;
+      this.questionFinished = null;
       this.fetchLists();
     }
   }
@@ -175,7 +186,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       // this.dashboardService.resultRequest(question);
       this.questions[currentIndex].disabled = true;
       this.loading = false;
-    }, 5000);
+    }, 1000);
   }
 
   requestQuestionResult(question: Question) {
