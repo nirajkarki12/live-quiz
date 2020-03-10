@@ -17,7 +17,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var _a, _b, _c, _d, _e, _f;
+var _a, _b, _c, _d, _e, _f, _g;
 const websockets_1 = require("@nestjs/websockets");
 const common_1 = require("@nestjs/common");
 const jwt = require("jsonwebtoken");
@@ -105,6 +105,7 @@ let ChatGateway = class ChatGateway {
         return __awaiter(this, void 0, void 0, function* () {
             const token = client.handshake.query.token;
             const user = jwt.decode(token);
+            console.log(user.name + '- ' + data.option);
             let question = yield this.questionService.findOneById(data.id);
             let userObj = yield this.userService.findOneByUserId(user.userId);
             let isCorrect = false;
@@ -114,6 +115,7 @@ let ChatGateway = class ChatGateway {
                 user: userObj,
                 question: question,
                 input: data.option,
+                inputTime: data.timeTaken,
                 isCorrect: isCorrect
             });
             if (!isCorrect)
@@ -126,10 +128,15 @@ let ChatGateway = class ChatGateway {
             yield this.server.to(this.room.name).emit('question-result', { question: questionResult });
         });
     }
+    finalResult(client, set) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield this.quizService.getFinalResults(set.id);
+            yield this.server.to(this.room.name).emit('quiz-final-result', result);
+        });
+    }
     quizEnded(client, set) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield this.quizService.getFinalResults(set);
-            yield this.server.to(this.room.name).emit('quiz-final-result', result);
+            yield this.server.to(this.room.name).emit('quiz-ended', { quizEnded: true });
         });
     }
     quizTimeOut(client, questionId) {
@@ -183,16 +190,23 @@ __decorate([
 ], ChatGateway.prototype, "questionResult", null);
 __decorate([
     common_1.UseGuards(ws_jwt_guard_1.WsJwtGuard),
-    websockets_1.SubscribeMessage('quiz-ended'),
+    websockets_1.SubscribeMessage('final-result'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [typeof (_e = typeof socket_io_1.Socket !== "undefined" && socket_io_1.Socket) === "function" ? _e : Object, Object]),
+    __metadata("design:returntype", Promise)
+], ChatGateway.prototype, "finalResult", null);
+__decorate([
+    common_1.UseGuards(ws_jwt_guard_1.WsJwtGuard),
+    websockets_1.SubscribeMessage('end-quiz'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [typeof (_f = typeof socket_io_1.Socket !== "undefined" && socket_io_1.Socket) === "function" ? _f : Object, Object]),
     __metadata("design:returntype", Promise)
 ], ChatGateway.prototype, "quizEnded", null);
 __decorate([
     common_1.UseGuards(ws_jwt_guard_1.WsJwtGuard),
     websockets_1.SubscribeMessage('quiz-timeout'),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [typeof (_f = typeof socket_io_1.Socket !== "undefined" && socket_io_1.Socket) === "function" ? _f : Object, Number]),
+    __metadata("design:paramtypes", [typeof (_g = typeof socket_io_1.Socket !== "undefined" && socket_io_1.Socket) === "function" ? _g : Object, Number]),
     __metadata("design:returntype", Promise)
 ], ChatGateway.prototype, "quizTimeOut", null);
 ChatGateway = __decorate([

@@ -31,7 +31,6 @@ let WsJwtGuard = class WsJwtGuard {
             const client = context.switchToWs().getClient();
             const token = client.handshake.query.token;
             const jwtPayload = jwt.decode(token);
-            console.log('client', jwtPayload);
             if (!jwtPayload)
                 return false;
             if (jwtPayload.isAdmin)

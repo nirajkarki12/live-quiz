@@ -21,6 +21,7 @@ export declare class ChatGateway implements OnGatewayConnection, OnGatewayDiscon
     quizEvent(client: Socket, data: any): Promise<void>;
     quizAnswer(client: Socket, data: any): Promise<void>;
     questionResult(client: Socket, data: any): Promise<void>;
+    finalResult(client: Socket, set: any): Promise<void>;
     quizEnded(client: Socket, set: any): Promise<void>;
     quizTimeOut(client: Socket, questionId: number): Promise<void>;
 }
