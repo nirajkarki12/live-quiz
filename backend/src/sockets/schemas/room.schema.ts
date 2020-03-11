@@ -7,7 +7,7 @@ export const RoomSchema = new mongoose.Schema({
       type: String,
       required: true 
     },
-    isPrivate: {
+    isClosed: {
       type: Boolean,
       default: false
     },

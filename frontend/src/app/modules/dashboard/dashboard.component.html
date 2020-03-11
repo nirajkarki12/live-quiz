@@ -63,7 +63,14 @@
                       <br>
                       <em><small>{{ set.scheduleDate | date:'yyyy-MM-dd' }}</small></em>
                     </td>
-                    <td><button type="button" class="btn btn-pill btn-block btn-primary" (click)="startQuiz(set)">Start</button></td>
+                    <td>
+                      <span [ngSwitch]="set.status">
+                        <span class="blink" *ngSwitchCase="2">
+                          Quiz in progress
+                        </span>
+                        <button type="button" class="btn btn-pill btn-block btn-primary" (click)="startQuiz(set)" *ngSwitchCase="1">Start</button>
+                      </span>
+                    </td>
                   </tr>
                 </tbody>
               </table>

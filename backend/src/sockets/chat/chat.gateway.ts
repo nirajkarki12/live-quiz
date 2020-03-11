@@ -17,7 +17,9 @@ import { Room } from '../interfaces/room.interface';
 import { SocketService } from '../services/socket/socket.service';
 import { UsersService } from '../../users/services/users.service';
 import { QuestionService } from '../../questions/services/question/question.service';
+import { QuestionsetService } from '../../questions/services/questionset/questionset.service';
 import { QuizService } from '../../quiz/services/quiz.service';
+import * as moment from 'moment';
 
 @WebSocketGateway() 
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
@@ -30,6 +32,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
     private socketService: SocketService,
     private userService: UsersService,
     private questionService: QuestionService,
+    private questionSetService: QuestionsetService,
     private quizService: QuizService
   ){}
 
@@ -40,10 +43,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
       if (!user) throw new WsException('Can\'t Connect to network');
       const userName: string = user.name;
 
-      // creating and joining users to public
-      this.room = await this.socketService.findRoomByName('public');
+      // creating and joining users to public room
+      let newRoom = 'public-' + moment(new Date()).format('YYYY-MM-DD');
+      this.room = await this.socketService.findRoomByName(newRoom);
       if(!this.room) {
-        this.room = await this.socketService.createRoom('public');
+        this.room = await this.socketService.createRoom(newRoom);
       }
       // await this.socketService.addUsersToRoom(user, this.room.id);
       
@@ -108,6 +112,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
 
     if(data.set) {
       // this.quizStarted = true;
+      await this.questionSetService.updateStatus(data.set.id, { status: 2});
+
       await this.server.to(this.room.name).emit('quiz-started', {currentTime: new Date()}); // Quiz started
     }else if(data.question) {
       let question = data.question;
@@ -123,7 +129,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
   async quizAnswer(client: Socket, data: any) {
     const token = client.handshake.query.token;
     const user: UserInterface = <UserInterface> jwt.decode(token);
-    console.log(user.name + '- ' + data.option)
+
     let question = await this.questionService.findOneById(data.id);
     
     let userObj = await this.userService.findOneByUserId(user.userId);
@@ -165,6 +171,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
   @UseGuards(WsJwtGuard)
   @SubscribeMessage('end-quiz')
   async quizEnded(client: Socket, set: any) {
+    await this.questionSetService.updateStatus(set.id, { status: 3, isCompleted: true });
+    await this.socketService.updateRoom(this.room.id, {isClosed: true});
     await this.server.to(this.room.name).emit('quiz-ended', {quizEnded: true});
   }
 

@@ -3,7 +3,7 @@
       <div class="col-lg-12">
          <div class="card">
             <div class="card-header">
-               <i class="fa fa-align-justify"></i> Questions List
+               <i class="fa fa-align-justify"></i> Questions List ({{ set.name }})
                <span class="float-right"><a [routerLink]="['/questions/create', set.id]" title="Add Questions"><i class="fa fa-plus fa-lg"></i></a></span>
             </div>
             <app-loading *ngIf="!questions || loading"></app-loading>
@@ -27,9 +27,11 @@
                            <td>{{ question.option1 + ', ' + question.option2 + ', ' + question.option3 + ', ' + question.option4 }}</td>
                            <td>{{ question.answer }}</td>
                            <td>
-                              <a [routerLink]="['/questions/edit', question.id]" title="Edit"><i class="fa fa-edit fa-lg"></i></a>
-                              &nbsp;
-                              <a href="javascript:void(0)" title="Delete" (click)="removeQuestion(question)"><i class="fa fa-remove fa-lg"></i></a>
+                              <span *ngIf="(set.status === 1)">
+                                 <a [routerLink]="['/questions/edit', question.id]" title="Edit"><i class="fa fa-edit fa-lg"></i></a>
+                                 &nbsp;
+                                 <a href="javascript:void(0)" title="Delete" (click)="removeQuestion(question)"><i class="fa fa-remove fa-lg"></i></a>
+                              </span>
                            </td>
                         </tr>
                      </tbody>

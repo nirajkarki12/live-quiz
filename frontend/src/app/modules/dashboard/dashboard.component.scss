@@ -312,3 +312,16 @@ ul.answers li {
 .winners h3.heading{
   margin-bottom: -1px;
 }
+
+span.blink {
+  font-size: 18px;
+  vertical-align: text-top;
+  font-family: cursive;
+  color: #000;
+  animation: blink 1s linear infinite;
+}
+@keyframes blink{
+0%{opacity: 0;}
+50%{opacity: .5;}
+100%{opacity: 1;}
+}

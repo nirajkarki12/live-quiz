@@ -24,15 +24,23 @@
                            <td>{{ index + 1 }}</td>
                            <td>{{ set.name }}</td>
                            <td>{{ set.scheduleDate | date:'yyyy-MM-dd' }}</td>
-                           <td>{{ set.isCompleted ? 'Finished' : 'Pending' }}</td>
                            <td>
-                              <a [routerLink]="['/questions/create', set.id]" title="Add Questions"><i class="fa fa-plus fa-lg"></i></a>
+                              <span [ngSwitch]="set.status">
+                                 <span *ngSwitchCase="1">Active</span>
+                                 <span *ngSwitchCase="2">Quiz in progress</span>
+                                 <span *ngSwitchCase="3">Completed</span>
+                              </span>
+                           </td>
+                           <td>
+                              <a [routerLink]="['/questions/list', set.id]" title="View Questions" *ngIf="set.status !== 2"><i class="fa fa-list fa-lg"></i></a>
                                  &nbsp;
-                              <a [routerLink]="['/questions/list', set.id]" title="View Questions"><i class="fa fa-list fa-lg"></i></a>
+                              <span *ngIf="set.status === 1">
+                                 <a [routerLink]="['/questions/create', set.id]" title="Add Questions" ><i class="fa fa-plus fa-lg"></i></a>
+                                    &nbsp;
+                                 <a [routerLink]="['/sets/edit', set.id]" title="Edit"><i class="fa fa-edit fa-lg"></i></a>
                                  &nbsp;
-                              <a [routerLink]="['/sets/edit', set.id]" title="Edit"><i class="fa fa-edit fa-lg"></i></a>
-                              &nbsp;
-                              <a href="javascript:void(0)" title="Delete" (click)="removeSet(set)"><i class="fa fa-remove fa-lg"></i></a>
+                                 <a href="javascript:void(0)" title="Delete" (click)="removeSet(set)"><i class="fa fa-remove fa-lg"></i></a>
+                              </span>
                            </td>
                         </tr>
                      </tbody>

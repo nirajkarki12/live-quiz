@@ -29,13 +29,37 @@ export class QuestionController {
     @Get('client/:id')
     async questionForClient(@Res() res, @Param('id') id)
     {
-        let set = await this.questionsetService.getQuestionsBySetForClient(id);
-        res.status(HttpStatus.OK)
-            .send({
-                success: true,
-                data: set,
-                statusCode: HttpStatus.OK
-            })
+        let checkPreviousQuiz = await this.questionsetService.findInProgress();
+        let checkIfFinished = await this.questionsetService.findInFinished(id);
+
+        if(checkPreviousQuiz)
+        {
+            res.status(HttpStatus.OK)
+                .send({
+                    success: false,
+                    data: [],
+                    message: 'Quiz already in Progress',
+                    statusCode: HttpStatus.OK
+                });
+        }else if( checkIfFinished){
+            res.status(HttpStatus.OK)
+                .send({
+                    success: false,
+                    data: [],
+                    message: 'This quiz has already been completed',
+                    statusCode: HttpStatus.OK
+                });
+        }else {
+
+            let set = await this.questionsetService.getQuestionsBySetForClient(id);
+
+            res.status(HttpStatus.OK)
+                .send({
+                    success: true,
+                    data: set,
+                    statusCode: HttpStatus.OK
+                })
+        }
         try {
         } catch (error) {
             throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);

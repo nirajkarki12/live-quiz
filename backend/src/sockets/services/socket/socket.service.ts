@@ -14,7 +14,7 @@ export class SocketService {
    ) {}
 
    async addMessage(message: string, user: UserInterface, roomId: string) {
-      const room = await this.roomModel.findById(roomId);
+      const room = await this.roomModel.findOne({ _id: roomId });
 
       let createdMessage = new this.messageModel({
          message: message,
@@ -48,6 +48,10 @@ export class SocketService {
 
    }
 
+   async updateRoom(roomId: string, data) {
+      return await this.roomModel.findOneAndUpdate({_id: roomId}, data, {safe: true});
+   }
+
    async createRoom(room: string): Model<Room> {
       let createdRoom = new this.roomModel({
          name: room,
@@ -68,7 +72,7 @@ export class SocketService {
     }
 
    async findRoomByName(roomName: string): Model<Room> {
-      return await this.roomModel.findOne({ name: roomName});
+      return await this.roomModel.findOne({ name: roomName, isClosed: false });
    }
 
    async update(user: UserInterface) {

@@ -16,6 +16,9 @@ export class QuestionSet {
    @Column({ default: false })
    isCompleted: boolean;
 
+   @Column({ default: 1 })
+   status: number;
+
    @OneToMany(type => Question, question => question.questionSet)
    questions: Question[];
 
