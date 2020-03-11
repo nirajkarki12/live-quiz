@@ -158,6 +158,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.quizStarted = false;
       this.questions = null;
       this.questionFinished = null;
+      this.finalResults = null;
       this.fetchLists();
     }
   }
