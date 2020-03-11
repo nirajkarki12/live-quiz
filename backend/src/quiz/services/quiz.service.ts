@@ -63,23 +63,31 @@ export class QuizService {
 
    async getFinalResults(setId: number) {
       let setQuestions = await this.questionRepository
-            .createQueryBuilder('question')
-            .select('question.id')
-            .innerJoin('question.questionSet', 'set')
-            .where('set.id = :setId', { setId: setId})
-            .getMany();
+            .query("SELECT quiz.questionId FROM `quiz` `quiz` INNER JOIN `questions` `question` ON `question`.`id` = `quiz`.`questionId` INNER JOIN `question_sets` `set` ON `set`.`id` = `question`.`questionSetId` WHERE `set`.`id` = ? GROUP BY quiz.`questionId` ", [setId]);
 
-      let questionIds = setQuestions.map((obj) => obj.id);
+      let questionIds = setQuestions.map((obj) => obj.questionId);
       let totalQuestion = questionIds.length;
       let totalAmount = 100000;
 
-      let winners = await this.questionRepository.query("SELECT name, image, email FROM (SELECT * FROM (SELECT `user`.`name`, `user`.`image`, `user`.`email`, SUM(`quiz`.`inputTime`) AS timeTaken, COUNT(`quiz`.`id`) AS correctAnswerGiven FROM `user` `user` INNER JOIN `quiz` `quiz` ON `quiz`.`userId`=`user`.`id` WHERE `quiz`.`isCorrect` = 1 and `quiz`.`isTimeout` = 0 and quiz.questionId in (?) GROUP BY `user`.`id` ORDER BY timeTaken ASC) data HAVING data.correctAnswerGiven = ?) winners", [questionIds, totalQuestion]);
+      let winners = await this.questionRepository.query("SELECT userId as id, name, image, email, timeTaken FROM (SELECT * FROM (SELECT `user`.`userId`, `user`.`name`, `user`.`image`, `user`.`email`, SUM(`quiz`.`inputTime`) AS timeTaken, COUNT(`quiz`.`id`) AS correctAnswerGiven FROM `user` `user` INNER JOIN `quiz` `quiz` ON `quiz`.`userId`=`user`.`id` WHERE `quiz`.`isCorrect` = 1 and `quiz`.`isTimeout` = 0 and quiz.questionId in (?) GROUP BY `user`.`id` ORDER BY timeTaken ASC) data HAVING data.correctAnswerGiven = ?) winners", [questionIds, totalQuestion]);
 
       // winners = (winners[0].name === null || winners[0].totalWon === null) ? [] : winners;
-      let totalWinners = winners.length;
-      let distributedAmount = await this.convertAmount(totalAmount/totalWinners);
+      let totalWinners = winners;
+      let distributedAmount = await this.convertAmount(totalAmount/(totalWinners.length));
+      let minTimetaken = 0;
 
-      var finalWinners = winners.map((obj) => {
+      if (totalWinners.length > 1) {
+         minTimetaken = winners[0]['timeTaken'];
+
+         totalWinners = winners.filter((x) => {
+            return x.timeTaken === minTimetaken;
+         });
+
+         distributedAmount = await this.convertAmount(totalAmount/(totalWinners.length));
+      }
+
+
+      var finalWinners = totalWinners.map((obj) => {
          let newData = Object.assign({}, obj);
          newData.totalWon = 'रू ' + distributedAmount;
          return newData;
@@ -87,7 +95,8 @@ export class QuizService {
       return {
          totalQuestion: totalQuestion,
          totalAmount: 'रू ' + await this.convertAmount(totalAmount),
-         winners: finalWinners
+         winners: finalWinners,
+         quizWinners: winners
       }
       
    }

@@ -40,15 +40,15 @@
     </div>
   </div>
    <!--/.card-->
-    <div class="row">
+    <div class="row result">
       <div class="{{ quizStarted ? 'col-md-8' : 'col-md-4' }}">
         <div class="card">
 
           <div class="card-header">
             {{ quizStarted ? 'Quiz is in Progress (' + set.name + ' Set)' : 'Questions Set' }}
             <div class="pull-right" *ngIf="quizStarted">
-              <button type="button" class="btn btn-pill btn-block btn-primary" (click)="showFinalQuiz()">Show Final Result</button>
-              <button type="button" class="btn btn-pill btn-block btn-danger" (click)="endQuiz()">End Quiz</button>
+              <button type="button" class="btn btn-pill btn-block btn-primary" (click)="showFinalQuiz()" *ngIf="!finalResults">Show Final Result</button>
+              <button type="button" class="btn btn-pill btn-block btn-danger" (click)="endQuiz()" *ngIf="finalResults">End Quiz</button>
             </div>
           </div>
           <div class="card-body">
@@ -185,10 +185,54 @@
 
           <ng-template #questionDetail>
             <div class="questionFinishDetail">
-              <div class="heading">Correct Users Count</div>
-              <ol>
-                <li *ngFor="let q of questionFinished">
+              <div class="heading">Users Statics</div>
+              <div class="final-result" *ngIf="finalResults">
+                <div class="winners">
+                  <h3 class="heading">Winners</h3>
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Total Time</th>
+                        <th>Total Won</th>
+                        <th>Image</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let winner of finalResults?.winners; let i = index">
+                        <td>{{ i + 1 }}</td>
+                        <td>{{ winner.name }}</td>
+                        <td>{{ (winner.timeTaken ? (winner.timeTaken/60 | number: '1.2-2') + ' Min' : 0) }}</td>
+                        <td>{{ winner.totalWon }}</td>
+                        <td><img class="image" src="{{ winner.image }}"></td>
+                      </tr>
+                    </tbody>
+                  </table>
 
+                  <h3 class="heading">Quiz Completed Users</h3>
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Total Time</th>
+                        <th>Image</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let player of finalResults?.quizWinners; let i = index">
+                        <td>{{ i+1 }}</td>
+                        <td>{{ player.name }}</td>
+                        <td>{{ (player.timeTaken ? (player.timeTaken/60 | number: '1.2-2') + ' Min' : 0) }}</td>
+                        <td><img class="image" src="{{ player.image }}"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <ol *ngIf="!finalResults">
+                <li *ngFor="let q of questionFinished">
                   <div *ngIf="q.results">
                     <span class="question">
                       {{q.name}}

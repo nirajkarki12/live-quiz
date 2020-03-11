@@ -291,3 +291,24 @@ ul.answers li {
 .btn-danger{
   margin-top: 0;
 }
+
+.result .col-md-8, .result .col-md-4{
+  padding-left: 0;
+}
+
+.winners{
+  margin-top: 25px;
+}
+.winners img.image{
+  border-radius: 50%;
+  width: 50px;
+}
+.winners .table{
+  color: #fff;
+}
+.winners .table thead th{
+  border-top: none;
+}
+.winners h3.heading{
+  margin-bottom: -1px;
+}
