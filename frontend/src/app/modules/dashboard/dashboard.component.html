@@ -194,7 +194,6 @@
                       <tr>
                         <th>#</th>
                         <th>Name</th>
-                        <th>Total Time</th>
                         <th>Total Won</th>
                         <th>Image</th>
                       </tr>
@@ -203,7 +202,6 @@
                       <tr *ngFor="let winner of finalResults?.winners; let i = index">
                         <td>{{ i + 1 }}</td>
                         <td>{{ winner.name }}</td>
-                        <td>{{ (winner.timeTaken ? (winner.timeTaken/60 | number: '1.2-2') + ' Min' : 0) }}</td>
                         <td>{{ winner.totalWon }}</td>
                         <td><img class="image" src="{{ winner.image }}"></td>
                       </tr>
