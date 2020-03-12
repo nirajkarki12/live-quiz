@@ -10,14 +10,24 @@ import { AnyExceptionFilter } from './common/exception-filter/any-exception.filt
 
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Connection } from 'typeorm';
+require('dotenv').config({ path: '.env' });
 
 @Module({
   imports: [
     MongooseModule.forRoot(
       'mongodb://' + (process.env.DB_HOST || '127.0.0.1') + ':27017' + '/' + (process.env.DB || 'live_quiz'), 
-      { useFindAndModify: false, setFeatureCompatibilityVersion: "3.4" }
+      { useFindAndModify: false }
     ),
-    TypeOrmModule.forRoot(),
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: process.env.DB_HOST,
+      port: 3306,
+      username: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB,
+      entities: [__dirname + '/**/*.entity{.ts,.js}'],
+      synchronize: true,
+    }),
     AuthModule, 
     UsersModule,
     SocketsModule,

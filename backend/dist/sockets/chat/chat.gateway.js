@@ -9,15 +9,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
 var _a, _b, _c, _d, _e, _f, _g;
+Object.defineProperty(exports, "__esModule", { value: true });
 const websockets_1 = require("@nestjs/websockets");
 const common_1 = require("@nestjs/common");
 const jwt = require("jsonwebtoken");
@@ -26,12 +27,15 @@ const ws_jwt_guard_1 = require("../../sockets/guards/ws-jwt.guard");
 const socket_service_1 = require("../services/socket/socket.service");
 const users_service_1 = require("../../users/services/users.service");
 const question_service_1 = require("../../questions/services/question/question.service");
+const questionset_service_1 = require("../../questions/services/questionset/questionset.service");
 const quiz_service_1 = require("../../quiz/services/quiz.service");
+const moment = require("moment");
 let ChatGateway = class ChatGateway {
-    constructor(socketService, userService, questionService, quizService) {
+    constructor(socketService, userService, questionService, questionSetService, quizService) {
         this.socketService = socketService;
         this.userService = userService;
         this.questionService = questionService;
+        this.questionSetService = questionSetService;
         this.quizService = quizService;
         this.connectedUsers = 0;
         this.quizStarted = false;
@@ -44,9 +48,10 @@ let ChatGateway = class ChatGateway {
                 if (!user)
                     throw new websockets_1.WsException('Can\'t Connect to network');
                 const userName = user.name;
-                this.room = yield this.socketService.findRoomByName('public');
+                let newRoom = 'public-' + moment(new Date()).format('YYYY-MM-DD');
+                this.room = yield this.socketService.findRoomByName(newRoom);
                 if (!this.room) {
-                    this.room = yield this.socketService.createRoom('public');
+                    this.room = yield this.socketService.createRoom(newRoom);
                 }
                 this.connectedUsers++;
                 client.join(this.room.name);
@@ -90,6 +95,8 @@ let ChatGateway = class ChatGateway {
             const token = client.handshake.query.token;
             const user = jwt.decode(token);
             if (data.set) {
+                this.quizStarted = true;
+                yield this.questionSetService.updateStatus(data.set.id, { status: 2 });
                 yield this.server.to(this.room.name).emit('quiz-started', { currentTime: new Date() });
             }
             else if (data.question) {
@@ -105,7 +112,6 @@ let ChatGateway = class ChatGateway {
         return __awaiter(this, void 0, void 0, function* () {
             const token = client.handshake.query.token;
             const user = jwt.decode(token);
-            console.log(user.name + '- ' + data.option);
             let question = yield this.questionService.findOneById(data.id);
             let userObj = yield this.userService.findOneByUserId(user.userId);
             let isCorrect = false;
@@ -130,12 +136,16 @@ let ChatGateway = class ChatGateway {
     }
     finalResult(client, set) {
         return __awaiter(this, void 0, void 0, function* () {
+            this.quizStarted = false;
             const result = yield this.quizService.getFinalResults(set.id);
             yield this.server.to(this.room.name).emit('quiz-final-result', result);
         });
     }
     quizEnded(client, set) {
         return __awaiter(this, void 0, void 0, function* () {
+            this.quizStarted = false;
+            yield this.questionSetService.updateStatus(set.id, { status: 3, isCompleted: true });
+            yield this.socketService.updateRoom(this.room.id, { isClosed: true });
             yield this.server.to(this.room.name).emit('quiz-ended', { quizEnded: true });
         });
     }
@@ -214,6 +224,7 @@ ChatGateway = __decorate([
     __metadata("design:paramtypes", [socket_service_1.SocketService,
         users_service_1.UsersService,
         question_service_1.QuestionService,
+        questionset_service_1.QuestionsetService,
         quiz_service_1.QuizService])
 ], ChatGateway);
 exports.ChatGateway = ChatGateway;

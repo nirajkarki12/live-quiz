@@ -103,7 +103,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
 
     this.finalResultSubscription = this.dashboardService.finalResult().subscribe((data: any) => {
-      console.log('final result', data);
       this.finalResults = data;
     });
 
@@ -120,6 +119,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.setsService.activeQuestionSets()
       .then(successResponse => {
+        this.finalResults = null;
         this.loading = false;
         this.sets = successResponse.body;
     })
@@ -147,6 +147,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           delete this.set.questions;
           this.dashboardService.startQuiz(this.set);
         }else {
+          this.fetchLists();
           this.toastr.showMessage(successResponse.message, 'error');
         }
     })

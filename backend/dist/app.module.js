@@ -18,6 +18,7 @@ const questions_module_1 = require("./questions/questions.module");
 const quiz_module_1 = require("./quiz/quiz.module");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
+require('dotenv').config({ path: '.env' });
 let AppModule = class AppModule {
     constructor(connection) {
         this.connection = connection;
@@ -26,8 +27,17 @@ let AppModule = class AppModule {
 AppModule = __decorate([
     common_1.Module({
         imports: [
-            mongoose_1.MongooseModule.forRoot('mongodb://' + (process.env.DB_HOST || '127.0.0.1') + ':27017' + '/' + (process.env.DB || 'live_quiz'), { useFindAndModify: false, setFeatureCompatibilityVersion: "3.4" }),
-            typeorm_1.TypeOrmModule.forRoot(),
+            mongoose_1.MongooseModule.forRoot('mongodb://' + (process.env.DB_HOST || '127.0.0.1') + ':27017' + '/' + (process.env.DB || 'live_quiz'), { useFindAndModify: false }),
+            typeorm_1.TypeOrmModule.forRoot({
+                type: 'mysql',
+                host: process.env.DB_HOST,
+                port: 3306,
+                username: process.env.DB_USER,
+                password: process.env.DB_PASSWORD,
+                database: process.env.DB,
+                entities: [__dirname + '/**/*.entity{.ts,.js}'],
+                synchronize: true,
+            }),
             auth_module_1.AuthModule,
             users_module_1.UsersModule,
             sockets_module_1.SocketsModule,

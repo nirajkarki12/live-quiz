@@ -36,6 +36,9 @@ export class QuizService {
    async getQuizResults(question) {
       let res = await this.questionRepository
             .query("SELECT qz.input, q.answer, COUNT(qz.input) AS total FROM questions AS q LEFT JOIN quiz AS qz ON qz.questionId = q.id WHERE q.id = ? GROUP BY qz.input", [question.id]);
+
+      let totalAnswers = 0;
+      totalAnswers = res.map(item => parseInt(item.total)).reduce((a, b) => { return a + b;}, 0);
       
       question.answer = res[0].answer;
 
@@ -58,6 +61,11 @@ export class QuizService {
          },
       ];
 
+      question.results = question.results.map((obj) => {
+         let newData = Object.assign({}, obj);
+         newData.totalPercentage = ((newData.total/totalAnswers) * 100).toFixed(0);
+         return newData;
+      });
       return question;
    }
 

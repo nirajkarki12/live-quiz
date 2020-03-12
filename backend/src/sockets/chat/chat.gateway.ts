@@ -111,7 +111,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
     const user: UserInterface = <UserInterface> jwt.decode(token);
 
     if(data.set) {
-      // this.quizStarted = true;
+      this.quizStarted = true;
       await this.questionSetService.updateStatus(data.set.id, { status: 2});
 
       await this.server.to(this.room.name).emit('quiz-started', {currentTime: new Date()}); // Quiz started
@@ -162,6 +162,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
   @UseGuards(WsJwtGuard)
   @SubscribeMessage('final-result')
   async finalResult(client: Socket, set: any) {
+    this.quizStarted = false;
+
     const result = await this.quizService.getFinalResults(set.id);
 
     await this.server.to(this.room.name).emit('quiz-final-result', result);
@@ -171,6 +173,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
   @UseGuards(WsJwtGuard)
   @SubscribeMessage('end-quiz')
   async quizEnded(client: Socket, set: any) {
+    this.quizStarted = false;
     await this.questionSetService.updateStatus(set.id, { status: 3, isCompleted: true });
     await this.socketService.updateRoom(this.room.id, {isClosed: true});
     await this.server.to(this.room.name).emit('quiz-ended', {quizEnded: true});

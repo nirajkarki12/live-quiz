@@ -16,9 +16,11 @@ export class QuizController {
     @Get('test')
     async test(@Body() body)
     {
-        const question = await this.quizService.getFinalResults(2);
+        const question = await this.questionService.findOneById(3);
+        const res = await this.quizService.getQuizResults(question);
 
-        return question;
+
+        return res;
         // const result = await this.quizService.getQuizResults(question);
     }
     
