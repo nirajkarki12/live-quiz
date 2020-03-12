@@ -1,7 +1,7 @@
 # SRBN Live Quiz
 
 <p align="center">
-  ![alt text](https://raw.githubusercontent.com/nirajkarki12/live-quiz/master/backend/uploads/angular+nestjs.png?raw=true "Title")
+  ![alt text](https://raw.githubusercontent.com/nirajkarki12/live-quiz/master/frontend/src/assets/angular+nestjs.png?raw=true)
 </p>
 
 ## Installation
