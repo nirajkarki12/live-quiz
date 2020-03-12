@@ -1,9 +1,5 @@
 # SRBN Live Quiz
 
-<p align="center">
-  ![alt text](https://raw.githubusercontent.com/nirajkarki12/live-quiz/master/frontend/src/assets/angular+nestjs.png?raw=true)
-</p>
-
 ## Installation
 
 <p>Create a database, config on <i>backend/ormconfig.json</i></p>
@@ -33,8 +29,10 @@ $ forever start dist/main.js
 
 ## Running Frontend
 
-<p>Rename <i>_environment.ts</i> to <i>environment.ts</i>, config essential parameters</p>
-<p>Rename <i>_environment.prod.ts</i> to <i>environment.prod.ts</i>, config essential parameters</p>
+<p>
+  Rename <i>_environment.ts</i> to <i>environment.ts</i>, config essential parameters.<br>
+  Rename <i>_environment.prod.ts</i> to <i>environment.prod.ts</i>, config essential parameters.
+</p>
 
 ```bash
 $ cd frontend
