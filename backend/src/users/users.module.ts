@@ -1,8 +1,11 @@
 import { Module } from '@nestjs/common';
-import { PassportModule } from '@nestjs/passport';
-import { UsersController } from './users.controller';
-import { UsersService } from './services/users.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { PassportModule } from '@nestjs/passport';
+// Controllers
+import { UsersController } from './users.controller';
+// Services
+import { UsersService } from './services/users.service';
+// Entities
 import { User } from './entities/user.entity';
 
 @Module({

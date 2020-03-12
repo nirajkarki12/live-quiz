@@ -3,8 +3,8 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 // Interfaces
 import { Room } from '../../../sockets/interfaces/room.interface';
-import { UserInterface } from '../../../users/interfaces/user.interface';
 import { Message } from '../../../sockets/interfaces/message.interface';
+import { UserInterface } from '../../../users/interfaces/user.interface';
 
 @Injectable()
 export class SocketService {

@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+// DTO
 import { CreateQuestionDto } from '../../../questions/dto/create-question.dto';
+// Services
 import { QuestionsetService } from '../questionset/questionset.service';
-
+// Entities
 import { Question } from '../../entities/question.entity';
 
 @Injectable()

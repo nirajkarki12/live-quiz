@@ -1,16 +1,14 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Connection } from 'typeorm';
+require('dotenv').config({ path: '.env' });
+// Modules
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { SocketsModule } from './sockets/sockets.module';
 import { QuestionsModule } from './questions/questions.module';
 import { QuizModule } from './quiz/quiz.module';
-
-import { AnyExceptionFilter } from './common/exception-filter/any-exception.filter';
-
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Connection } from 'typeorm';
-require('dotenv').config({ path: '.env' });
 
 @Module({
   imports: [
@@ -34,7 +32,6 @@ require('dotenv').config({ path: '.env' });
     QuestionsModule,
     QuizModule
   ],
-  // providers: [AnyExceptionFilter]
 })
 export class AppModule {
   constructor(private readonly connection: Connection) {}

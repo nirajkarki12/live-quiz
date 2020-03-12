@@ -1,10 +1,14 @@
-import { Controller, Get, HttpException, HttpStatus, Post, Body, Res, Param, Delete, Patch, UploadedFile, UseInterceptors, FileInterceptor } from '@nestjs/common';
-import { QuestionService } from '../../../questions/services/question/question.service';
-import { CreateQuestionDto } from '../../../questions/dto/create-question.dto';
-import { QuestionsetService } from '../../services/questionset/questionset.service';
+import { Controller, UseGuards, Get, HttpException, HttpStatus, Post, Body, Res, Param, Delete, Patch, UploadedFile, UseInterceptors, FileInterceptor } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { diskStorage } from 'multer';
+// Services
+import { QuestionService } from '../../../questions/services/question/question.service';
+import { QuestionsetService } from '../../services/questionset/questionset.service';
+// DTO
+import { CreateQuestionDto } from '../../../questions/dto/create-question.dto';
 
 @Controller('question')
+@UseGuards(AuthGuard())
 export class QuestionController {
 
     constructor(private questionService:QuestionService,private questionsetService:QuestionsetService) {}

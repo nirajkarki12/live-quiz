@@ -1,6 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, Unique, Index, OneToMany, CreateDateColumn, UpdateDateColumn, BeforeInsert, BeforeUpdate } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { UserRO } from '../ro/user.ro';
 import { Quiz } from "../../quiz/entities/quiz.entity";
 
 @Entity()
@@ -50,14 +49,4 @@ export class User {
    });
   }
 
-  toResponseObject(): UserRO {
-    const { name, email, image} = this;
-    const responseObject: UserRO = {
-      name,
-      email,
-      image,
-    };
-
-    return responseObject;
-  }
 }

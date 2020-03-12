@@ -2,9 +2,10 @@ import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+// DTO
 import { CreateUserDto } from '../../users/dto/create-user.dto';
 import { CreateSocketUserDto } from '../../users/dto/create-socket-user.dto';
-
+// Entities
 import { User } from '../entities/user.entity';
 
 @Injectable()

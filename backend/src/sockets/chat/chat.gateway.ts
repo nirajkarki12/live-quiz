@@ -8,7 +8,9 @@ import {
 } from '@nestjs/websockets';
 import { UseGuards } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
+import * as moment from 'moment';
 import { Socket } from 'socket.io';
+// Websocket Guard
 import { WsJwtGuard } from '../../sockets/guards/ws-jwt.guard';
 // Interfaces
 import { UserInterface } from '../../users/interfaces/user.interface';
@@ -19,7 +21,6 @@ import { UsersService } from '../../users/services/users.service';
 import { QuestionService } from '../../questions/services/question/question.service';
 import { QuestionsetService } from '../../questions/services/questionset/questionset.service';
 import { QuizService } from '../../quiz/services/quiz.service';
-import * as moment from 'moment';
 
 @WebSocketGateway() 
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {

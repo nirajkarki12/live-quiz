@@ -1,10 +1,12 @@
-import { Controller, Get, Post, Body, UseGuards, HttpException, HttpStatus, Res, Delete, Req, Query, Param, Patch, Put } from '@nestjs/common';
+import { Controller, UseGuards, Get, Post, Body, HttpException, HttpStatus, Res, Delete, Req, Param, Patch } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { CreateQuestionSetDto } from '../../dto/create-questionset.dto';
+// Services
 import { QuestionsetService } from '../../services/questionset/questionset.service';
+// DTO
+import { CreateQuestionSetDto } from '../../dto/create-questionset.dto';
 
 @Controller('questionsets')
-// @UseGuards(AuthGuard())
+@UseGuards(AuthGuard())
 export class QuestionsetController {
     
     constructor(private questionSetService: QuestionsetService) {}

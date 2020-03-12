@@ -1,14 +1,16 @@
 import { Module } from '@nestjs/common';
-import { ChatGateway } from './chat/chat.gateway';
-import { UsersModule } from '../users/users.module';
 import { MongooseModule } from '@nestjs/mongoose';
 // Services
 import { SocketService } from './services/socket/socket.service';
 // Schema
 import { RoomSchema } from './schemas/room.schema';
 import { MessageSchema } from './schemas/message.schema';
+// Modules
+import { UsersModule } from '../users/users.module';
 import { QuestionsModule } from '../questions/questions.module';
 import { QuizModule } from '../quiz/quiz.module';
+// Gateways
+import { ChatGateway } from './chat/chat.gateway';
 
 @Module({
   imports: [

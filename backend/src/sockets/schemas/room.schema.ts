@@ -1,5 +1,4 @@
 import * as mongoose from 'mongoose';
-// import { UserSchema } from '../../users/schemas/user.schema';
 import { MessageSchema } from './message.schema';
 
 export const RoomSchema = new mongoose.Schema({
@@ -11,7 +10,6 @@ export const RoomSchema = new mongoose.Schema({
       type: Boolean,
       default: false
     },
-    // users: [UserSchema],
     messages: [MessageSchema],
     createdAt: {
       type: Date,

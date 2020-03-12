@@ -4,12 +4,12 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './services/users.service';
 
 @Controller('users')
+@UseGuards(AuthGuard())
 export class UsersController {
 
     constructor(private usersService: UsersService) {}
 
     @Post()
-    // @UseGuards(AuthGuard())
     async create(@Body() createUserDto: CreateUserDto) {
         return await this.usersService.create(createUserDto);
     }

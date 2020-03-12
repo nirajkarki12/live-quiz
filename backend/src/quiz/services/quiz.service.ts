@@ -1,10 +1,10 @@
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
-import { CreateQuizDto } from '../../quiz/dto/quiz.dto';
-
-import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-
+import { Repository } from 'typeorm';
+// DTO
+import { CreateQuizDto } from '../../quiz/dto/quiz.dto';
+// Entities
 import { Quiz } from '../entities/quiz.entity';
 import { Question } from '../../questions/entities/question.entity';
 import { User } from '../../users/entities/user.entity';

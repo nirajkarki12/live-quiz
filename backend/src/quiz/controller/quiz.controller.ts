@@ -1,8 +1,11 @@
-import { Controller, Get, HttpException, HttpStatus, Post, Body, Res, Param, Delete, Patch, UploadedFile, UseInterceptors, FileInterceptor } from '@nestjs/common';
+import { Controller, UseGuards, Get, Body } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+// Services
 import { QuizService } from '../services/quiz.service';
 import { QuestionService } from '../../questions/services/question/question.service';
 
 @Controller('quiz')
+@UseGuards(AuthGuard())
 export class QuizController {
 
     constructor(private quizService:QuizService, private questionService: QuestionService) {}
@@ -19,29 +22,7 @@ export class QuizController {
         const question = await this.questionService.findOneById(3);
         const res = await this.quizService.getQuizResults(question);
 
-
         return res;
-        // const result = await this.quizService.getQuizResults(question);
     }
-    
-    // @Post()
-    // async create(@Res() res, @Body() body)
-    // {
-    //     // user,question,answer,iscorrect
-
-    //     let quiz = await this.quizService.create(body);
-    //     res.status(HttpStatus.OK)
-    //         .send({
-    //             success:true,
-    //             data:quiz,
-    //             statusCode:HttpStatus.OK
-    //         })
-            
-    //     try {
-    //     } catch (error) {
-    //         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
-    //     }
-    // }
-
 
 }
