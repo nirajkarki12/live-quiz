@@ -1,7 +1,7 @@
 # SRBN Live Quiz
 
 <p align="center">
-  <img src="backend/uploads/angular+nestjs.png" width="320" alt="Nest + Angular" />
+  <figure><img src="backend/uploads/angular+nestjs.png"><figcaption>image caption</figcaption></figure>
 </p>
 
 ## Installation
