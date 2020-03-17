@@ -1,5 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn, Unique, OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, Unique, OneToMany, ManyToOne, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { Question } from "./question.entity";
+import { Sponsor } from "./sponsor.entity";
+
 
 @Entity('question_sets')
 @Unique(["name"])
@@ -21,6 +23,10 @@ export class QuestionSet {
 
    @OneToMany(type => Question, question => question.questionSet)
    questions: Question[];
+
+   @ManyToOne(type => Sponsor, sponsor => sponsor.questionSet, { onUpdate: "CASCADE", onDelete: "CASCADE" })
+   sponsor: Sponsor;
+
 
    @CreateDateColumn({ select: false})
    createdAt: Date;

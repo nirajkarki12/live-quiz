@@ -89,7 +89,7 @@ export class QuestionsetService {
 
   async getActivesetsForMobile()
   {
-    return await this.questionSetRepository.find({
+    let questionsets = await this.questionSetRepository.find({
       where: {
         isCompleted: false,
         scheduleDate: MoreThanOrEqual(moment(new Date()).format('YYYY-MM-DD HH:mm'))
@@ -98,6 +98,7 @@ export class QuestionsetService {
         scheduleDate: 'ASC'
       }
     });
+    return questionsets;
   }
 
 }

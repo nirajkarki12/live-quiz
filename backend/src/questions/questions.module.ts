@@ -10,14 +10,17 @@ import { Question } from './entities/question.entity';
 // Services
 import { QuestionsetService } from './services/questionset/questionset.service';
 import { QuestionService } from './services/question/question.service';
+import { SponsorController } from './controller/sponsor/sponsor.controller';
+import { SponsorService } from './services/sponsor/sponsor.service';
+import { Sponsor } from './entities/sponsor.entity';
 
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt', session: false }),
-    TypeOrmModule.forFeature([QuestionSet, Question])
+    TypeOrmModule.forFeature([QuestionSet, Question, Sponsor])
   ],
-  providers: [QuestionService, QuestionsetService],
+  providers: [QuestionService, QuestionsetService, SponsorService],
   exports: [TypeOrmModule, QuestionsetService,QuestionService],
-  controllers: [QuestionController, QuestionsetController]
+  controllers: [QuestionController, QuestionsetController, SponsorController]
 })
 export class QuestionsModule {}
