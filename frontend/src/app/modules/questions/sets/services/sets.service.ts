@@ -13,7 +13,7 @@ export class SetsService {
   constructor(private http: HttpClient) { }
 
   create(setsModel: Sets): Promise<any> {
-    setsModel.scheduleDate = moment(setsModel.scheduleDate).endOf('day');
+    // setsModel.scheduleDate = moment(setsModel.scheduleDate).endOf('day');
 
     return this.http.post(
       ApiConstants.API_ENDPOINT +
@@ -72,7 +72,7 @@ export class SetsService {
   }
 
   update(setModel: Sets): Promise<any> {
-    setModel.scheduleDate = moment(setModel.scheduleDate).endOf('day');
+    // setModel.scheduleDate = moment(setModel.scheduleDate).endOf('day');
 
     return this.http.patch(
       ApiConstants.API_ENDPOINT +

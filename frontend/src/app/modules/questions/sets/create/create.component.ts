@@ -35,6 +35,7 @@ export class CreateComponent implements OnInit {
   }
 
   create() {
+    console.log(this.setsForm.value)
     this.buttonClicked = true;
     this.setsService
       .create(this.setsForm.value)

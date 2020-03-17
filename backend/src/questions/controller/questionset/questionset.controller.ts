@@ -6,12 +6,12 @@ import { QuestionsetService } from '../../services/questionset/questionset.servi
 import { CreateQuestionSetDto } from '../../dto/create-questionset.dto';
 
 @Controller('questionsets')
-@UseGuards(AuthGuard())
 export class QuestionsetController {
     
     constructor(private questionSetService: QuestionsetService) {}
     
     @Get('active')
+    @UseGuards(AuthGuard())
     async getActiveSet()
     {
         try {
@@ -21,7 +21,18 @@ export class QuestionsetController {
         }
     }
 
+    @Get('active/mobile')
+    async getActiveSetMobile()
+    {
+        try {
+            return await this.questionSetService.getActivesetsForMobile();
+        } catch (error) {
+            throw new HttpException(error, HttpStatus.BAD_GATEWAY);
+        }
+    }
+
     @Post('create')
+    @UseGuards(AuthGuard())
     async create(@Body() createQuestionSetDto: CreateQuestionSetDto) {
         try {
             return await this.questionSetService.create(createQuestionSetDto);
@@ -32,6 +43,7 @@ export class QuestionsetController {
 
 
     @Get()
+    @UseGuards(AuthGuard())
     async all(@Res() res) {
         try {
             let questionsSets = await this.questionSetService.fetchQuestionSets();
@@ -47,6 +59,7 @@ export class QuestionsetController {
     }
 
     @Delete(':id')
+    @UseGuards(AuthGuard())
     async delete(@Param('id') id: number) {
         try {
             return await this.questionSetService.delete(id);
@@ -56,6 +69,7 @@ export class QuestionsetController {
     }
 
     @Get(':id')
+    @UseGuards(AuthGuard())
     async findOneById(@Param('id') id: number, @Res() res)
     {
         try {
@@ -72,6 +86,7 @@ export class QuestionsetController {
     }
 
     @Patch(':id')
+    @UseGuards(AuthGuard())
     async updateOne(@Body() body: CreateQuestionSetDto,@Param('id') id: number)
     {
         try {

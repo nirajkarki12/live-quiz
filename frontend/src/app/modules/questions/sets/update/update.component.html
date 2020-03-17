@@ -16,16 +16,21 @@
                         <span class="help-block text-red" *ngIf="setForm.get('name').errors.maxlength">Too long name</span>
                      </span>
                   </div>
-                  <div class="form-group col-sm-4">
+                  <!-- <div class="form-group col-sm-4">
                      <label for="ScheduleDate">Schedule Date</label>
                      <input type="text" class="form-control" bsDatepicker #datepickerYMD="bsDatepicker" [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD', minDate: currentDate }" id="ScheduleDate" placeholder="Schedule Date" formControlName="scheduleDate">
                      <span *ngIf="setForm.get('scheduleDate').errors && (setForm.get('scheduleDate').dirty || setForm.get('scheduleDate').touched)">
                         <span class="help-block text-red" *ngIf="setForm.get('scheduleDate').errors.required">Schedule Date is required</span>
                         <span class="help-block text-red" *ngIf="setForm.get('scheduleDate').errors.minDate">Schedule Date should be greater than today</span>
                      </span>
+                  </div> -->
+                  <div class="form-group col-sm-4">
+                     <label for="ScheduleDate">Schedule Date</label>
+                     <input type="datetime-local" class="form-control" formControlName="scheduleDate">
                   </div>
                </div><!--/.row-->
-               
+
+
                <div class="form-actions">
                   <button type="submit" class="btn btn-success" [disabled]="buttonClicked || setForm.invalid">Save changes</button>
                   <!-- <button class="btn btn-secondary" type="button">Cancel</button> -->

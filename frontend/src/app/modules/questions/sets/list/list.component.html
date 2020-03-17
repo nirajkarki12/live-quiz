@@ -23,7 +23,7 @@
                         <tr *ngFor="let set of sets; let index = index">
                            <td>{{ index + 1 }}</td>
                            <td>{{ set.name }}</td>
-                           <td>{{ set.scheduleDate | date:'yyyy-MM-dd' }}</td>
+                           <td>{{ set.scheduleDate | date:'yyyy-MM-dd HH:mm' }}</td>
                            <td>
                               <span [ngSwitch]="set.status">
                                  <span *ngSwitchCase="1">Active</span>

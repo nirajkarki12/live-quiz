@@ -20,7 +20,8 @@ export class SetsFormService {
     return this.fb.group({
         id: [sets.id],
         name: [sets.name, [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
-        scheduleDate: [sets.scheduleDate, [Validators.required, CustomValidators.minDate(this.currentDate)]],
+        // scheduleDate: [sets.scheduleDate, [Validators.required, CustomValidators.minDate(this.currentDate)]],
+        scheduleDate: [moment(sets.scheduleDate).format("YYYY-MM-DDTHH:mm"), [Validators.required]],
       });
   }
 }

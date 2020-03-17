@@ -79,7 +79,20 @@ export class QuestionsetService {
     return await this.questionSetRepository.find({
       where: {
         isCompleted: false,
-        scheduleDate: MoreThanOrEqual(moment(new Date()).format('YYYY-MM-DD'))
+        scheduleDate: MoreThanOrEqual(moment(new Date()).format('YYYY-MM-DD HH:mm'))
+      },
+      order: {
+        scheduleDate: 'ASC'
+      }
+    });
+  }
+
+  async getActivesetsForMobile()
+  {
+    return await this.questionSetRepository.find({
+      where: {
+        isCompleted: false,
+        scheduleDate: MoreThanOrEqual(moment(new Date()).format('YYYY-MM-DD HH:mm'))
       },
       order: {
         scheduleDate: 'ASC'

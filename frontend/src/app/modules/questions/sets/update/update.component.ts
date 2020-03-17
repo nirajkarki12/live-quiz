@@ -34,6 +34,7 @@ export class UpdateComponent implements OnInit {
     this.route.data
     .subscribe((data) => {
       this.setEdit = data.sets.data;
+      console.log(this.setEdit)
       this.setForm = this.setFormService.createForm(this.setEdit);
     });
   }
