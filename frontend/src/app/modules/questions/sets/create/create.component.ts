@@ -11,6 +11,8 @@ import { SetsService } from '../services/sets.service';
 
 // Models
 import { Sets } from '../../models/sets.model';
+import { SponsorService } from 'src/app/modules/sponsor/services/sponsor.service';
+import { Sponsor } from 'src/app/modules/sponsor/models/sponsor.model';
 
 @Component({
   selector: 'app-create',
@@ -23,15 +25,19 @@ export class CreateComponent implements OnInit {
   buttonClicked: Boolean = false;
   currentDate = new Date();
 
+  sponsors: Sponsor[];
+
   constructor(
     private router: Router,
     private setsService: SetsService,
     private setsFormService: SetsFormService,
     private toastr: ValidatorMessageService,
+    private sponsorService: SponsorService
   ) {}
 
   ngOnInit() {
     this.setsForm = this.setsFormService.createForm(this.sets);
+    this.getSponsors();
   }
 
   create() {
@@ -48,6 +54,16 @@ export class CreateComponent implements OnInit {
         this.buttonClicked = false;
         this.toastr.showMessage(errorResponse.error.message, 'error');
       });
+  }
+
+  getSponsors() {
+    this.sponsorService.list()
+      .then( response => {
+        this.sponsors = response.body.data;
+      })
+      .catch( error => {
+        console.log(error)
+      })
   }
 
 }

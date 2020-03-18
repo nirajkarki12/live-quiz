@@ -13,10 +13,10 @@ export class Sponsor {
   @Column({ nullable: false })
   logo: string;
 
-  @Column({ nullable: true })
+  @Column({ default: null })
   logo_url: string;
 
-  @Column({ nullable: true })
+  @Column({ default: null })
   prize: string;
 
   @OneToMany(type => QuestionSet, questionSet => questionSet.sponsor)
@@ -30,8 +30,8 @@ export class Sponsor {
 
   @BeforeInsert()
   @BeforeUpdate()
-  async hashPassword() {
-    if (this.logo) this.logo_url = await process.env.BASE_URL + 'uploads/' + this.logo;
+  logoUrl() {
+    if(this.logo) this.logo_url = process.env.BASE_URL + 'uploads/' + this.logo;
   }
 
 }

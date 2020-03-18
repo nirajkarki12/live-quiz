@@ -24,4 +24,6 @@ export class ApiConstants {
   public static CLIENT = '/client';
   public static VERIFY_TOKEN = '/verify-token';
   public static TOKEN = '/token';
+
+  public static SPONSOR ='/sponsor'
 }

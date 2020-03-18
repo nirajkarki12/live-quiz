@@ -64,6 +64,10 @@ export const routes: Routes = [
           path: AppRoutes.sets,
           loadChildren: () => import('./modules/questions/sets/sets.module').then(m => m.SetsModule)
         },
+        {
+          path: AppRoutes.sponsors,
+          loadChildren: () => import('./modules/sponsor/sponsor.module').then(m => m.SponsorModule)
+        },
       ]
   },
   { path: '**', component: P404Component }

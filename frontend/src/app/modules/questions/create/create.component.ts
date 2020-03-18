@@ -9,6 +9,8 @@ import { QuestionService } from '../services/question.service';
 // Models
 import { Sets } from '../models/sets.model';
 import { Question } from '../models/question.model';
+import { Sponsor } from '../../sponsor/models/sponsor.model';
+import { SponsorService } from '../../sponsor/services/sponsor.service';
 
 @Component({
   selector: 'app-create',
@@ -35,6 +37,7 @@ export class CreateComponent implements OnInit {
       this.sets = data.sets.data;
       this.questionForm = this.questionFormService.createForm(this.question, this.sets);
     });
+
   }
 
   create() {
@@ -51,4 +54,5 @@ export class CreateComponent implements OnInit {
         this.toastr.showMessage(errorResponse.error.message, 'error');
       });
   }
+
 }

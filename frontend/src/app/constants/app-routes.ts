@@ -14,8 +14,11 @@ export class AppRoutes {
   public static listWithId = 'list/:id';
   public static sets = 'sets';
   public static message = 'message/:nickname';
+
+  public static sponsors = 'sponsors';
   // pages
   public static serverError = '500';
   public static notFound = '404';
   public static forbidden = '403';
+
 }

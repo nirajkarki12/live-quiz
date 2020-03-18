@@ -2,8 +2,9 @@ import { Controller, Get, Res, HttpStatus, HttpException, Post, UseInterceptors,
 import { SponsorService } from 'src/questions/services/sponsor/sponsor.service';
 import { QuestionsetService } from 'src/questions/services/questionset/questionset.service';
 import { diskStorage } from 'multer';
-import { fileURLToPath } from 'url';
 import { CreateSponsorDTO } from 'src/questions/dto/create-sponsor.dto';
+import { extname } from 'path';
+require('dotenv').config({ path: '.env' });
 
 @Controller('sponsor')
 export class SponsorController {
@@ -30,17 +31,24 @@ export class SponsorController {
     @UseInterceptors(FileInterceptor(
         'file',
         {
-            storage: diskStorage({destination: './uploads'})
+            storage: diskStorage({
+                destination: './src/uploads',
+                filename: (req, file, cb) => {
+                    const randomName = new Date().valueOf()
+                    return cb(null, `${randomName}${extname(file.originalname)}`)
+                }
+            })
         }
     ))
     async create(@UploadedFile() file, @Body() body, @Res() res) {
         try {
-            return file;
+            
+            console.log(file)
             let createSponsorDto = new CreateSponsorDTO();
-
             createSponsorDto.name = body.name;
-            createSponsorDto.logo = file.name;
+            createSponsorDto.logo = file.filename;
             createSponsorDto.prize = body.prize;
+            createSponsorDto.logo_url = process.env.BASE_URL + 'uploads/' + file.filename;
 
             let sponsor = await this.sponsorService.create(createSponsorDto);
             res.status(HttpStatus.OK)
