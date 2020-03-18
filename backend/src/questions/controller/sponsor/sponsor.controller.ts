@@ -1,4 +1,5 @@
-import { Controller, Get, Res, HttpStatus, HttpException, Post, UseInterceptors, FileInterceptor, UploadedFile, Body } from '@nestjs/common';
+import { Controller, Get, Res, HttpStatus, HttpException, Post, UseInterceptors, UploadedFile, Body } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { SponsorService } from 'src/questions/services/sponsor/sponsor.service';
 import { QuestionsetService } from 'src/questions/services/questionset/questionset.service';
 import { diskStorage } from 'multer';
@@ -32,7 +33,7 @@ export class SponsorController {
         'file',
         {
             storage: diskStorage({
-                destination: './src/uploads',
+                destination: './public',
                 filename: (req, file, cb) => {
                     const randomName = new Date().valueOf()
                     return cb(null, `${randomName}${extname(file.originalname)}`)
@@ -48,7 +49,7 @@ export class SponsorController {
             createSponsorDto.name = body.name;
             createSponsorDto.logo = file.filename;
             createSponsorDto.prize = body.prize;
-            createSponsorDto.logo_url = process.env.BASE_URL + 'uploads/' + file.filename;
+            createSponsorDto.logo_url = process.env.BASE_URL + 'public/' + file.filename;
 
             let sponsor = await this.sponsorService.create(createSponsorDto);
             res.status(HttpStatus.OK)

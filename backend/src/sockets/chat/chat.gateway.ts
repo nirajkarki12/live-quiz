@@ -39,10 +39,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
 
   async handleConnection(client: Socket) {
     try {
+      const setId = client.handshake.query.setId;
       const token = client.handshake.query.token;
+
       const user: UserInterface = <UserInterface> jwt.decode(token);
       if (!user) throw new WsException('Can\'t Connect to network');
       const userName: string = user.name;
+      console.log('data', setId);
 
       // creating and joining users to public room
       let newRoom = 'public-' + moment(new Date()).format('YYYY-MM-DD');
@@ -57,7 +60,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
 
       // Send last messages to the connected user
       const messages = await this.socketService.findMessages(this.room.id, 40);
-      client.emit(this.room.name).emit('pre-messages', messages);
+      this.server.to(client.id).emit('pre-messages', messages);
 
       // Send connected Users to all on a public room
       this.server.to(this.room.name).emit('totalUsers', this.connectedUsers);
