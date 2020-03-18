@@ -4,14 +4,16 @@ import { SharedModule } from 'src/app/modules/shared/shared.module';
 import { SponsorRoutingModule } from './sponsor-routing.module';
 // Components
 import { ListComponent } from './list/list.component';
+import { CreateComponent } from './create/create.component';
 
 @NgModule({
   declarations: [
     ListComponent,
+    CreateComponent,
   ],
   imports: [
     SharedModule,
-    SponsorRoutingModule
+    SponsorRoutingModule,
   ]
 })
 export class SponsorModule { }

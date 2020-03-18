@@ -32,7 +32,8 @@
 
                   <div class="form-group col-sm-6">
                      <label for="sponsor">Sponsor</label>
-                     <select class="form-contol">
+                     <select class="form-control" formControlName="sponsor">
+                        <option *ngFor="let sponsor of sponsors" value="{{sponsor.id}}">{{sponsor.name}}</option>
                      </select>
                   </div>
 

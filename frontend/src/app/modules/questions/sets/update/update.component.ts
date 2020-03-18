@@ -9,6 +9,7 @@ import { SetsFormService } from '../services/sets-form.service';
 import { SetsService } from '../services/sets.service';
 // Models
 import { Sets } from '../../models/sets.model';
+import { Sponsor } from 'src/app/modules/sponsor/models/sponsor.model';
 
 @Component({
   selector: 'app-update',
@@ -18,6 +19,7 @@ import { Sets } from '../../models/sets.model';
 export class UpdateComponent implements OnInit {
   setForm: FormGroup;
   setEdit: Sets = new Sets();
+  sponsor: Sponsor = new Sponsor();
   buttonClicked = false;
   sub: Subscription;
   currentDate = new Date();
@@ -35,7 +37,7 @@ export class UpdateComponent implements OnInit {
     .subscribe((data) => {
       this.setEdit = data.sets.data;
       console.log(this.setEdit)
-      this.setForm = this.setFormService.createForm(this.setEdit);
+      this.setForm = this.setFormService.createForm(this.setEdit, this.sponsor);
     });
   }
 

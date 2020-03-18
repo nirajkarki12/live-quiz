@@ -1,1 +1,53 @@
-<p>list works!</p>
+<div class="animated fadeIn">
+    <div class="row">
+       <div class="col-lg-12">
+          <div class="card">
+             <div class="card-header">
+                <i class="fa fa-align-justify"></i> Sponsors List
+                <!-- <span class="float-right"><a [routerLink]="['/questions/create', set.id]" title="Add Questions"><i class="fa fa-plus fa-lg"></i></a></span> -->
+             </div>
+             <app-loading *ngIf="!sponsors || loading"></app-loading>
+             <div *ngIf="sponsors ?.length > 0; then tableData; else noRecordsFound"></div>
+             <ng-template #tableData>
+                <div class="card-body">
+                   <table class="table table-striped">
+                      <thead>
+                         <tr>
+                            <th style="width: 10px">#</th>
+                            <th>Name</th>
+                            <th>Prize</th>
+                            <th>Logo</th>
+                            <th>Action</th>
+                         </tr>
+                      </thead>
+                      <tbody>
+                         <tr *ngFor="let sponsor of sponsors; let index = index">
+                            <td>{{ index+1 }}</td>
+                            <td>{{ sponsor.name }}</td>
+                            <td>{{ sponsor.prize }}</td>
+                            <td>
+                                <img src="{{sponsor.logo_url}}" alt="{{sponsor.name}}" *ngIf="sponsor.logo_url">
+                            </td>
+                            <td>
+                               <span>
+                                  <a [routerLink]="['/questions/edit', sponsor.id]" title="Edit"><i class="fa fa-edit fa-lg"></i></a>
+                                  &nbsp;
+                                  <a href="javascript:void(0)" title="Delete" (click)="removeSponsor(sponsor)"><i class="fa fa-remove fa-lg"></i></a>
+                               </span>
+                            </td>
+                         </tr>
+                      </tbody>
+                   </table>
+                </div>
+             </ng-template>
+          </div>
+       </div>
+       <!--/.col-->
+    </div>
+    <!--/.row-->
+ <!-- No records found -->
+ <ng-template #noRecordsFound>
+    <app-no-records-found></app-no-records-found>
+ </ng-template>
+ </div>
+ 

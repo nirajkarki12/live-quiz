@@ -1,4 +1,4 @@
-import { Controller, Get, Res, HttpStatus, HttpException, Post, UseInterceptors, FileInterceptor, UploadedFile, Body } from '@nestjs/common';
+import { Controller, Get, Res, HttpStatus, HttpException, Post, UseInterceptors, FileInterceptor, UploadedFile, Body, Delete, Param } from '@nestjs/common';
 import { SponsorService } from 'src/questions/services/sponsor/sponsor.service';
 import { QuestionsetService } from 'src/questions/services/questionset/questionset.service';
 import { diskStorage } from 'multer';
@@ -8,6 +8,7 @@ require('dotenv').config({ path: '.env' });
 
 @Controller('sponsor')
 export class SponsorController {
+    dest = './src/uploads';
     constructor(private sponsorService: SponsorService, private questionSetService: QuestionsetService) {}
 
     @Get()
@@ -42,14 +43,12 @@ export class SponsorController {
     ))
     async create(@UploadedFile() file, @Body() body, @Res() res) {
         try {
-            
-            console.log(file)
             let createSponsorDto = new CreateSponsorDTO();
             createSponsorDto.name = body.name;
             createSponsorDto.logo = file.filename;
             createSponsorDto.prize = body.prize;
             createSponsorDto.logo_url = process.env.BASE_URL + 'uploads/' + file.filename;
-
+    
             let sponsor = await this.sponsorService.create(createSponsorDto);
             res.status(HttpStatus.OK)
                 .send({
@@ -59,6 +58,27 @@ export class SponsorController {
                 })
         } catch (error) {
             throw new HttpException(error, HttpStatus.AMBIGUOUS)
+        }
+    }
+
+    @Delete(':id')
+    async delete(@Param('id') id) {
+        let fs = require('fs');
+
+        let sponsor = await this.sponsorService.findOneById(id);
+
+        let res = await this.sponsorService.delete(id);
+
+        console.log(sponsor)
+
+        fs.unlink(this.dest + '/' + sponsor.logo, (res) => {
+            console.log(res)
+        });
+        
+        return res;
+        try {
+        } catch (error) {
+            throw new HttpException(error, HttpStatus.AMBIGUOUS);
         }
     }
 }

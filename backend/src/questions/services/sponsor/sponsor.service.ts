@@ -18,25 +18,25 @@ export class SponsorService {
         return await this.sponsorRepository.find();
       }
     
-      async delete(id: number) {
-        return await this.sponsorRepository.delete(id);
-      }
-    
-      async findOneById(id: number) {
-        return await this.sponsorRepository.findOne(id);
-      }
-    
+    async delete(id: number) {
+      return await this.sponsorRepository.delete(id);
+    }
+  
+    async findOneById(id: number) {
+      return await this.sponsorRepository.findOne(id);
+    }
+  
 
-    
-      async findAndUpdate(id: number, data: CreateSponsorDTO)
-      {
-        return await this.sponsorRepository.update(id, data);
-      }
-    
-      async updateStatus(id: number, data)
-      {
-        return await this.sponsorRepository.update(id, data);
-      }
+  
+    async findAndUpdate(id: number, data: CreateSponsorDTO)
+    {
+      return await this.sponsorRepository.update(id, data);
+    }
+  
+    async updateStatus(id: number, data)
+    {
+      return await this.sponsorRepository.update(id, data);
+    }
 
 
 }

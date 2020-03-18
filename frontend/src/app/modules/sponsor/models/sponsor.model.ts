@@ -1,7 +1,7 @@
 export class Sponsor {
    id: number;
    name: string;
-   logo: string;
+   file: string;
    logo_url: string;
    prize: string;
 }

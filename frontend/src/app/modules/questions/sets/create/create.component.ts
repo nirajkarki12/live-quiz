@@ -22,6 +22,7 @@ import { Sponsor } from 'src/app/modules/sponsor/models/sponsor.model';
 export class CreateComponent implements OnInit {
   setsForm: FormGroup;
   sets: Sets = new Sets();
+  sponsor: Sponsor = new Sponsor();
   buttonClicked: Boolean = false;
   currentDate = new Date();
 
@@ -36,7 +37,7 @@ export class CreateComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.setsForm = this.setsFormService.createForm(this.sets);
+    this.setsForm = this.setsFormService.createForm(this.sets, this.sponsor);
     this.getSponsors();
   }
 

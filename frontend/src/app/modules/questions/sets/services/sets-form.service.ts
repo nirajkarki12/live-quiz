@@ -5,6 +5,7 @@ import * as moment from 'moment';
 
 // Models
 import { Sets } from '../../models/sets.model';
+import { Sponsor } from 'src/app/modules/sponsor/models/sponsor.model';
 
 @Injectable({
   providedIn: 'root'
@@ -16,12 +17,13 @@ export class SetsFormService {
     private fb: FormBuilder,
   ) { }
 
-  createForm(sets: Sets) {
+  createForm(sets: Sets, sponsor: Sponsor) {
     return this.fb.group({
         id: [sets.id],
         name: [sets.name, [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
         // scheduleDate: [sets.scheduleDate, [Validators.required, CustomValidators.minDate(this.currentDate)]],
         scheduleDate: [moment(sets.scheduleDate).format("YYYY-MM-DDTHH:mm"), [Validators.required]],
+        sponsor: [sponsor, [Validators.required]]
       });
   }
 }

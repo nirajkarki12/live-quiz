@@ -20,6 +20,28 @@ export class SponsorService {
     .catch(this.handleError);
   }
 
+  create(sponsor: FormData): Promise<any> {
+    return this.http.post(
+      ApiConstants.API_ENDPOINT +
+      ApiConstants.SPONSOR +
+      ApiConstants.CREATE
+      , sponsor, { observe: 'response'})
+      .toPromise()
+      .then(this.handleSuccess)
+      .catch(this.handleError)
+  }
+
+  delete(sponsor: Sponsor): Promise<any> {
+    return this.http.delete(
+      ApiConstants.API_ENDPOINT +
+      ApiConstants.SPONSOR + '/' + sponsor.id,
+      { observe: 'response'}
+    )
+    .toPromise()
+    .then(this.handleSuccess)
+    .catch(this.handleError)
+  }
+
   handleSuccess(response: any): Promise<any> {
     return Promise.resolve(response);
   }

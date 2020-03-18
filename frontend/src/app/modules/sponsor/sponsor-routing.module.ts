@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AppRoutes } from 'src/app/constants/app-routes';
 // Components
 import { ListComponent } from './list/list.component';
+import { CreateComponent } from './create/create.component';
 
 const routes: Routes = [
   {
@@ -12,10 +12,17 @@ const routes: Routes = [
     },
     children: [
       {
-        path: AppRoutes.listWithId,
+        path: '',
         component: ListComponent,
         data: {
           title: 'Sponsors List'
+        }
+      },
+      {
+        path: 'create',
+        component: CreateComponent,
+        data: {
+          title: 'Create Sponsor'
         }
       }
     ]
