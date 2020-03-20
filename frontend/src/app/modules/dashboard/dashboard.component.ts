@@ -49,6 +49,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.dashboardService.getAndSyncPreChat();
     this.preMessageSubscription = this.dashboardService.getPreMessageRxSubject()
       .subscribe(preMessage => {
+        console.log('preMessage', preMessage)
         this.messages = preMessage;
     });
 

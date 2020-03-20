@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, CreateDateColumn, UpdateDateColumn, BeforeInsert, BeforeUpdate } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, ManyToMany, CreateDateColumn, UpdateDateColumn, BeforeInsert, BeforeUpdate } from 'typeorm';
 import { QuestionSet } from "./question-set.entity";
 require('dotenv').config({ path: '.env' });
 
@@ -19,8 +19,8 @@ export class Sponsor {
   @Column({ default: null })
   prize: string;
 
-  @OneToMany(type => QuestionSet, questionSet => questionSet.sponsor)
-  questionSet: QuestionSet[];
+  @ManyToMany(type => QuestionSet, questionSet => questionSet.sponsors)
+  questionSets: Promise<QuestionSet[]>;
 
   @CreateDateColumn({ select: false})
   createdAt: Date;
@@ -31,7 +31,7 @@ export class Sponsor {
   @BeforeInsert()
   @BeforeUpdate()
   logoUrl() {
-    if(this.logo) this.logo_url = process.env.BASE_URL + 'uploads/' + this.logo;
+    if(this.logo) this.logo_url = process.env.BASE_URL + 'public/' + this.logo;
   }
 
 }

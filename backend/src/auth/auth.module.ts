@@ -8,12 +8,14 @@ import { AuthService } from './services/auth.service';
 // Modules
 import { AuthController } from './auth.controller';
 import { UsersModule } from '../users/users.module';
+require('dotenv').config({ path: '.env' });
+
 
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt', session: false }),
     JwtModule.register({
-      secretOrPrivateKey: `{process.env.JWT_SECRET}`,
+      secretOrPrivateKey: process.env.JWT_SECRET,
       signOptions: {
         expiresIn: '365d',
       },

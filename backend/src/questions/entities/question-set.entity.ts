@@ -1,7 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, Unique, OneToMany, ManyToOne, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, Unique, OneToMany, ManyToMany, JoinTable, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { Question } from "./question.entity";
 import { Sponsor } from "./sponsor.entity";
-
 
 @Entity('question_sets')
 @Unique(["name"])
@@ -21,12 +20,23 @@ export class QuestionSet {
    @Column({ default: 1 })
    status: number;
 
+   @Column({ default: 1 })
+   isRoomOpen: boolean;
+
    @OneToMany(type => Question, question => question.questionSet)
    questions: Question[];
 
-   @ManyToOne(type => Sponsor, sponsor => sponsor.questionSet, { onUpdate: "CASCADE", onDelete: "CASCADE" })
-   sponsor: Sponsor;
-
+   @ManyToMany(type => Sponsor, sponsor => sponsor.questionSets)
+   @JoinTable({
+      name: 'sponsors_question_sets',
+      joinColumns: [
+         { name: 'questionSetsId'}
+      ],
+      inverseJoinColumns: [
+         { name: 'sponsorsId' }
+      ]
+   })
+   sponsors: Promise<Sponsor[]>;
 
    @CreateDateColumn({ select: false})
    createdAt: Date;

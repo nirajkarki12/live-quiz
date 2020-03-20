@@ -38,3 +38,4 @@ backend/.env
 backend/ormconfig.json
 /uploads
 /backend/dist
+/backend/public
