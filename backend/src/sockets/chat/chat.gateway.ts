@@ -139,6 +139,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect  {
     let userObj = await this.userService.findOneByUserId(user.userId);
 
     let isCorrect = false;
+    console.log(user.name + ' - ' + data.option);
     if (data.option === question.answer) isCorrect = true;
 
     // Adding log of quiz

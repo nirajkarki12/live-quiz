@@ -77,22 +77,24 @@ export class QuizService {
       let totalQuestion = questionIds.length;
       let totalAmount = 100000;
 
-      let winners = await this.questionRepository.query("SELECT userId as id, name, image, email, timeTaken FROM (SELECT * FROM (SELECT `user`.`userId`, `user`.`name`, `user`.`image`, `user`.`email`, SUM(`quiz`.`inputTime`) AS timeTaken, COUNT(`quiz`.`id`) AS correctAnswerGiven FROM `user` `user` INNER JOIN `quiz` `quiz` ON `quiz`.`userId`=`user`.`id` WHERE `quiz`.`isCorrect` = 1 and `quiz`.`isTimeout` = 0 and quiz.questionId in (?) GROUP BY `user`.`id` ORDER BY timeTaken ASC) data HAVING data.correctAnswerGiven = ?) winners", [questionIds, totalQuestion]);
+      // let winners = await this.questionRepository.query("SELECT userId as id, name, image, email, timeTaken FROM (SELECT * FROM (SELECT `user`.`userId`, `user`.`name`, `user`.`image`, `user`.`email`, SUM(`quiz`.`inputTime`) AS timeTaken, COUNT(`quiz`.`id`) AS correctAnswerGiven FROM `user` `user` INNER JOIN `quiz` `quiz` ON `quiz`.`userId`=`user`.`id` WHERE `quiz`.`isCorrect` = 1 and `quiz`.`isTimeout` = 0 and quiz.questionId in (?) GROUP BY `user`.`id` ORDER BY timeTaken ASC) data HAVING data.correctAnswerGiven = ?) winners", [questionIds, totalQuestion]);
+
+      let winners = await this.questionRepository.query("SELECT userId as id, name, image, email FROM (SELECT * FROM (SELECT `user`.`userId`, `user`.`name`, `user`.`image`, `user`.`email`, COUNT(`quiz`.`id`) AS correctAnswerGiven FROM `user` `user` INNER JOIN `quiz` `quiz` ON `quiz`.`userId`=`user`.`id` WHERE `quiz`.`isCorrect` = 1 and `quiz`.`isTimeout` = 0 and quiz.questionId in (?) GROUP BY `user`.`id`) data HAVING data.correctAnswerGiven = ?) winners", [questionIds, totalQuestion]);
 
       // winners = (winners[0].name === null || winners[0].totalWon === null) ? [] : winners;
       let totalWinners = winners;
       let distributedAmount = await this.convertAmount(totalAmount/(totalWinners.length));
       let minTimetaken = 0;
 
-      if (totalWinners.length > 1) {
-         minTimetaken = winners[0]['timeTaken'];
+      // if (totalWinners.length > 1) {
+      //    minTimetaken = winners[0]['timeTaken'];
 
-         totalWinners = winners.filter((x) => {
-            return x.timeTaken === minTimetaken;
-         });
+      //    totalWinners = winners.filter((x) => {
+      //       return x.timeTaken === minTimetaken;
+      //    });
 
-         distributedAmount = await this.convertAmount(totalAmount/(totalWinners.length));
-      }
+      //    distributedAmount = await this.convertAmount(totalAmount/(totalWinners.length));
+      // }
 
 
       var finalWinners = totalWinners.map((obj) => {
@@ -103,8 +105,8 @@ export class QuizService {
       return {
          totalQuestion: totalQuestion,
          totalAmount: 'रू ' + await this.convertAmount(totalAmount),
-         winners: finalWinners,
-         quizWinners: winners
+         winners: finalWinners
+         // quizWinners: winners
       }
       
    }
