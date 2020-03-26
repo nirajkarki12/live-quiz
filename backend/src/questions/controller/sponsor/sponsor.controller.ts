@@ -9,7 +9,7 @@ require('dotenv').config({ path: '.env' });
 
 @Controller('sponsor')
 export class SponsorController {
-    dest = './src/uploads';
+    dest = './public';
     constructor(private sponsorService: SponsorService, private questionSetService: QuestionsetService) {}
 
     @Get()
@@ -47,8 +47,7 @@ export class SponsorController {
             let createSponsorDto = new CreateSponsorDTO();
             createSponsorDto.name = body.name;
             createSponsorDto.logo = file.filename;
-            createSponsorDto.prize = body.prize;
-            createSponsorDto.logo_url = process.env.BASE_URL + 'public/' + file.filename;
+            createSponsorDto.logo_url = process.env.BASE_URL + 'api/public/' + file.filename;
 
             let sponsor = await this.sponsorService.create(createSponsorDto);
             res.status(HttpStatus.OK)
@@ -69,8 +68,6 @@ export class SponsorController {
         let sponsor = await this.sponsorService.findOneById(id);
 
         let res = await this.sponsorService.delete(id);
-
-        console.log(sponsor)
 
         fs.unlink(this.dest + '/' + sponsor.logo, (res) => {
             console.log(res)

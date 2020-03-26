@@ -3,5 +3,4 @@ export class Sponsor {
    name: string;
    file: string;
    logo_url: string;
-   prize: string;
 }

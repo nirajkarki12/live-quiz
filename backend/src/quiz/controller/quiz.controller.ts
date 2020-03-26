@@ -5,11 +5,12 @@ import { QuizService } from '../services/quiz.service';
 import { QuestionService } from '../../questions/services/question/question.service';
 
 @Controller('quiz')
-@UseGuards(AuthGuard())
 export class QuizController {
 
     constructor(private quizService:QuizService, private questionService: QuestionService) {}
+
     @Get()
+    @UseGuards(AuthGuard())
     async count(@Body() body)
     {
         const question = await this.questionService.findOneById(body.id);

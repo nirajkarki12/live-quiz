@@ -23,7 +23,7 @@ export class AuthController {
     }
 
     @Get('user')
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard('jwt'))
     getUser(@Req() req) {
         return req.user.data;
     }

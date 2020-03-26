@@ -53,7 +53,7 @@ export class HttpInterceptorService implements HttpInterceptor {
       (errorResponse: any) => {
         if (errorResponse instanceof HttpErrorResponse) {
           if (errorResponse.status === 401 || errorResponse.status === 400) {
-            // this.toastr.showMessage('Session Timeout', 'error');
+            this.toastr.showMessage('Session Timeout', 'error');
             this.authService.removeAuthToken();
             this.router.navigate([AppRoutes.login]);
           } else if (errorResponse.status === 500 && errorResponse.error.message === 'Token has expired and can no longer be refreshed') {

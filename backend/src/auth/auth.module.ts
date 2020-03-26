@@ -10,12 +10,11 @@ import { AuthController } from './auth.controller';
 import { UsersModule } from '../users/users.module';
 require('dotenv').config({ path: '.env' });
 
-
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt', session: false }),
     JwtModule.register({
-      secretOrPrivateKey: process.env.JWT_SECRET,
+      secret: process.env.JWT_SECRET,
       signOptions: {
         expiresIn: '365d',
       },

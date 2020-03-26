@@ -13,9 +13,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
       super({
          jwtFromRequest: ExtractJwt.fromHeader('x-authorization'),
-         secretOrKey: `{process.env.JWT_SECRET}`,
+         secretOrKey: process.env.JWT_SECRET,
       });
-
+      console.log('here', process.env.JWT_SECRET);
    }
 
    async validate(payload: JwtPayload) {
@@ -23,7 +23,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       const user = await this.authService.validateUserByJwt(payload);
 
       if (!user) {
-         throw new UnauthorizedException();
+         throw new UnauthorizedException('hello i am here');
       }
 
       return user;

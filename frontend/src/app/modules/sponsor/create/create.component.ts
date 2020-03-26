@@ -36,18 +36,16 @@ export class CreateComponent implements OnInit {
     const formData = new FormData();
     formData.append('file', this.sponsorForm.get('file').value);
     formData.append('name', this.sponsorForm.get('name').value);
-    formData.append('prize', this.sponsorForm.get('prize').value);
 
     this.buttonClicked = true;
     this.sponsorService
         .create(formData)
         .then( response => {
-          console.log(response)
           this.toastr.showMessage('Sponsor Added Successfully');
           this.router.navigate([AppRoutes.sponsors]);
         })
-        .catch( error => {
-          console.log(error)
+        .catch( errorResponse => {
+          this.toastr.showMessage(errorResponse.error.message, 'error');
         })
   }
 
@@ -55,7 +53,6 @@ export class CreateComponent implements OnInit {
     if (event.target.files.length > 0) {
       const file = event.target.files[0];
       this.sponsorForm.get('file').setValue(file);
-      console.log(file)
     }
   }
 

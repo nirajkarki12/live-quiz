@@ -4,7 +4,7 @@
           <div class="card">
              <div class="card-header">
                 <i class="fa fa-align-justify"></i> Sponsors List
-                <!-- <span class="float-right"><a [routerLink]="['/questions/create', set.id]" title="Add Questions"><i class="fa fa-plus fa-lg"></i></a></span> -->
+                <span class="float-right"><a [routerLink]="['/sponsors/create']" title="Add Sponsors"><i class="fa fa-plus fa-lg"></i></a></span>
              </div>
              <app-loading *ngIf="!sponsors || loading"></app-loading>
              <div *ngIf="sponsors ?.length > 0; then tableData; else noRecordsFound"></div>
@@ -15,7 +15,6 @@
                          <tr>
                             <th style="width: 10px">#</th>
                             <th>Name</th>
-                            <th>Prize</th>
                             <th>Logo</th>
                             <th>Action</th>
                          </tr>
@@ -24,13 +23,12 @@
                          <tr *ngFor="let sponsor of sponsors; let index = index">
                             <td>{{ index+1 }}</td>
                             <td>{{ sponsor.name }}</td>
-                            <td>{{ sponsor.prize }}</td>
                             <td>
-                                <img src="{{sponsor.logo_url}}" alt="{{sponsor.name}}" *ngIf="sponsor.logo_url">
+                                <img src="{{sponsor.logo_url}}" alt="{{sponsor.name}}" *ngIf="sponsor.logo_url" width="100">
                             </td>
                             <td>
                                <span>
-                                  <a [routerLink]="['/questions/edit', sponsor.id]" title="Edit"><i class="fa fa-edit fa-lg"></i></a>
+                                  <a [routerLink]="['/sponsors/edit', sponsor.id]" title="Edit"><i class="fa fa-edit fa-lg"></i></a>
                                   &nbsp;
                                   <a href="javascript:void(0)" title="Delete" (click)="removeSponsor(sponsor)"><i class="fa fa-remove fa-lg"></i></a>
                                </span>

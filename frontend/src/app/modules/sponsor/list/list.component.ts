@@ -3,6 +3,8 @@ import { SponsorService } from '../services/sponsor.service';
 import { Sponsor } from '../models/sponsor.model';
 import { AppRoutes } from 'src/app/constants/app-routes';
 import { Router } from '@angular/router';
+// Services
+import { ValidatorMessageService } from 'src/app/modules/shared/services/validator-message/validator-message.service';
 
 @Component({
   selector: 'app-list',
@@ -16,35 +18,36 @@ export class ListComponent implements OnInit {
 
   constructor(
     private sponsorService: SponsorService,
-    private router: Router
+    private router: Router,
+    private toastr: ValidatorMessageService,
   ) { }
 
   ngOnInit() {
-    console.log('this is sponsor list')
     this.fetchSponsors();
   }
 
   fetchSponsors() {
     this.sponsorService.list()
-        .then( response => {
-          this.loading = false;
-          console.log(response)
-          this.sponsors = response.body.data;
-        })
-        .catch( error => {
-          console.log(error)
-        })
+      .then( response => {
+        this.loading = false;
+        this.sponsors = response.body.data;
+      })
+      .catch( errorResponse => {
+        this.toastr.showMessage(errorResponse.error.message, 'error');
+      });
   }
 
   removeSponsor(sponsor: Sponsor) {
-    this.sponsorService.delete(sponsor)
+    if (confirm('Are you sure to delete ' + sponsor.name + '\'s Sponsor')) {
+      this.sponsorService.delete(sponsor)
         .then( response => {
-          console.log(response)
-          this.router.navigate([AppRoutes.sponsors]);
+          this.toastr.showMessage('Sponsor Deleted Successfully');
+          this.fetchSponsors();
         })
-        .catch( error => {
-          console.log(error)
-        })
+        .catch( errorResponse => {
+          this.toastr.showMessage(errorResponse.error.message, 'error');
+        });
+    }
   }
 
 }

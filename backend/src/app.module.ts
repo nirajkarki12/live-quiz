@@ -9,6 +9,8 @@ import { UsersModule } from './users/users.module';
 import { SocketsModule } from './sockets/sockets.module';
 import { QuestionsModule } from './questions/questions.module';
 import { QuizModule } from './quiz/quiz.module';
+// Controllers
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -32,6 +34,7 @@ import { QuizModule } from './quiz/quiz.module';
     QuestionsModule,
     QuizModule
   ],
+  controllers: [AppController],
 })
 export class AppModule {
   constructor(private readonly connection: Connection) {}
