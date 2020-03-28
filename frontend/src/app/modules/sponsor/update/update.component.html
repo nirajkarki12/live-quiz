@@ -1,1 +1,36 @@
-<p>update works!</p>
+<div class="animated fadeIn">
+   <div class="col-sm-9">
+      <div class="card">
+         <div class="card-header">
+            Update <strong>Sponsor</strong>
+         </div>
+         <div class="card-body">
+            <form [formGroup]="sponsorForm" (submit)="update()">
+               <div class="row">
+                  <div class="form-group col-sm-7">
+                     <label for="bank-name">Name</label>
+                     <input type="text" class="form-control" id="bank-name" placeholder="Sponsor Name" formControlName="name">
+                     <span *ngIf="sponsorForm.get('name').errors && (sponsorForm.get('name').dirty || sponsorForm.get('name').touched)">
+                        <span class="help-block text-red" *ngIf="sponsorForm.get('name').errors.required">Set name is required</span>
+                        <span class="help-block text-red" *ngIf="sponsorForm.get('name').errors.minlength">Too short name</span>
+                        <span class="help-block text-red" *ngIf="sponsorForm.get('name').errors.maxlength">Too long name</span>
+                     </span>
+                  </div>
+
+                  <div class="form-group col-sm-7">
+                     <label for="sponsor">Logo</label><br>
+                     <img src="{{ sponsor.logo_url }}" width="150"><br>
+                     <input type="file" class="form-control" (change)="onFileSelect($event)">
+                  </div>
+
+               </div><!--/.row-->
+               
+               <div class="form-actions">
+                  <button type="submit" class="btn btn-success" [disabled]="buttonClicked || sponsorForm.invalid">Save changes</button>
+                  <!-- <button class="btn btn-secondary" type="button">Cancel</button> -->
+               </div>
+            </form>
+         </div>
+      </div>
+   </div><!--/.col-->
+</div>

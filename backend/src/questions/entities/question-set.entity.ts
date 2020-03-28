@@ -11,6 +11,9 @@ export class QuestionSet {
    @Column()
    name: string;
 
+   @Column({ nullable: false, default: 0 })
+   prize: number;
+
    @Column({ nullable: false })
    scheduleDate: Date;
 

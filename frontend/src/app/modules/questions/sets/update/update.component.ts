@@ -19,7 +19,7 @@ import { Sponsor } from 'src/app/modules/sponsor/models/sponsor.model';
 export class UpdateComponent implements OnInit {
   setForm: FormGroup;
   setEdit: Sets = new Sets();
-  sponsor: Sponsor = new Sponsor();
+  sponsors: Sponsor[];
   buttonClicked = false;
   sub: Subscription;
   currentDate = new Date();
@@ -35,9 +35,9 @@ export class UpdateComponent implements OnInit {
   ngOnInit() {
     this.route.data
     .subscribe((data) => {
+      this.sponsors = data.sponsors.body.data;
       this.setEdit = data.sets.data;
-      console.log(this.setEdit)
-      this.setForm = this.setFormService.createForm(this.setEdit, this.sponsor);
+      this.setForm = this.setFormService.createForm(this.setEdit, this.sponsors);
     });
   }
 

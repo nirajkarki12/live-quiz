@@ -7,6 +7,7 @@ import { CreateComponent } from './create/create.component';
 import { UpdateComponent } from './update/update.component';
 // Resolvers
 import { SetsDetailResolverService } from './services/resolver/sets-detail-resolver.service';
+import { SponsorsListResolverService } from '../../sponsor/services/resolver/sponsors-list-resolver.service';
 
 const routes: Routes = [
   {
@@ -25,6 +26,9 @@ const routes: Routes = [
       {
         path: AppRoutes.create,
         component: CreateComponent,
+        resolve: {
+          'sponsors': SponsorsListResolverService,
+        },
         data: {
           title: 'Add a Sets'
         }
@@ -33,6 +37,7 @@ const routes: Routes = [
         path: AppRoutes.edit,
         component: UpdateComponent,
         resolve: {
+          'sponsors': SponsorsListResolverService,
           'sets': SetsDetailResolverService,
         },
         data: {

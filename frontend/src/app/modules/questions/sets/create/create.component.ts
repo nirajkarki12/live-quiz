@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup } from '@angular/forms';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { AppRoutes } from 'src/app/constants/app-routes';
@@ -22,14 +22,13 @@ import { Sponsor } from 'src/app/modules/sponsor/models/sponsor.model';
 export class CreateComponent implements OnInit {
   setsForm: FormGroup;
   sets: Sets = new Sets();
-  sponsor: Sponsor = new Sponsor();
+  sponsors: Sponsor[];
   buttonClicked: Boolean = false;
   currentDate = new Date();
 
-  sponsors: Sponsor[];
-
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private setsService: SetsService,
     private setsFormService: SetsFormService,
     private toastr: ValidatorMessageService,
@@ -37,12 +36,14 @@ export class CreateComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.setsForm = this.setsFormService.createForm(this.sets, this.sponsor);
-    this.getSponsors();
+    this.route.data
+    .subscribe((data) => {
+      this.sponsors = data.sponsors.body.data;
+      this.setsForm = this.setsFormService.createForm(this.sets, this.sponsors);
+    });
   }
 
   create() {
-    console.log(this.setsForm.value)
     this.buttonClicked = true;
     this.setsService
       .create(this.setsForm.value)
@@ -51,20 +52,9 @@ export class CreateComponent implements OnInit {
         this.router.navigate([AppRoutes.sets]);
       })
       .catch(errorResponse => {
-        console.log(errorResponse);
         this.buttonClicked = false;
         this.toastr.showMessage(errorResponse.error.message, 'error');
       });
-  }
-
-  getSponsors() {
-    this.sponsorService.list()
-      .then( response => {
-        this.sponsors = response.body.data;
-      })
-      .catch( error => {
-        console.log(error)
-      })
   }
 
 }

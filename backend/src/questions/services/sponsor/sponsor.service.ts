@@ -13,7 +13,6 @@ export class SponsorService {
         return await this.sponsorRepository.save(createSponsorDto)
     }
 
-
     async fetchSponsors() {
         return await this.sponsorRepository.find();
       }
@@ -25,8 +24,6 @@ export class SponsorService {
     async findOneById(id: number) {
       return await this.sponsorRepository.findOne(id);
     }
-  
-
   
     async findAndUpdate(id: number, data: CreateSponsorDTO)
     {

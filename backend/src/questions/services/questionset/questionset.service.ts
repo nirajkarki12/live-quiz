@@ -6,20 +6,41 @@ import * as moment from 'moment';
 import { CreateQuestionSetDto } from '../../../questions/dto/create-questionset.dto';
 // Entities
 import { QuestionSet } from '../../entities/question-set.entity';
+import { Sponsor } from '../../entities/sponsor.entity';
 
 @Injectable()
 export class QuestionsetService {
 
   constructor(
-    @InjectRepository(QuestionSet) private questionSetRepository: Repository<QuestionSet>
+    @InjectRepository(QuestionSet) private questionSetRepository: Repository<QuestionSet>,
+    @InjectRepository(Sponsor) private sponsorRepository: Repository<Sponsor>
   ) {}
 
   async create(createQuestionSetDto: CreateQuestionSetDto) {
-    return await this.questionSetRepository.save(createQuestionSetDto);
+    let sponsorIds = await createQuestionSetDto.sponsors;
+    let sponsors;
+    let set = new QuestionSet();
+    set.name = createQuestionSetDto.name;
+    set.prize = createQuestionSetDto.prize;
+    set.scheduleDate = createQuestionSetDto.scheduleDate;
+
+      for ( let i = 0; i < sponsorIds.length ; i++) {
+        let data = await this.sponsorRepository.findOne(sponsorIds[i]);
+        if(!sponsors){
+          sponsors = [data];
+        }else{
+          sponsors.push(data);
+        }
+      }
+
+    set.sponsors = sponsors;
+    return await this.questionSetRepository.save(set);
   }
   
   async fetchQuestionSets() {
-    return await this.questionSetRepository.find();
+    return await this.questionSetRepository.find({
+      relations: ['sponsors']
+    });
   }
 
   async delete(id: number) {

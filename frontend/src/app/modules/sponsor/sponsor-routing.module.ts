@@ -5,6 +5,8 @@ import { AppRoutes } from 'src/app/constants/app-routes';
 import { ListComponent } from './list/list.component';
 import { CreateComponent } from './create/create.component';
 import { UpdateComponent } from './update/update.component';
+// Resolver
+import { SponsorDetailResolverService } from './services/resolver/sponsor-detail-resolver.service';
 
 const routes: Routes = [
   {
@@ -30,6 +32,9 @@ const routes: Routes = [
       {
         path: AppRoutes.edit,
         component: UpdateComponent,
+        resolve: {
+          'sponsor': SponsorDetailResolverService,
+        },
         data: {
           title: 'Update Sponsor'
         }

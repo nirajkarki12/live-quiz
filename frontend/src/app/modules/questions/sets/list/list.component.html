@@ -4,6 +4,7 @@
          <div class="card">
             <div class="card-header">
                <i class="fa fa-align-justify"></i> Sets List
+               <span class="float-right"><a [routerLink]="['/sets/create']" title="Add s Set"><i class="fa fa-plus fa-lg"></i></a></span>
             </div>
             <app-loading *ngIf="!sets || loading"></app-loading>
             <div *ngIf="sets ?.length > 0; then tableData; else noRecordsFound"></div>
@@ -14,7 +15,9 @@
                         <tr>
                            <th style="width: 10px">#</th>
                            <th>Name</th>
+                           <th>Prize Amount</th>
                            <th>Schedule On</th>
+                           <th>Sponsors</th>
                            <th>Status</th>
                            <th>Action</th>
                         </tr>
@@ -23,7 +26,13 @@
                         <tr *ngFor="let set of sets; let index = index">
                            <td>{{ index + 1 }}</td>
                            <td>{{ set.name }}</td>
+                           <td>{{ 'रू ' + set.prize }}</td>
                            <td>{{ set.scheduleDate | date:'yyyy-MM-dd HH:mm' }}</td>
+                           <td>
+                              <ul class="list-no-padding">
+                                 <li *ngFor="let sponsor of set.__sponsors__">{{ sponsor.name }}</li>
+                              </ul>
+                           </td>
                            <td>
                               <span [ngSwitch]="set.status">
                                  <span *ngSwitchCase="1">Active</span>
