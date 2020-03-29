@@ -21,6 +21,16 @@ export class QuestionsetController {
         }
     }
 
+    @Get('inactive/mobile')
+    async getInactiveSetMobile()
+    {
+        try {
+            return await this.questionSetService.getInactivesetsForMobile();
+        } catch (error) {
+            throw new HttpException(error, HttpStatus.BAD_GATEWAY);
+        }
+    }
+
     @Get('active/mobile')
     async getActiveSetMobile()
     {

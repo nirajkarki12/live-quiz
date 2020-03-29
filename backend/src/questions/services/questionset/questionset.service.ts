@@ -142,4 +142,18 @@ export class QuestionsetService {
     return questionsets;
   }
 
+  async getInactivesetsForMobile()
+  {
+    let questionsets = await this.questionSetRepository.find({
+      relations: ['sponsors'],
+      where: {
+        isCompleted: true,
+      },
+      order: {
+        scheduleDate: 'DESC'
+      }
+    });
+    return questionsets;
+  }
+
 }
