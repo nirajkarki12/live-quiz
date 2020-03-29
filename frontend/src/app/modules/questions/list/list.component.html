@@ -16,7 +16,6 @@
                            <th style="width: 10px">#</th>
                            <th>Name</th>
                            <th>Options</th>
-                           <th>Answer</th>
                            <th>Action</th>
                         </tr>
                      </thead>
@@ -24,8 +23,20 @@
                         <tr *ngFor="let question of questions; let index = index">
                            <td>{{ question.level }}</td>
                            <td>{{ question.name }}</td>
-                           <td>{{ question.option1 + ', ' + question.option2 + ', ' + question.option3 + ', ' + question.option4 }}</td>
-                           <td>{{ question.answer }}</td>
+                           <td>
+                              <span class="answers" [class.boldAnswer]="question.answer == question.option1">
+                                 {{ question.option1 }}
+                              </span>,
+                              <span class="answers" [class.boldAnswer]="question.answer == question.option2">
+                                 {{ question.option2 }}
+                              </span>,
+                              <span class="answers" [class.boldAnswer]="question.answer == question.option3">
+                                 {{ question.option3 }}
+                              </span>,
+                              <span class="answers" [class.boldAnswer]="question.answer == question.option4">
+                                 {{ question.option4 }}
+                              </span>
+                           </td>
                            <td>
                               <span *ngIf="(set.status === 1)">
                                  <a [routerLink]="['/questions/edit', question.id]" title="Edit"><i class="fa fa-edit fa-lg"></i></a>

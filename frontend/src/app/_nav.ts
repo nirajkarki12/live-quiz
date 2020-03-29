@@ -34,7 +34,7 @@ export const navItems: INavData[] = [
   {
     name: 'Sponsors',
     url: '/sponsors',
-    icon: 'icon-puzzle',
+    icon: 'icon-star',
     children: [
       {
         name: 'List',

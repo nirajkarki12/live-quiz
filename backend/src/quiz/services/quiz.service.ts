@@ -7,6 +7,7 @@ import { CreateQuizDto } from '../../quiz/dto/quiz.dto';
 // Entities
 import { Quiz } from '../entities/quiz.entity';
 import { Question } from '../../questions/entities/question.entity';
+import { QuestionSet } from '../../questions/entities/question-set.entity';
 import { User } from '../../users/entities/user.entity';
 
 @Injectable()
@@ -15,6 +16,7 @@ export class QuizService {
    constructor(
       @InjectRepository(Quiz) private quizRepository: Repository<Quiz>,
       @InjectRepository(Question) private questionRepository: Repository<Question>,
+      @InjectRepository(QuestionSet) private questionSetRepository: Repository<QuestionSet>,
       @InjectRepository(User) private userRepository: Repository<User>,
    ) {}
 
@@ -70,12 +72,13 @@ export class QuizService {
    }
 
    async getFinalResults(setId: number) {
+      let set = await this.questionSetRepository.findOne(setId);
       let setQuestions = await this.questionRepository
             .query("SELECT quiz.questionId FROM `quiz` `quiz` INNER JOIN `questions` `question` ON `question`.`id` = `quiz`.`questionId` INNER JOIN `question_sets` `set` ON `set`.`id` = `question`.`questionSetId` WHERE `set`.`id` = ? GROUP BY quiz.`questionId` ", [setId]);
 
       let questionIds = setQuestions.map((obj) => obj.questionId);
       let totalQuestion = questionIds.length;
-      let totalAmount = 100000;
+      let totalAmount = set.prize;
 
       // let winners = await this.questionRepository.query("SELECT userId as id, name, image, email, timeTaken FROM (SELECT * FROM (SELECT `user`.`userId`, `user`.`name`, `user`.`image`, `user`.`email`, SUM(`quiz`.`inputTime`) AS timeTaken, COUNT(`quiz`.`id`) AS correctAnswerGiven FROM `user` `user` INNER JOIN `quiz` `quiz` ON `quiz`.`userId`=`user`.`id` WHERE `quiz`.`isCorrect` = 1 and `quiz`.`isTimeout` = 0 and quiz.questionId in (?) GROUP BY `user`.`id` ORDER BY timeTaken ASC) data HAVING data.correctAnswerGiven = ?) winners", [questionIds, totalQuestion]);
 

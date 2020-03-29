@@ -48,7 +48,9 @@ export class QuestionsetService {
   }
 
   async findOneById(id: number) {
-    return await this.questionSetRepository.findOne(id);
+    return await this.questionSetRepository.findOne(id, {
+      relations: ['sponsors']
+    });
   }
 
   async findInProgress() {
@@ -67,7 +69,24 @@ export class QuestionsetService {
 
   async findAndUpdate(id: number, data: CreateQuestionSetDto)
   {
-    return await this.questionSetRepository.update(id, data);
+    let sponsorIds = await data.sponsors;
+    let sponsors;
+    let set = await this.questionSetRepository.findOne(id);
+    set.name = data.name;
+    set.prize = data.prize;
+    set.scheduleDate = data.scheduleDate;
+
+    for ( let i = 0; i < sponsorIds.length ; i++) {
+        let data = await this.sponsorRepository.findOne(sponsorIds[i]);
+        if(!sponsors){
+          sponsors = [data];
+        }else{
+          sponsors.push(data);
+        }
+      }
+
+    set.sponsors = sponsors;
+    return await this.questionSetRepository.save(set);
   }
 
   async updateStatus(id: number, data)
@@ -111,6 +130,7 @@ export class QuestionsetService {
   async getActivesetsForMobile()
   {
     let questionsets = await this.questionSetRepository.find({
+      relations: ['sponsors'],
       where: {
         isCompleted: false,
         scheduleDate: MoreThanOrEqual(moment(new Date()).format('YYYY-MM-DD HH:mm'))

@@ -12,7 +12,6 @@ export class LoginService {
   constructor(private http: HttpClient, private authService: AuthService) { }
 
   login(userLoginModel: Profile): Promise<any> {
-    console.log(ApiConstants);
     return this.http.post(
       ApiConstants.API_ENDPOINT +
       ApiConstants.AUTH +

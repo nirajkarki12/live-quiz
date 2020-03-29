@@ -92,8 +92,4 @@ const toastrConfig = {
   ],
   bootstrap: [ AppComponent ]
 })
-export class AppModule {
-  constructor() {
-    console.log(localStorage.getItem('X-Authorization'));
-  }
-}
+export class AppModule {}

@@ -18,11 +18,11 @@
                   </div>
 
                   <div class="form-group col-sm-4">
-                     <label for="bank-name">Prize Amount</label>
-                     <input type="text" class="form-control" id="bank-name" placeholder="Prize Amount" formControlName="prize">
-                     <span *ngIf="setsForm.get('prize').errors && (setsForm.get('prize').dirty || setsForm.get('prize').touched)">
-                        <span class="help-block text-red" *ngIf="setsForm.get('prize').errors.required">Prize amount is required</span>
-                        <span class="help-block text-red" *ngIf="setsForm.get('prize').errors.gte || setsForm.get('prize').errors.lte">Prize Amount should be between 1-999999</span>
+                     <label for="prize">Prize Amount</label>
+                     <input type="text" class="form-control" id="prize" placeholder="Prize Amount" formControlName="prize">
+                     <span *ngIf="setForm.get('prize').errors && (setForm.get('prize').dirty || setForm.get('prize').touched)">
+                        <span class="help-block text-red" *ngIf="setForm.get('prize').errors.required">Prize amount is required</span>
+                        <span class="help-block text-red" *ngIf="setForm.get('prize').errors.gte || setForm.get('prize').errors.lte">Prize Amount should be between 1-999999</span>
                      </span>
                   </div>
                   <!-- <div class="form-group col-sm-4">
@@ -36,6 +36,13 @@
                   <div class="form-group col-sm-4">
                      <label for="ScheduleDate">Schedule Date</label>
                      <input type="datetime-local" class="form-control" formControlName="scheduleDate">
+                  </div>
+
+                  <div class="form-group col-sm-6">
+                     <label for="sponsor">Sponsors</label>
+                     <select class="form-control" [(ngModel)]="selectedSponsors" formControlName="sponsors" multiple>
+                        <option *ngFor="let sponsor of sponsors" [value]="sponsor.id">{{sponsor.name}}</option>
+                     </select>
                   </div>
                </div><!--/.row-->
 

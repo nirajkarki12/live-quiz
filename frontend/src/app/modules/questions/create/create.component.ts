@@ -49,7 +49,6 @@ export class CreateComponent implements OnInit {
         this.router.navigate([AppRoutes.questions + '/list/' + this.sets.id]);
       })
       .catch(errorResponse => {
-        console.log(errorResponse);
         this.buttonClicked = false;
         this.toastr.showMessage(errorResponse.error.message, 'error');
       });

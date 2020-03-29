@@ -7,5 +7,5 @@ export class Sets {
    scheduleDate: any;
    isCompleted: Boolean;
    questions?: [];
-   sponsor: Sponsor;
+   sponsors: Sponsor[];
 }

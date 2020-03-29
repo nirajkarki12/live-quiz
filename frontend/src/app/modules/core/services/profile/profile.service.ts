@@ -39,7 +39,6 @@ export class ProfileService {
           this.profileDetail = successResponse;
           this.syncProfile();
         }, (errorResponse) => {
-            console.log(errorResponse);
             this.toastr.showMessage(errorResponse.error.message, 'error');
         });
   }

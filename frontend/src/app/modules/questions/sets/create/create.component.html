@@ -18,8 +18,8 @@
                   </div>
 
                   <div class="form-group col-sm-4">
-                     <label for="bank-name">Prize Amount</label>
-                     <input type="text" class="form-control" id="bank-name" placeholder="Prize Amount" formControlName="prize">
+                     <label for="prize">Prize Amount</label>
+                     <input type="text" class="form-control" id="prize" placeholder="Prize Amount" formControlName="prize">
                      <span *ngIf="setsForm.get('prize').errors && (setsForm.get('prize').dirty || setsForm.get('prize').touched)">
                         <span class="help-block text-red" *ngIf="setsForm.get('prize').errors.required">Prize amount is required</span>
                         <span class="help-block text-red" *ngIf="setsForm.get('prize').errors.gte || setsForm.get('prize').errors.lte">Prize Amount should be between 1-999999</span>

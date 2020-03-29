@@ -39,7 +39,7 @@ export class CreateComponent implements OnInit {
     this.route.data
     .subscribe((data) => {
       this.sponsors = data.sponsors.body.data;
-      this.setsForm = this.setsFormService.createForm(this.sets, this.sponsors);
+      this.setsForm = this.setsFormService.createForm(this.sets);
     });
   }
 

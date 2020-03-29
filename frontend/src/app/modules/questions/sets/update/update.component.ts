@@ -23,6 +23,7 @@ export class UpdateComponent implements OnInit {
   buttonClicked = false;
   sub: Subscription;
   currentDate = new Date();
+  selectedSponsors: Sponsor[];
 
   constructor(
     private router: Router,
@@ -37,7 +38,10 @@ export class UpdateComponent implements OnInit {
     .subscribe((data) => {
       this.sponsors = data.sponsors.body.data;
       this.setEdit = data.sets.data;
-      this.setForm = this.setFormService.createForm(this.setEdit, this.sponsors);
+      this.setEdit.sponsors = this.selectedSponsors = data.sets.data.__sponsors__.map((x) => {
+        return (x.id);
+      });
+      this.setForm = this.setFormService.createForm(this.setEdit);
     });
   }
 
