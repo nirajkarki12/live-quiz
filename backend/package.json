@@ -35,7 +35,7 @@
     "bcrypt": "^4.0.1",
     "dotenv": "^8.2.0",
     "exceljs": "^3.8.1",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "mongoose": "^5.9.5",
     "mysql": "^2.18.1",
     "passport": "^0.4.1",
